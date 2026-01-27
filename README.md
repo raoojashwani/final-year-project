@@ -108,3 +108,70 @@ C-O-Group-Event-Platform/
 ├── README.md
 ├── .gitignore
 └── .env.example
+bash
+---
+
+## 🚀 How to Run (Development Mode)
+
+> *(Skeleton structure – functional modules will be added incrementally)*
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/raoojashwani/final-year-project.git
+### 2. Navigate to the project directory
+bash
+Copy code
+cd C-O-Group-Event-Platform
+### 3. Install backend dependencies (when backend is implemented)
+bash
+Copy code
+cd backend
+npm install
+### 4. Configure environment variables
+Create a .env file using .env.example and configure the required environment variables.
+
+### 5. Start the server
+bash
+Copy code
+npm start
+
+---
+📊 Expected Outcomes
+- Centralized event management system
+- Reduced manual operations
+- Improved transparency and tracking
+- Scalable startup-ready MVP
+- Real-world application of full-stack development
+
+---
+
+🔮 Future Scope
+- Payment gateway integration (Razorpay / Stripe)
+- Mobile application support
+- AI-based event planning assistance
+- Analytics dashboard for business insights
+- Multi-language support
+- Role-based vendor portals
+---
+
+👥 Team Members
+- Ojashwani Rao – Team Leader
+(Backend, Architecture, Business Logic, Documentation)
+
+- Vidhit Madaan – Frontend Developer
+(UI Design, Testing Support)
+
+---
+
+📜 License
+This project is developed as part of the Final Year Major Project under the Startup category and is intended for academic and research purposes.
+
+---
+
+📬 Contact
+For queries or collaboration:
+
+- Email: 2301201216@krmu.edu.in
+- Institution: K.R. Mangalam University, Gurugram
+
+© 2026 C&O Group – Smart Event Management Platform
