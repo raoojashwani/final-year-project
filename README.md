@@ -84,30 +84,28 @@ Architecture diagrams and flowcharts are available in the `/diagrams` directory.
 C-O-Group-Event-Platform/
 │
 ├── frontend/
-│ ├── css/
-│ ├── js/
-│ ├── images/
-│ └── pages/
+│   ├── css/
+│   ├── js/
+│   ├── images/
+│   └── pages/
 │
 ├── backend/
-│ ├── config/
-│ ├── routes/
-│ ├── controllers/
-│ ├── models/
-│ └── middleware/
+│   ├── config/
+│   ├── routes/
+│   ├── controllers/
+│   ├── models/
+│   └── middleware/
 │
 ├── docs/
-│ └── project_synopsis.pdf
+│   └── project_synopsis.pdf
 │
 ├── diagrams/
-│ └── architecture_diagram.png
+│   └── architecture_diagram.png
 │
 ├── README.md
 ├── .gitignore
 └── .env.example
 
-yaml
-Copy code
 
 ---
 
