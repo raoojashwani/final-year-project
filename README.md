@@ -80,32 +80,6 @@ The system follows a modular client-server architecture:
 Architecture diagrams and flowcharts are available in the `/diagrams` directory.
 
 ---
-## 📁 Folder Structure
-C-O-Group-Event-Platform/
-│
-├── frontend/
-│   ├── css/
-│   ├── js/
-│   ├── images/
-│   └── pages/
-│
-├── backend/
-│   ├── config/
-│   ├── routes/
-│   ├── controllers/
-│   ├── models/
-│   └── middleware/
-│
-├── docs/
-│   └── project_synopsis.pdf
-│
-├── diagrams/
-│   └── architecture_diagram.png
-│
-├── README.md
-├── .gitignore
-└── .env.example
----
 
 ## 🚀 How to Run (Development Mode)
 
