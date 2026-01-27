@@ -81,58 +81,21 @@ Architecture diagrams and flowcharts are available in the `/diagrams` directory.
 
 ---
 
-## 📁 Folder Structure
-
-```bash
-C-O-Group-Event-Platform/
-│
-├── frontend/
-│   ├── css/
-│   ├── js/
-│   ├── images/
-│   └── pages/
-│
-├── backend/
-│   ├── config/
-│   ├── routes/
-│   ├── controllers/
-│   ├── models/
-│   └── middleware/
-│
-├── docs/
-│   └── project_synopsis.pdf
-│
-├── diagrams/
-│   └── architecture_diagram.png
-│
-├── README.md
-├── .gitignore
-└── .env.example
-bash
----
 
 ## 🚀 How to Run (Development Mode)
 
 > *(Skeleton structure – functional modules will be added incrementally)*
 
 ### 1. Clone the repository
-```bash
 git clone https://github.com/raoojashwani/final-year-project.git
 ### 2. Navigate to the project directory
-bash
-Copy code
 cd C-O-Group-Event-Platform
 ### 3. Install backend dependencies (when backend is implemented)
-bash
-Copy code
 cd backend
 npm install
 ### 4. Configure environment variables
 Create a .env file using .env.example and configure the required environment variables.
-
 ### 5. Start the server
-bash
-Copy code
 npm start
 
 ---
