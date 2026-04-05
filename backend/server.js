@@ -9,11 +9,11 @@ require('dotenv').config();
 // ==========================================
 // 1. DATABASE BLUEPRINTS
 // ==========================================
-const Inquiry = require('./models/Inquiry');
-const Career = require('./models/Career');
-const Vendor = require('./models/Vendor');
-const Subscriber = require('./models/Subscriber'); 
-const Client = require('./models/Client');
+const Inquiry = require('./models/inquiry');
+const Career = require('./models/career');
+const Vendor = require('./models/vendor');
+const Subscriber = require('./models/subscriber'); 
+const Client = require('./models/client');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
