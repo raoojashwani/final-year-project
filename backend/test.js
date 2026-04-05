@@ -1,4 +1,4 @@
-fetch('http://localhost:5000/api/enquiries', {
+fetch('https://cando-backend-api.onrender.com\/api/enquiries', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',

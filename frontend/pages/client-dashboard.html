@@ -595,7 +595,7 @@
 
             async function refreshDashboardData() {
                 try {
-                    const response = await fetch('http://localhost:5000/api/portal/client-data', {
+                    const response = await fetch('https://cando-backend-api.onrender.com\/api/portal/client-data', {
                         method: 'GET',
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
@@ -816,7 +816,7 @@
                 };
 
                 try {
-                    await fetch('http://localhost:5000/api/portal/client-update', {
+                    await fetch('https://cando-backend-api.onrender.com\/api/portal/client-update', {
                         method: 'PATCH',
                         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                         body: JSON.stringify({ guest: guestPayload })
@@ -838,7 +838,7 @@
             document.getElementById('confirmDeleteGuestBtn').addEventListener('click', async () => {
                 if(!guestToDeleteId) return;
                 try {
-                    await fetch('http://localhost:5000/api/portal/client-update', {
+                    await fetch('https://cando-backend-api.onrender.com\/api/portal/client-update', {
                         method: 'PATCH',
                         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                         body: JSON.stringify({ deleteGuestId: guestToDeleteId })
@@ -863,7 +863,7 @@
                 chatSendBtn.disabled = true;
 
                 try {
-                    await fetch('http://localhost:5000/api/portal/client-update', {
+                    await fetch('https://cando-backend-api.onrender.com\/api/portal/client-update', {
                         method: 'PATCH',
                         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                         body: JSON.stringify({ message: { sender: 'Client', text: text } })
@@ -957,7 +957,7 @@
             const btn = this; btn.innerText = "DELETING...";
             const token = localStorage.getItem('clientToken');
             try {
-                const res = await fetch('http://localhost:5000/api/portal/client-message-delete', {
+                const res = await fetch('https://cando-backend-api.onrender.com\/api/portal/client-message-delete', {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ messageId: window.msgToDelete })
@@ -971,7 +971,7 @@
                     window.currentMessageCount = -1;
                     
                     // Fetch fresh data
-                    const dataRes = await fetch('http://localhost:5000/api/portal/client-data', { headers: { 'Authorization': `Bearer ${token}` } });
+                    const dataRes = await fetch('https://cando-backend-api.onrender.com\/api/portal/client-data', { headers: { 'Authorization': `Bearer ${token}` } });
                     if(dataRes.ok) {
                         const freshData = await dataRes.json();
                         // If it was the last message, clear the board manually
@@ -1009,7 +1009,7 @@
             
             try {
                 // 1. Delete old
-                const delRes = await fetch('http://localhost:5000/api/portal/client-message-delete', {
+                const delRes = await fetch('https://cando-backend-api.onrender.com\/api/portal/client-message-delete', {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ messageId: window.msgToEdit })
@@ -1018,7 +1018,7 @@
                 if(!delRes.ok) throw new Error("Could not modify original message");
                 
                 // 2. Post new
-                const postRes = await fetch('http://localhost:5000/api/portal/client-update', {
+                const postRes = await fetch('https://cando-backend-api.onrender.com\/api/portal/client-update', {
                     method: 'PATCH',
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message: { sender: 'Client', text: newText } })
@@ -1029,7 +1029,7 @@
                     document.getElementById('editMessageModal').classList.remove('active');
                     
                     window.currentMessageCount = -1; // Force re-render
-                    const dataRes = await fetch('http://localhost:5000/api/portal/client-data', { headers: { 'Authorization': `Bearer ${token}` } });
+                    const dataRes = await fetch('https://cando-backend-api.onrender.com\/api/portal/client-data', { headers: { 'Authorization': `Bearer ${token}` } });
                     if (dataRes.ok) populateDashboard(await dataRes.json());
                 } else {
                     showCustomToast('Failed to post updated message.');

@@ -297,9 +297,9 @@
             // 3. Fetch Live Vault Data
             try {
                 const [inqRes, cliRes, venRes] = await Promise.all([
-                    fetch('http://localhost:5000/api/enquiries', { headers }),
-                    fetch('http://localhost:5000/api/clients', { headers }),
-                    fetch('http://localhost:5000/api/vendors', { headers })
+                    fetch('https://cando-backend-api.onrender.com\/api/enquiries', { headers }),
+                    fetch('https://cando-backend-api.onrender.com\/api/clients', { headers }),
+                    fetch('https://cando-backend-api.onrender.com\/api/vendors', { headers })
                 ]);
 
                 const inquiries = await inqRes.json();

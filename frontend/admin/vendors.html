@@ -625,10 +625,10 @@
             if(!token) { window.location.href = 'index.html'; return; }
 
             try {
-                const vRes = await fetch('http://localhost:5000/api/vendors', { headers: { 'Authorization': `Bearer ${token}` } });
+                const vRes = await fetch('https://cando-backend-api.onrender.com\/api/vendors', { headers: { 'Authorization': `Bearer ${token}` } });
                 if(vRes.ok) window.allVendors = await vRes.json();
                 
-                const cRes = await fetch('http://localhost:5000/api/clients', { headers: { 'Authorization': `Bearer ${token}` } });
+                const cRes = await fetch('https://cando-backend-api.onrender.com\/api/clients', { headers: { 'Authorization': `Bearer ${token}` } });
                 if(cRes.ok) {
                     const clients = await cRes.json();
                     window.allActiveClients = clients.filter(c => c.status === 'Approved');
@@ -719,12 +719,12 @@
             const k = 'VND-' + Math.random().toString(36).substr(2, 6).toUpperCase();
             
             try {
-                await fetch(`http://localhost:5000/api/vendors/${window.vendorToReset}`, {
+                await fetch(`https://cando-backend-api.onrender.com\/api/vendors/${window.vendorToReset}`, {
                     method: 'PATCH', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ resetRequested: false })
                 });
                 
-                const res = await fetch(`http://localhost:5000/api/admin/vendors/${window.vendorToReset}/authorize`, {
+                const res = await fetch(`https://cando-backend-api.onrender.com\/api/admin/vendors/${window.vendorToReset}/authorize`, {
                     method: 'PATCH', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ accessKey: k, password: k })
                 });
@@ -859,7 +859,7 @@
                 }
 
                 // Save to backend
-                await fetch(`http://localhost:5000/api/admin/vendors/${vendorId}/broadcast`, {
+                await fetch(`https://cando-backend-api.onrender.com\/api/admin/vendors/${vendorId}/broadcast`, {
                     method: 'PATCH',
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ assignedProjects: vendor.assignedProjects })
@@ -878,7 +878,7 @@
             const field = docType + 'Verified';
             
             try {
-                await fetch(`http://localhost:5000/api/admin/vendors/${vendorId}/broadcast`, {
+                await fetch(`https://cando-backend-api.onrender.com\/api/admin/vendors/${vendorId}/broadcast`, {
                     method: 'PATCH',
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -903,7 +903,7 @@
             const vendor = window.allVendors.find(v => v._id === vendorId);
             
             try {
-                await fetch(`http://localhost:5000/api/admin/vendors/${vendorId}/broadcast`, {
+                await fetch(`https://cando-backend-api.onrender.com\/api/admin/vendors/${vendorId}/broadcast`, {
                     method: 'PATCH',
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -963,7 +963,7 @@
         window.updateInvoiceStatus = async function(invoiceId, newStatus) {
             const token = localStorage.getItem('adminToken');
             try {
-                const res = await fetch(`http://localhost:5000/api/admin/vendors/${window.activeVendorId}/invoice-status`, {
+                const res = await fetch(`https://cando-backend-api.onrender.com\/api/admin/vendors/${window.activeVendorId}/invoice-status`, {
                     method: 'PATCH', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ invoiceId, newStatus })
                 });
@@ -1024,13 +1024,13 @@
             localStorage.setItem('adminVendorPersona', persona);
             
             try {
-                const res = await fetch(`http://localhost:5000/api/admin/vendors/${window.activeVendorId}/broadcast`, {
+                const res = await fetch(`https://cando-backend-api.onrender.com\/api/admin/vendors/${window.activeVendorId}/broadcast`, {
                     method: 'PATCH', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message: { sender: persona, text: text, timestamp: new Date() } })
                 });
                 if(res.ok) { 
                     input.value = ''; 
-                    const dataRes = await fetch('http://localhost:5000/api/vendors', { headers: { 'Authorization': `Bearer ${token}` } });
+                    const dataRes = await fetch('https://cando-backend-api.onrender.com\/api/vendors', { headers: { 'Authorization': `Bearer ${token}` } });
                     if(dataRes.ok) {
                         window.allVendors = await dataRes.json();
                         const vendor = window.allVendors.find(v => v._id === window.activeVendorId);
@@ -1051,14 +1051,14 @@
             const btn = this; btn.innerText = "DELETING...";
             const token = localStorage.getItem('adminToken');
             try {
-                const res = await fetch(`http://localhost:5000/api/admin/vendors/${window.activeVendorId}/message/${window.msgToDelete}`, {
+                const res = await fetch(`https://cando-backend-api.onrender.com\/api/admin/vendors/${window.activeVendorId}/message/${window.msgToDelete}`, {
                     method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if(res.ok) { 
                     window.showVendorToast("Message Purged."); 
                     document.getElementById('deleteMessageModal').style.display = 'none';
                     
-                    const dataRes = await fetch('http://localhost:5000/api/vendors', { headers: { 'Authorization': `Bearer ${token}` } });
+                    const dataRes = await fetch('https://cando-backend-api.onrender.com\/api/vendors', { headers: { 'Authorization': `Bearer ${token}` } });
                     if(dataRes.ok) {
                         window.allVendors = await dataRes.json();
                         const vendor = window.allVendors.find(v => v._id === window.activeVendorId);
@@ -1088,13 +1088,13 @@
             const persona = document.getElementById('adminChatPersona').value || 'Procurement Command';
             
             try {
-                const delRes = await fetch(`http://localhost:5000/api/admin/vendors/${window.activeVendorId}/message/${window.msgToEdit}`, {
+                const delRes = await fetch(`https://cando-backend-api.onrender.com\/api/admin/vendors/${window.activeVendorId}/message/${window.msgToEdit}`, {
                     method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }
                 });
                 
                 if(!delRes.ok) throw new Error("Could not modify original message");
 
-                const postRes = await fetch(`http://localhost:5000/api/admin/vendors/${window.activeVendorId}/broadcast`, {
+                const postRes = await fetch(`https://cando-backend-api.onrender.com\/api/admin/vendors/${window.activeVendorId}/broadcast`, {
                     method: 'PATCH', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message: { sender: persona, text: newText, timestamp: new Date() } })
                 });
@@ -1103,7 +1103,7 @@
                     window.showVendorToast('Transmission Updated.');
                     document.getElementById('editMessageModal').style.display = 'none';
                     
-                    const dataRes = await fetch('http://localhost:5000/api/vendors', { headers: { 'Authorization': `Bearer ${token}` } });
+                    const dataRes = await fetch('https://cando-backend-api.onrender.com\/api/vendors', { headers: { 'Authorization': `Bearer ${token}` } });
                     if(dataRes.ok) {
                         window.allVendors = await dataRes.json();
                         const vendor = window.allVendors.find(v => v._id === window.activeVendorId);
@@ -1162,7 +1162,7 @@
             };
 
             try {
-                const res = await fetch(`http://localhost:5000/api/admin/vendors/${window.activeVendorId}/broadcast`, {
+                const res = await fetch(`https://cando-backend-api.onrender.com\/api/admin/vendors/${window.activeVendorId}/broadcast`, {
                     method: 'PATCH', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
@@ -1198,7 +1198,7 @@
             };
 
             try {
-                const res = await fetch('http://localhost:5000/api/vendors', {
+                const res = await fetch('https://cando-backend-api.onrender.com\/api/vendors', {
                     method: 'POST', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
@@ -1230,7 +1230,7 @@
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> DEPLOYING...';
             
             try {
-                const res = await fetch(`http://localhost:5000/api/admin/vendors/${window.activeVendorId}/authorize`, {
+                const res = await fetch(`https://cando-backend-api.onrender.com\/api/admin/vendors/${window.activeVendorId}/authorize`, {
                     method: 'PATCH', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ accessKey: key, password: key })
                 });
@@ -1277,7 +1277,7 @@
             };
 
             try {
-                const res = await fetch(`http://localhost:5000/api/admin/vendors/${window.activeVendorId}/assign`, {
+                const res = await fetch(`https://cando-backend-api.onrender.com\/api/admin/vendors/${window.activeVendorId}/assign`, {
                     method: 'PATCH', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
@@ -1303,7 +1303,7 @@
             btn.innerText = "PURGING...";
 
             try {
-                const res = await fetch(`http://localhost:5000/api/vendors/${window.activeVendorId}`, {
+                const res = await fetch(`https://cando-backend-api.onrender.com\/api/vendors/${window.activeVendorId}`, {
                     method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if(res.ok) {

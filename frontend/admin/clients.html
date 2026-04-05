@@ -468,7 +468,7 @@
             if(!token) { window.location.href = 'index.html'; return; }
 
             try {
-                const response = await fetch('http://localhost:5000/api/clients', {
+                const response = await fetch('https://cando-backend-api.onrender.com\/api/clients', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
@@ -595,12 +595,12 @@
             const k = 'CO-' + Math.random().toString(36).substr(2, 6).toUpperCase();
             
             try {
-                await fetch(`http://localhost:5000/api/admin/broadcast/${window.clientToReset}`, {
+                await fetch(`https://cando-backend-api.onrender.com\/api/admin/broadcast/${window.clientToReset}`, {
                     method: 'PATCH', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ resetRequested: false })
                 });
                 
-                const res = await fetch(`http://localhost:5000/api/clients/${window.clientToReset}`, {
+                const res = await fetch(`https://cando-backend-api.onrender.com\/api/clients/${window.clientToReset}`, {
                     method: 'PATCH', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ status: 'Approved', accessKey: k })
                 });
@@ -703,7 +703,7 @@
             }
 
             try {
-                const res = await fetch(`http://localhost:5000/api/admin/broadcast/${window.selectedClientId}`, {
+                const res = await fetch(`https://cando-backend-api.onrender.com\/api/admin/broadcast/${window.selectedClientId}`, {
                     method: 'PATCH',
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
@@ -737,7 +737,7 @@
             btn.innerText = "DELETING...";
             
             try {
-                const res = await fetch(`http://localhost:5000/api/admin/delete-item/${window.selectedClientId}`, {
+                const res = await fetch(`https://cando-backend-api.onrender.com\/api/admin/delete-item/${window.selectedClientId}`, {
                     method: 'PATCH', 
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify(window.vaultItemToDelete)
@@ -831,7 +831,7 @@
             msgs.push({ sender: persona, text: text, timestamp: new Date() });
             
             try {
-                const res = await fetch(`http://localhost:5000/api/admin/broadcast/${window.selectedClientId}`, {
+                const res = await fetch(`https://cando-backend-api.onrender.com\/api/admin/broadcast/${window.selectedClientId}`, {
                     method: 'PATCH',
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ messages: msgs })
@@ -909,7 +909,7 @@
             const token = localStorage.getItem('adminToken');
             
             try {
-                const res = await fetch(`http://localhost:5000/api/admin/guest-logistics/${window.selectedClientId}/${guestId}`, {
+                const res = await fetch(`https://cando-backend-api.onrender.com\/api/admin/guest-logistics/${window.selectedClientId}/${guestId}`, {
                     method: 'PATCH', 
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
@@ -936,7 +936,7 @@
             const token = localStorage.getItem('adminToken');
             
             try {
-                const res = await fetch(`http://localhost:5000/api/clients/${window.clientToDelete}`, {
+                const res = await fetch(`https://cando-backend-api.onrender.com\/api/clients/${window.clientToDelete}`, {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });

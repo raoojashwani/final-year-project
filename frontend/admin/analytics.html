@@ -187,10 +187,10 @@
             try {
                 // Fetch ALL real data from the database concurrently
                 const [inqRes, cliRes, venRes, subRes] = await Promise.all([
-                    fetch('http://localhost:5000/api/enquiries', { headers }),
-                    fetch('http://localhost:5000/api/clients', { headers }),
-                    fetch('http://localhost:5000/api/vendors', { headers }),
-                    fetch('http://localhost:5000/api/subscribers', { headers })
+                    fetch('https://cando-backend-api.onrender.com\/api/enquiries', { headers }),
+                    fetch('https://cando-backend-api.onrender.com\/api/clients', { headers }),
+                    fetch('https://cando-backend-api.onrender.com\/api/vendors', { headers }),
+                    fetch('https://cando-backend-api.onrender.com\/api/subscribers', { headers })
                 ]);
 
                 const inquiries = await inqRes.json();

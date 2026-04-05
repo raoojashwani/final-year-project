@@ -296,7 +296,7 @@
             if (!token) { window.location.href = 'index.html'; return; }
 
             try {
-                const response = await fetch('http://localhost:5000/api/enquiries', {
+                const response = await fetch('https://cando-backend-api.onrender.com\/api/enquiries', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (response.ok) {
@@ -401,7 +401,7 @@
 
             try {
                 // 2. Push to Clients Database
-                const clientRes = await fetch('http://localhost:5000/api/clients', {
+                const clientRes = await fetch('https://cando-backend-api.onrender.com\/api/clients', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify(clientPayload)
@@ -409,7 +409,7 @@
 
                 if (clientRes.ok) {
                     // 3. Delete the original Inquiry
-                    await fetch(`http://localhost:5000/api/enquiries/${idToConvert}`, {
+                    await fetch(`https://cando-backend-api.onrender.com\/api/enquiries/${idToConvert}`, {
                         method: 'DELETE',
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
@@ -440,7 +440,7 @@
             const token = localStorage.getItem('adminToken');
             
             try {
-                const res = await fetch(`http://localhost:5000/api/enquiries/${itemToDelete}`, {
+                const res = await fetch(`https://cando-backend-api.onrender.com\/api/enquiries/${itemToDelete}`, {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });

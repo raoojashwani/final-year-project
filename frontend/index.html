@@ -1001,7 +1001,7 @@ if (newsletterForm) {
         const emailInput = newsletterForm.querySelector('input[type="email"]').value;
 
         try {
-            const response = await fetch('http://localhost:5000/api/subscribe', {
+            const response = await fetch('https://cando-backend-api.onrender.com\/api/subscribe', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: emailInput })
@@ -1046,7 +1046,7 @@ if (newsletterForm) {
                     };
 
                     try {
-                        const response = await fetch('http://localhost:5000/api/enquiries', {
+                        const response = await fetch('https://cando-backend-api.onrender.com\/api/enquiries', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(payload)
@@ -1089,7 +1089,7 @@ if (newsletterForm) {
                     };
 
                     try {
-                        const response = await fetch('http://localhost:5000/api/enquiries', {
+                        const response = await fetch('https://cando-backend-api.onrender.com\/api/enquiries', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(payload)
