@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Masterpieces | C&O Group Portfolio</title>
+    <link rel="icon" type="image/png" href="../images/logo.png">
+    <meta name="description" content="Explore the curated showcase of luxury weddings, global corporate summits, and landmark events designed by C&O Group.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    
+    <link rel="stylesheet" href="../css/style.css">
+
+    <script>
+        if (history.scrollRestoration) { history.scrollRestoration = 'manual'; }
+        window.scrollTo(0, 0);
+    </script>
+
+    <style>
+        /* =========================================
+           PORTFOLIO SPECIFIC CSS (Elevated)
+        ========================================= */
+        
+        :root {
+            --color-onyx: #111111;
+            --color-onyx-light: #2A2A2A;
+            --color-crimson: #8A1538;
+            --color-blue: #0B192C;
+            --color-gold: #D4AF37;
+            --color-ivory: #FCFBF9;
+            --color-white: #FFFFFF;
+            --color-grey: #666666;
+            --color-light-grey: #E5E5E5;
+        }
+
+        /* 1. Cinematic Editorial Header (Fullscreen 100vh) */
+        .editorial-header { 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 100px 0 80px; 
+            background-color: var(--color-onyx); 
+            position: relative; 
+            overflow: hidden; 
+            border-bottom: 2px solid var(--color-gold); 
+        }
+        .editorial-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.25; filter: grayscale(40%); z-index: 0; }
+        .editorial-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(17,17,17,1) 0%, rgba(17,17,17,0.4) 100%); z-index: 1; }
+        
+        .editorial-subtitle { display: block; font-family: var(--font-body); text-transform: uppercase; letter-spacing: 4px; color: var(--color-gold); font-weight: 600; font-size: 0.85rem; margin-bottom: 20px; }
+        .editorial-title { font-size: clamp(4rem, 6vw, 7rem); line-height: 1.1; color: var(--color-white); margin-bottom: 30px; letter-spacing: -1px; }
+        .editorial-desc { font-size: 1.15rem; color: #ccc; max-width: 650px; margin: 0 auto; line-height: 1.8; }
+
+        /* Buttons (Fixed Alignment & Elevated) */
+        .btn-solid-onyx { background-color: var(--color-onyx); color: var(--color-gold); border: 1px solid var(--color-onyx); display: inline-flex; align-items: center; justify-content: center; padding: 16px 35px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; border-radius: 30px; cursor: pointer; transition: all 0.4s ease; box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
+        .btn-solid-onyx:hover { background-color: var(--color-gold); color: var(--color-onyx); border-color: var(--color-gold); transform: translateY(-3px); box-shadow: 0 15px 30px rgba(212, 175, 55, 0.3); }
+        
+        .btn-glow-gold { background: var(--color-gold); color: var(--color-onyx); border: 1px solid var(--color-gold); display: inline-flex; align-items: center; justify-content: center; padding: 18px 40px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.95rem; border-radius: 30px; cursor: pointer; transition: all 0.4s ease; box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3); }
+        .btn-glow-gold:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(212, 175, 55, 0.5); background: white; border-color: white; }
+
+        /* 2. Featured Events (Alternating Rows) */
+        .featured-row { display: flex; align-items: center; gap: 80px; margin-bottom: 120px; }
+        .featured-row:nth-child(even) { flex-direction: row-reverse; }
+        .feat-img-wrap { flex: 1.2; position: relative; height: 600px; border-radius: var(--radius-large); overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.15); border: 1px solid rgba(212, 175, 55, 0.2); }
+        .feat-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+        .feat-img-wrap:hover img { transform: scale(1.05); }
+        .feat-content { flex: 1; padding: 20px 0; }
+        .event-meta-pill { display: inline-block; padding: 6px 18px; border: 1px solid var(--color-gold); border-radius: 30px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--color-gold); margin-bottom: 25px; margin-right: 10px; font-weight: 600; }
+        .event-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 40px; padding-top: 40px; border-top: 1px solid var(--color-light-grey); }
+        .event-stat h5 { font-family: var(--font-body); font-size: 0.75rem; text-transform: uppercase; color: var(--color-grey); letter-spacing: 2px; margin-bottom: 5px; }
+        .event-stat p { font-family: var(--font-heading); font-size: 1.5rem; color: var(--color-onyx); }
+
+        /* 3. Extended Masonry Grid */
+        /* 3. Structured Grid (4 Columns x 2 Rows) */
+        .masonry-large { 
+            display: grid; 
+            /* Strictly defines 4 equal columns */
+            grid-template-columns: repeat(4, 1fr); 
+            /* Strictly defines 2 rows of 350px each */
+            grid-template-rows: repeat(2, 350px); 
+            gap: 20px; 
+        }
+
+        .masonry-large .gallery-item { 
+            border-radius: var(--radius-large); 
+            border: 1px solid var(--color-light-grey);
+            overflow: hidden;
+            height: 100%; /* Fill the row height */
+            width: 100%;  /* Fill the column width */
+        }
+
+        /* Forces images to fill the box without distortion */
+        .masonry-large .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        /* Remove the old masonry span rule entirely */
+        .masonry-large .gallery-item:nth-child(2n) { 
+            grid-row: auto; 
+        }
+
+        /* 4. Case Studies (Analytic Cards) */
+        .case-study-card { background: var(--color-onyx); color: var(--color-white); padding: 50px; border-radius: var(--radius-large); border-top: 3px solid var(--color-gold); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
+        .case-study-card:hover { transform: translateY(-10px); box-shadow: 0 30px 60px rgba(0,0,0,0.3); border-color: var(--color-gold); }
+        .cs-badge { background: rgba(212, 175, 55, 0.1); color: var(--color-gold); padding: 6px 12px; border-radius: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; display: inline-block; margin-bottom: 25px; font-weight: 600; }
+        .cs-divider { width: 100%; height: 1px; background: rgba(255,255,255,0.1); margin: 30px 0; }
+        .cs-label { color: var(--color-gold); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: block; }
+
+        /* 5. Video Showcase */
+        .video-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .video-card { position: relative; height: 450px; border-radius: var(--radius-large); overflow: hidden; cursor: pointer; box-shadow: 0 20px 50px rgba(0,0,0,0.15); border: 1px solid rgba(212, 175, 55, 0.3); }
+        .video-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); filter: brightness(0.7); }
+        .video-card:hover img { transform: scale(1.05); filter: brightness(0.5); }
+        .play-button-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 80px; background: rgba(212, 175, 55, 0.2); backdrop-filter: blur(8px); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--color-gold); border: 2px solid var(--color-gold); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .video-card:hover .play-button-overlay { background: var(--color-gold); color: var(--color-white); transform: translate(-50%, -50%) scale(1.15); }
+        .video-title { position: absolute; bottom: 40px; left: 40px; color: white; z-index: 2; }
+
+        /* 6. NEW INVITATION CTA (The Floating Card) */
+        .invitation-section { padding: 120px 0; background-color: var(--color-ivory); }
+        .invitation-card { background-color: var(--color-onyx); border-radius: 24px; padding: 80px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 40px 80px rgba(0,0,0,0.2); border: 1px solid rgba(212, 175, 55, 0.3); position: relative; overflow: hidden; }
+        .invitation-card::before { content: ''; position: absolute; top: -50%; right: -10%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(212,175,55,0.15) 0%, rgba(17,17,17,0) 70%); pointer-events: none; }
+        .invitation-content { max-width: 500px; position: relative; z-index: 2; }
+        .invitation-actions { position: relative; z-index: 2; }
+
+        /* Modals & Toasts */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 15, 15, 0.9); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+        .modal-content { background: var(--color-ivory); padding: 40px; border-radius: var(--radius-large); max-width: 500px; width: 90%; position: relative; border: 1px solid var(--color-gold); }
+        
+        /* MODIFIED FOR HTML5 VIDEO */
+        .video-modal-content { background: transparent; padding: 0; border: none; max-width: 1000px; width: 90%; }
+        .video-modal-content video { width: 100%; height: auto; max-height: 80vh; border-radius: var(--radius-large); box-shadow: 0 30px 60px rgba(0,0,0,0.5); background: #000; outline: none; }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: var(--color-crimson); background: transparent; border: none; }
+        .video-modal-content .close-modal { top: -50px; right: 0; color: var(--color-white); }
+        
+        .form-input { width: 100%; padding: 12px 0; font-family: var(--font-body); font-size: 1rem; background: transparent; border: none; border-bottom: 1px solid #ccc; outline: none; transition: border-color 0.3s; }
+        .form-input:focus { border-bottom-color: var(--color-gold); }
+
+        .toast-msg { position: fixed; bottom: 30px; right: 30px; background: var(--color-onyx); color: var(--color-white); padding: 16px 24px; border-left: 4px solid var(--color-gold); border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 10001; font-family: var(--font-body); font-size: 0.9rem; display: flex; align-items: center; gap: 12px; transform: translateY(100px); opacity: 0; transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .toast-msg.show { transform: translateY(0); opacity: 1; }
+
+        /* Navbar Dropdown */
+        .has-dropdown { position: relative; }
+        .dropdown-menu { position: absolute; top: 100%; left: 0; background: var(--color-white); box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: var(--radius-small); padding: 10px 0; min-width: 250px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; list-style: none; }
+        .has-dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        .dropdown-menu li a { display: block; padding: 10px 20px; color: var(--color-onyx); font-size: 0.9rem; text-transform: none; letter-spacing: 0; }
+        .dropdown-menu li a:hover { background: rgba(212,175,55,0.1); color: var(--color-gold); }
+
+        .mobile-toggle { display: none; font-size: 24px; cursor: pointer; color: var(--color-white); }
+        .navbar.scrolled .mobile-toggle { color: var(--color-onyx); }
+
+        /* Floating Bubbles */
+        .floating-shape { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.2; z-index: 0; pointer-events: none; animation: float 6s ease-in-out infinite; }
+        .shape-gold { background: var(--color-gold); }
+        .shape-onyx { background: var(--color-onyx); }
+        .shape-crimson { background: var(--color-crimson); }
+        .shape-blue { background: var(--color-blue); }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-30px); } 100% { transform: translateY(0px); } }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .invitation-card { flex-direction: column; text-align: center; padding: 60px 40px; gap: 40px; }
+            .invitation-content { max-width: 100%; }
+            .featured-row { gap: 40px; }
+        }
+        @media (max-width: 992px) {
+            .featured-row, .featured-row:nth-child(even) { flex-direction: column; gap: 30px; margin-bottom: 80px; }
+            .feat-img-wrap { height: 400px; width: 100%; }
+            .masonry-large { grid-template-columns: repeat(2, 1fr); }
+            .video-grid { grid-template-columns: 1fr; }
+            .mobile-toggle { display: block; } .nav-links { display: none; } .nav-actions { display: none; }
+        }
+        @media (max-width: 768px) {
+            .editorial-title { font-size: 3.5rem; }
+            .masonry-large { grid-template-columns: 1fr; }
+            .event-stat-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body class="bg-ivory text-black">
+
+    <div id="bookingModal" class="modal-overlay">
+        <div class="modal-content shadow-glow">
+            <button class="close-modal" id="closeBooking"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="serif-font text-onyx mb-10">Start Your Journey</h3>
+            <p class="text-sm mb-30 text-grey">Fill in your details and our lead architect will reach out within 24 hours.</p>
+            <form id="popupContactForm" action="/api/book" method="POST">
+                <input type="text" name="name" placeholder="Full Name / Company" class="form-input mb-20 border-bottom-only" required>
+                <input type="email" name="email" placeholder="Email Address" class="form-input mb-20 border-bottom-only" required>
+                <select name="eventType" class="form-input mb-20 border-bottom-only text-grey" required>
+                    <option value="" disabled selected>Select Event Type</option>
+                    <option value="wedding">Thread & Knot (Wedding/Social)</option>
+                    <option value="corporate">Prism Planner (Corporate MICE)</option>
+                </select>
+                <textarea name="message" placeholder="Briefly describe your vision..." class="form-input mb-30 border-bottom-only" rows="2"></textarea>
+                <button type="submit" class="btn-solid-onyx w-100 justify-center">Request Consultation</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="videoModal" class="modal-overlay">
+        <div class="modal-content video-modal-content">
+            <button class="close-modal" id="closeVideo"><i class="fa-solid fa-xmark"></i></button>
+            <video id="dynamicVideoPlayer" controls playsinline>
+                <source src="" type="video/mp4">
+                Your browser does not support HTML5 video.
+            </video>
+        </div>
+    </div>
+
+    <nav class="navbar glass-header" id="navbar">
+        <div class="container nav-container flex-space-between relative-z-content">
+            <a href="../index.html" class="brand-logo text-white serif-font" id="nav-logo">C&O<span class="text-gold">.</span> Group</a>
+            
+            <ul class="nav-links text-white" id="nav-links-color">
+                <li><a href="about.html">Our Story</a></li>
+                <li class="has-dropdown">
+                    <a href="#">Divisions <i class="fa-solid fa-chevron-down text-sm ml-10"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="thread-knot.html" class="text-onyx">Thread & Knot (Weddings)</a></li>
+                        <li><a href="prism-planner.html" class="text-onyx">Prism Planner (Corporate)</a></li>
+                    </ul>
+                </li>
+                <li><a href="process.html">Process</a></li>
+                <li><a href="portfolio.html" class="font-weight-700 text-gold">Masterpieces</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button id="openBookingBtn" class="btn-header-premium text-white trigger-booking" style="border-color: var(--color-white);" onmouseover="this.style.color='var(--color-onyx)'; this.style.backgroundColor='white';" onmouseout="this.style.color='white'; this.style.backgroundColor='transparent';">Plan Your Event</button>
+            </div>
+            
+            <div class="mobile-toggle"><i class="fa-solid fa-bars"></i></div>
+        </div>
+    </nav>
+
+    <header class="editorial-header relative">
+        <img src="../images/gallery/1.jpg" alt="Event Setup" class="editorial-bg">
+        <div class="editorial-overlay"></div>
+        <div class="floating-shape shape-gold shape-lg" style="top: -20%; right: -10%; z-index: 1;"></div>
+        <div class="floating-shape shape-crimson shape-md" style="bottom: 10%; left: -5%; z-index: 1;"></div>
+
+        <div class="container text-center fade-up-slow relative-z-content">
+            <span class="editorial-subtitle">The Archives</span>
+            <h1 class="editorial-title serif-font" style="color: white;">Our Masterpieces.</h1>
+            <p class="editorial-desc">A curated exhibition of the luxury weddings, global corporate summits, and landmark cultural events flawlessly engineered by the architects at C&O Group.</p>
+        </div>
+    </header>
+
+    <section id="featured" class="section-padding bg-ivory overflow-hidden relative">
+        <div class="container relative-z-content">
+            
+            <div class="featured-row fade-up-slow">
+                <div class="feat-img-wrap">
+                    <img src="../images/gallery/2.jpg" alt="Jaipur Royal Wedding">
+                </div>
+                <div class="feat-content">
+                    <span class="event-meta-pill">Thread & Knot</span>
+                    <span class="event-meta-pill border-crimson text-crimson">Destination Wedding</span>
+                    <h3 class="serif-font text-onyx mb-20" style="font-size: 3rem; line-height: 1.1;">The Jaipur Royal Palace Wedding</h3>
+                    <p class="text-grey">A breathtaking three-day destination wedding executed inside a historic 18th-century palace. Featuring custom-built floral mandap architecture spanning 40 feet, synchronized drone lighting, and seamless hospitality for international VIP guests.</p>
+                    
+                    <div class="event-stat-grid">
+                        <div class="event-stat">
+                            <h5>Location</h5>
+                            <p>Jaipur, Rajasthan</p>
+                        </div>
+                        <div class="event-stat">
+                            <h5>Scale</h5>
+                            <p>650 Guests</p>
+                        </div>
+                        <div class="event-stat">
+                            <h5>Duration</h5>
+                            <p>3 Days, 4 Venues</p>
+                        </div>
+                        <div class="event-stat">
+                            <h5>Highlight</h5>
+                            <p>Lakefront Pheras</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="featured-row fade-up-slow">
+                <div class="feat-img-wrap">
+                    <img src="../images/gallery/3.jpg" alt="Global Tech Summit">
+                </div>
+                <div class="feat-content">
+                    <span class="event-meta-pill" style="border-color: var(--color-blue); color: var(--color-blue);">Prism Planner</span>
+                    <span class="event-meta-pill text-onyx border-onyx">Corporate Summit</span>
+                    <h3 class="serif-font text-onyx mb-20" style="font-size: 3rem; line-height: 1.1;">Nexus Global Tech Summit</h3>
+                    <p class="text-grey">A hybrid technology conference bridging physical and digital worlds. We engineered a massive 60-foot LED stage, deployed proprietary digital delegate tracking, and flawlessly executed keynote transitions for global tech leaders.</p>
+                    
+                    <div class="event-stat-grid">
+                        <div class="event-stat">
+                            <h5>Location</h5>
+                            <p>New Delhi</p>
+                        </div>
+                        <div class="event-stat">
+                            <h5>Scale</h5>
+                            <p>1,200 Delegates</p>
+                        </div>
+                        <div class="event-stat">
+                            <h5>Tech Used</h5>
+                            <p>Hybrid Streaming</p>
+                        </div>
+                        <div class="event-stat">
+                            <h5>Highlight</h5>
+                            <p>3D Projection Mapping</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="gallery" class="section-padding bg-white text-center border-top-gold border-bottom-grey relative overflow-hidden">
+        <div class="floating-shape shape-gold shape-md" style="top: 50%; left: -5%;"></div>
+
+        <div class="container relative-z-content">
+            <h2 class="section-title serif-font mb-50">The Complete Archive</h2>
+            
+            <div class="filter-group mb-50">
+                <button class="filter-btn active text-onyx" data-filter="all">All Exhibits</button>
+                <button class="filter-btn text-onyx" data-filter="wedding">Weddings</button>
+                <button class="filter-btn text-onyx" data-filter="corporate">Corporate</button>
+                <button class="filter-btn text-onyx" data-filter="destination">Destinations</button>
+                <button class="filter-btn text-onyx" data-filter="launch">Product Launches</button>
+            </div>
+
+            <div class="masonry-large">
+                <div class="gallery-item wedding destination shadow-soft overflow-hidden">
+                    <img src="../images/gallery/4.jpg" alt="Mandap" loading="lazy">
+                    <div class="gallery-overlay"><div class="overlay-text text-left"><span class="text-gold text-sm text-uppercase">Wedding</span><h4 class="text-white serif-font font-size-lg">Udaipur Lake Mandap</h4></div></div>
+                </div>
+                <div class="gallery-item corporate shadow-soft overflow-hidden">
+                    <img src="../images/gallery/5.jpg" alt="Conference" loading="lazy">
+                    <div class="gallery-overlay"><div class="overlay-text text-left"><span class="text-gold text-sm text-uppercase">Corporate</span><h4 class="text-white serif-font font-size-lg">Finance Leadership Summit</h4></div></div>
+                </div>
+                <div class="gallery-item wedding shadow-soft overflow-hidden">
+                    <img src="../images/gallery/6.jpg" alt="Sangeet" loading="lazy">
+                    <div class="gallery-overlay"><div class="overlay-text text-left"><span class="text-gold text-sm text-uppercase">Wedding</span><h4 class="text-white serif-font font-size-lg">Mumbai Sangeet Extravaganza</h4></div></div>
+                </div>
+                <div class="gallery-item corporate launch shadow-soft overflow-hidden">
+                    <img src="../images/gallery/7.jpg" alt="Launch" loading="lazy">
+                    <div class="gallery-overlay"><div class="overlay-text text-left"><span class="text-gold text-sm text-uppercase">Launch</span><h4 class="text-white serif-font font-size-lg">Auto Expo Reveal</h4></div></div>
+                </div>
+                <div class="gallery-item corporate shadow-soft overflow-hidden">
+                    <img src="../images/gallery/8.jpg" alt="Exhibition" loading="lazy">
+                    <div class="gallery-overlay"><div class="overlay-text text-left"><span class="text-gold text-sm text-uppercase">Corporate</span><h4 class="text-white serif-font font-size-lg">Tech Pavilion Design</h4></div></div>
+                </div>
+                <div class="gallery-item wedding destination shadow-soft overflow-hidden">
+                    <img src="../images/gallery/9.jpg" alt="Goa" loading="lazy">
+                    <div class="gallery-overlay"><div class="overlay-text text-left"><span class="text-gold text-sm text-uppercase">Wedding</span><h4 class="text-white serif-font font-size-lg">Goa Beachfront Pheras</h4></div></div>
+                </div>
+                <div class="gallery-item wedding shadow-soft overflow-hidden">
+                    <img src="../images/gallery/10.jpg" alt="Decor" loading="lazy">
+                    <div class="gallery-overlay"><div class="overlay-text text-left"><span class="text-gold text-sm text-uppercase">Wedding</span><h4 class="text-white serif-font font-size-lg">Bespoke Floral Arch</h4></div></div>
+                </div>
+                <div class="gallery-item corporate destination shadow-soft overflow-hidden">
+                    <img src="../images/gallery/11.jpg" alt="Retreat" loading="lazy">
+                    <div class="gallery-overlay"><div class="overlay-text text-left"><span class="text-gold text-sm text-uppercase">Corporate</span><h4 class="text-white serif-font font-size-lg">Executive Retreat Kerala</h4></div></div>
+                </div>
+            </div>
+        </div>
+    </section>  
+
+    <section class="section-padding bg-ivory">
+        <div class="container">
+            <div class="text-center mb-60">
+                <span class="eyebrow text-onyx">Behind the Scenes</span>
+                <h2 class="section-title serif-font mt-10">Logistical Case Studies</h2>
+            </div>
+
+            <div class="grid-2-cols" style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+                <div class="case-study-card fade-up-slow">
+                    <span class="cs-badge">Thread & Knot</span>
+                    <h3 class="serif-font font-size-xl mb-10">The Island Buyout</h3>
+                    <p class="text-sm opacity-70 mb-20">Private Wedding • 300 Guests • 4 Days</p>
+                    <div class="cs-divider"></div>
+                    <span class="cs-label">The Challenge</span>
+                    <p class="mb-20 font-weight-300">Transporting and housing 300 VIP guests to a remote private island, while importing 5 tons of fresh floral decor and constructing a floating glass mandap over the ocean.</p>
+                    <span class="cs-label">The Solution</span>
+                    <p class="font-weight-300">Deployed a dedicated logistics fleet of 15 speedboats. Our engineering team constructed a reinforced sub-surface platform for the mandap, passing rigorous safety compliance.</p>
+                </div>
+                
+                <div class="case-study-card fade-up-slow delay-1">
+                    <span class="cs-badge" style="color: #64B5F6; background: rgba(100, 181, 246, 0.1);">Prism Planner</span>
+                    <h3 class="serif-font font-size-xl mb-10">The Multi-City Broadcast</h3>
+                    <p class="text-sm opacity-70 mb-20">Tech Corporation • 5,000+ Delegates • Hybrid</p>
+                    <div class="cs-divider"></div>
+                    <span class="cs-label">The Challenge</span>
+                    <p class="mb-20 font-weight-300">Executing a synchronized product launch happening simultaneously in Mumbai, Delhi, and Bangalore, requiring zero-latency hybrid streaming and identical stage setups.</p>
+                    <span class="cs-label">The Solution</span>
+                    <p class="font-weight-300">Established a Central Command Center in Gurugram monitoring 3 distinct production crews. Utilized enterprise-grade encrypted satellite streaming to link the venues perfectly.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding bg-white border-top-grey border-bottom-gold">
+        <div class="container">
+            <div class="text-center mb-60">
+                <span class="eyebrow text-crimson">Live Action</span>
+                <h2 class="section-title serif-font mt-10">Cinematic Recaps</h2>
+            </div>
+
+            <div class="video-grid fade-up-slow">
+                <div class="video-card open-dynamic-video" data-video="../images/gallery/1.mp4">
+                    <img src="../images/gallery/12.jpg" alt="Wedding Highlight" loading="lazy">
+                    <div class="play-button-overlay"><i class="fa-solid fa-play"></i></div>
+                    <div class="video-title">
+                        <span class="text-gold text-sm text-uppercase font-weight-600">Wedding Highlight</span>
+                        <h3 class="serif-font font-size-xl mt-10">The Sharma Royal Affair</h3>
+                    </div>
+                </div>
+                <div class="video-card open-dynamic-video delay-1" data-video="../images/gallery/2.mp4">
+                    <img src="../images/gallery/13.jpg" alt="Corporate Highlight" loading="lazy">
+                    <div class="play-button-overlay"><i class="fa-solid fa-play"></i></div>
+                    <div class="video-title">
+                        <span class="text-gold text-sm text-uppercase font-weight-600">Corporate Recap</span>
+                        <h3 class="serif-font font-size-xl mt-10">Global Finance Summit</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="invitation-section">
+        <div class="container">
+            <div class="invitation-card fade-up-slow">
+                <div class="invitation-content">
+                    <span class="eyebrow text-gold mb-20">The Next Step</span>
+                    <h2 class="serif-font text-white mb-20" style="font-size: 3.5rem; line-height: 1.1;">Your Vision.<br>Our Canvas.</h2>
+                    <p class="text-grey font-size-lg">Whether you're planning a once-in-a-lifetime luxury wedding or a global corporate summit, our principal architects are ready to design your experience.</p>
+                </div>
+                <div class="invitation-actions">
+                    <button class="btn-glow-gold trigger-booking">
+                        Connect With Our Architects <i class="fa-solid fa-arrow-right ml-10"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="toastMsg" class="toast-msg">
+        <i class="fa-solid fa-circle-check text-gold"></i> <span id="toastText">Success!</span>
+    </div>
+
+    <footer class="custom-footer relative overflow-hidden bg-ivory border-top-grey">
+        <div class="container relative-z-content">
+            <div class="footer-top-row">
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Subscribe to receive exciting gifts!</h4>
+                    <form class="newsletter-form" id="newsletterForm">
+                        <input type="email" placeholder="Your email address" class="nl-input" required>
+                        <button type="submit" class="nl-btn bg-onyx"><i class="fa-solid fa-envelope-open-text text-gold"></i></button>
+                    </form>
+                    <ul class="footer-info-list">
+                        <li><i class="fa-solid fa-location-dot text-gold"></i> <a href="https://www.google.com/maps/search/?api=1&query=Sant+Nagar+East+of+Kailash+New+Delhi+110065" target="_blank"><span>Sant Nagar, East of Kailash, New Delhi, Delhi 110065</span></a></li>
+                        <li><i class="fa-solid fa-phone text-gold"></i> <a href="tel:+918882373939"><span>+91 8882373939</span></a></li>
+                        <li><i class="fa-solid fa-at text-gold"></i> <a href="mailto:info.cogroup@gmail.com"><span>info.cogroup@gmail.com</span></a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Our Divisions</h4>
+                    <ul class="footer-links">
+                        <li><a href="thread-knot.html">Thread & Knot</a></li>
+                        <li><a href="prism-planner.html">Prism Planner</a></li>
+                        <li><a href="portfolio.html" class="text-gold font-weight-600">Portfolio Showcase</a></li>
+                        <li><a href="case-studies.html">Featured Case Studies</a></li>
+                        <li><a href="client-login.html">Client Portal Login</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Capabilities</h4>
+                    <ul class="footer-links">
+                        <li><a href="thread-knot.html">Luxury Wedding Planning</a></li>
+                        <li><a href="prism-planner.html">Corporate MICE & Summits</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html">About C&O Group</a></li>
+                        <li><a href="process.html">Our Execution Framework</a></li>
+                        <li><a href="vendor-portal.html">Vendor Network Portal</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                        <li><a href="contact.html">Contact Command Center</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom-row border-top-grey">
+                <div class="footer-socials">
+                    <a href="https://instagram.com/yourhandle" target="_blank" class="text-onyx hover-gold"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://youtube.com/yourchannel" target="_blank" class="text-onyx hover-gold"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+                <div class="footer-copyright text-grey"><p>All Rights Reserved © 2026 C&O Group LLP.</p></div>
+                <div class="payment-icons">
+                    <i class="fa-brands fa-google-pay fa-2x" style="color: #5f6368; vertical-align: middle;"></i>
+                    <i class="fa-brands fa-cc-visa fa-2x ml-10" style="color: #1434CB; vertical-align: middle;"></i>
+                    <i class="fa-brands fa-cc-mastercard fa-2x ml-10" style="color: #EB001B; vertical-align: middle;"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+<script>
+    (function() {
+        if (localStorage.getItem('maintenanceMode') === 'true') {
+            document.addEventListener('DOMContentLoaded', () => {
+                document.body.innerHTML = `
+                    <div style="position: fixed; inset: 0; background: #0A0A0A; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-family: 'Montserrat', sans-serif; padding: 20px;">
+                        <div style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: white; letter-spacing: 2px; margin-bottom: 50px; font-weight: 700;">
+                            C&O<span style="color: #D4AF37;">.</span>
+                        </div>
+                        <div style="width: 80px; height: 80px; border-radius: 50%; border: 1px dashed #D4AF37; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; animation: spin 10s linear infinite;">
+                            <i class="fa-solid fa-compass-drafting" style="font-size: 2rem; color: #D4AF37;"></i>
+                        </div>
+                        <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
+                        <h1 style="font-family: 'Playfair Display', serif; font-size: 3.5rem; color: #D4AF37; margin-bottom: 20px; line-height: 1.1;">Site Under<br>Architecture</h1>
+                        <p style="color: #888; font-size: 1rem; max-width: 500px; line-height: 1.8; margin-bottom: 50px;">
+                            Our digital environment is currently undergoing an encrypted upgrade. Our principal architects are refining the mainframe to ensure flawless execution for your future events.
+                        </p>
+                        <div style="font-size: 0.75rem; color: #444; text-transform: uppercase; letter-spacing: 3px; border-top: 1px solid #222; padding-top: 20px; width: 100%; max-width: 300px;">
+                            <i class="fa-solid fa-lock text-gold mr-5"></i> Secure Protocol Active
+                        </div>
+                    </div>
+                `;
+                document.body.style.overflow = 'hidden';
+            });
+        }
+    })();
+</script>
+
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // Global Booking Modal Logic
+            const bookingModal = document.getElementById('bookingModal');
+            const openBookingBtns = document.querySelectorAll('.trigger-booking');
+            openBookingBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    bookingModal.classList.add('active');
+                });
+            });
+            document.getElementById('closeBooking').addEventListener('click', () => bookingModal.classList.remove('active'));
+            
+            // ==========================================
+            //  MODIFIED VIDEO LOGIC FOR LOCAL FILES
+            // ==========================================
+            const videoModal = document.getElementById('videoModal');
+            const dynamicVideoPlayer = document.getElementById('dynamicVideoPlayer');
+            const videoCards = document.querySelectorAll('.open-dynamic-video');
+            
+            videoCards.forEach(card => {
+                card.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const videoUrl = card.getAttribute('data-video');
+                    dynamicVideoPlayer.src = videoUrl;
+                    videoModal.classList.add('active');
+                    dynamicVideoPlayer.play();
+                });
+            });
+
+            document.getElementById('closeVideo').addEventListener('click', () => {
+                videoModal.classList.remove('active');
+                dynamicVideoPlayer.pause();
+                dynamicVideoPlayer.src = ""; 
+            });
+
+            window.addEventListener('click', (e) => { 
+                if (e.target === bookingModal) bookingModal.classList.remove('active'); 
+                if (e.target === videoModal) { 
+                    videoModal.classList.remove('active'); 
+                    dynamicVideoPlayer.pause();
+                    dynamicVideoPlayer.src = ""; 
+                }
+            });
+
+            // Mobile Nav
+            const mobileToggle = document.querySelector('.mobile-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            if (mobileToggle && navLinks) {
+                mobileToggle.addEventListener('click', () => {
+                    if (navLinks.style.display === 'flex') { navLinks.style.display = 'none'; } 
+                    else {
+                        navLinks.style.display = 'flex'; navLinks.style.flexDirection = 'column';
+                        navLinks.style.position = 'absolute'; navLinks.style.top = '100%'; navLinks.style.left = '0';
+                        navLinks.style.width = '100%'; navLinks.style.background = '#FCFBF9'; navLinks.style.padding = '20px';
+                        navLinks.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
+                    }
+                });
+            }
+
+            // Scrolled Navbar Color Inversion
+            const navbar = document.getElementById('navbar');
+            const navLogo = document.getElementById('nav-logo');
+            const navLinksColor = document.getElementById('nav-links-color');
+            const planBtn = document.getElementById('openBookingBtn');
+            const mobIcon = document.querySelector('.mobile-toggle i');
+            
+            if (navbar) {
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 50) {
+                        navbar.classList.add('scrolled');
+                        if(navLogo) { navLogo.classList.remove('text-white'); navLogo.classList.add('text-onyx'); }
+                        if(navLinksColor) { navLinksColor.classList.remove('text-white'); navLinksColor.classList.add('text-onyx'); }
+                        if(planBtn) { planBtn.style.color = 'var(--color-onyx)'; planBtn.style.borderColor = 'var(--color-onyx)'; }
+                        if(mobIcon) { mobIcon.style.color = 'var(--color-onyx)'; }
+                    } else {
+                        navbar.classList.remove('scrolled');
+                        if(navLogo) { navLogo.classList.remove('text-onyx'); navLogo.classList.add('text-white'); }
+                        if(navLinksColor) { navLinksColor.classList.remove('text-onyx'); navLinksColor.classList.add('text-white'); }
+                        if(planBtn) { planBtn.style.color = 'white'; planBtn.style.borderColor = 'white'; }
+                        if(mobIcon) { mobIcon.style.color = 'white'; }
+                    }
+                });
+            }
+
+            // Scroll Animations
+            const revealElements = document.querySelectorAll('.fade-up-slow');
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) { entry.target.classList.add('active'); observer.unobserve(entry.target); }
+                });
+            }, { threshold: 0.15 });
+            revealElements.forEach(el => revealObserver.observe(el));
+
+            // Portfolio Filtering Logic
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Reset styling
+                    filterBtns.forEach(b => {
+                        b.classList.remove('active');
+                        b.classList.remove('bg-onyx');
+                        b.classList.remove('text-gold');
+                    });
+                    
+                    // Add active styling
+                    btn.classList.add('active');
+                    btn.style.backgroundColor = 'var(--color-onyx)';
+                    btn.style.color = 'var(--color-gold)';
+                    
+                    const filterValue = btn.getAttribute('data-filter');
+                    
+                    galleryItems.forEach(item => {
+                        if (filterValue === 'all' || item.classList.contains(filterValue)) {
+                            item.style.display = 'block';
+                            setTimeout(() => { item.style.opacity = '1'; item.style.transform = 'scale(1)'; }, 50);
+                        } else {
+                            item.style.opacity = '0'; item.style.transform = 'scale(0.9)';
+                            setTimeout(() => { item.style.display = 'none'; }, 300);
+                        }
+                    });
+                });
+            });
+
+            // Toast Notification Function
+            const showToast = (message) => {
+                const toast = document.getElementById('toastMsg');
+                const toastText = document.getElementById('toastText');
+                
+                if (toast && toastText) {
+                    toastText.innerText = message;
+                    toast.classList.add('show');
+                    setTimeout(() => { toast.classList.remove('show'); }, 4000);
+                } else {
+                    const newToast = document.createElement('div');
+                    newToast.className = 'toast-msg';
+                    newToast.innerHTML = `<i class="fa-solid fa-circle-check text-gold"></i> ${message}`;
+                    document.body.appendChild(newToast);
+                    setTimeout(() => newToast.classList.add('show'), 100);
+                    setTimeout(() => {
+                        newToast.classList.remove('show');
+                        setTimeout(() => newToast.remove(), 500);
+                    }, 4000);
+                }
+            };
+
+            const translateDivision = (val) => {
+                if (val === 'wedding') return 'Thread & Knot';
+                if (val === 'corporate') return 'Prism Planner';
+                return 'General';
+            };
+
+            // Newsletter Subscription
+            const newsletterForm = document.getElementById('newsletterForm');
+            if (newsletterForm) {
+                newsletterForm.addEventListener('submit', async (e) => {
+                    e.preventDefault(); 
+                    const submitBtn = newsletterForm.querySelector('button[type="submit"]');
+                    const originalHTML = submitBtn.innerHTML;
+                    
+                    submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-gold"></i>';
+                    submitBtn.disabled = true;
+
+                    const emailInput = newsletterForm.querySelector('input[type="email"]').value;
+
+                    try {
+                        const response = await fetch('http://localhost:5000/api/subscribe', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email: emailInput })
+                        });
+
+                        if (response.ok) {
+                            showToast('Welcome to the inner circle! Your gift is on the way.');
+                            newsletterForm.reset();
+                        } else if (response.status === 400) {
+                            showToast('You are already on our exclusive list!');
+                        } else {
+                            showToast('Transmission failed. Please try again.');
+                        }
+                    } catch (error) {
+                        showToast('Server offline. Please ensure backend is running.');
+                    } finally {
+                        submitBtn.innerHTML = originalHTML;
+                        submitBtn.disabled = false;
+                    }
+                });
+            }
+
+            // Modal Booking Form
+            const popupForm = document.getElementById('popupContactForm');
+            if (popupForm) {
+                popupForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const submitBtn = popupForm.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerText;
+                    
+                    submitBtn.innerText = "Securing Connection...";
+                    submitBtn.disabled = true;
+
+                    const formData = new FormData(popupForm);
+                    const inquiryPayload = {
+                        clientName: formData.get('name'),
+                        email: formData.get('email'),
+                        division: translateDivision(formData.get('eventType')),
+                        eventDetails: formData.get('message') || "Inquiry from Portfolio page."
+                    };
+
+                    try {
+                        const response = await fetch('http://localhost:5000/api/enquiries', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(inquiryPayload)
+                        });
+
+                        if (response.ok) {
+                            showToast('Consultation request locked securely. We will contact you shortly.');
+                            popupForm.reset();
+                            document.getElementById('bookingModal').classList.remove('active');
+                        } else {
+                            showToast('Transmission failed. Please check your details.');
+                        }
+                    } catch (error) {
+                        console.error('API Error:', error);
+                        showToast('Server offline. Please ensure backend is running.');
+                    } finally {
+                        submitBtn.innerText = originalText;
+                        submitBtn.disabled = false;
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

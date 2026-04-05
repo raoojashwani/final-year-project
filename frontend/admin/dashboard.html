@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Center | C&O Group Admin</title>
+    <link rel="icon" type="image/png" href="../images/logo.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin-style.css">
+
+    <style>
+        /* Specific Dashboard Visual Overrides */
+        .recent-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .view-all-link {
+            color: var(--color-gold);
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .view-all-link:hover {
+            color: var(--color-onyx);
+            transform: translateX(5px);
+        }
+        
+        /* Behind the Curtain Grid */
+        .bts-admin-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .bts-item {
+            aspect-ratio: 16/9;
+            overflow: hidden;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .bts-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+            filter: grayscale(100%);
+        }
+
+        .bts-item:hover img {
+            transform: scale(1.1);
+            filter: grayscale(0%);
+        }
+
+        /* Elevated Final Button */
+        .cta-container {
+            margin-top: 50px;
+            text-align: center;
+            padding: 60px;
+            background: var(--color-onyx);
+            border-radius: 12px;
+            border: 1px solid var(--color-gold-dim);
+        }
+
+        /* Status Pills for Table */
+        .status-pill {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+        }
+        .status-new { background: rgba(212, 175, 55, 0.1); color: var(--color-gold); }
+        .status-contacted { background: rgba(11, 25, 44, 0.1); color: var(--color-blue); }
+        .status-converted { background: rgba(39, 174, 96, 0.1); color: #27ae60; }
+        
+        .div-badge { font-size: 0.7rem; padding: 4px 10px; border-radius: 4px; font-weight: 700; text-transform: uppercase; }
+        .bg-crimson-light { background: rgba(138,21,56,0.1); color: var(--color-crimson); }
+        .bg-blue-light { background: rgba(11,25,44,0.1); color: var(--color-blue); }
+    </style>
+</head>
+<body class="fade-in">
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h1 class="sidebar-logo">C&O<span>.</span></h1>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="nav-item active">
+                <i class="fa-solid fa-chart-line"></i> Dashboard
+            </a>
+            <a href="enquiries.html" class="nav-item">
+                <i class="fa-solid fa-envelope-open-text"></i> Event Inquiries
+            </a>
+            <a href="vendors.html" class="nav-item">
+                <i class="fa-solid fa-handshake"></i> Vendor Network
+            </a>
+            <a href="clients.html" class="nav-item">
+                <i class="fa-solid fa-key"></i> Client Access
+            </a>
+            <a href="subscribers.html" class="nav-item">
+                <i class="fa-solid fa-users"></i> Newsletter List
+            </a>
+            <a href="analytics.html" class="nav-item">
+                <i class="fa-solid fa-magnifying-glass-chart"></i> Event Analytics
+            </a>
+            <a href="staff.html" class="nav-item">
+                <i class="fa-solid fa-users-gear"></i> Manage Staff
+            </a>
+            <a href="settings.html" class="nav-item">
+                <i class="fa-solid fa-gear"></i> Settings
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="nav-item" onclick="logoutAdmin()" style="color: var(--color-crimson); cursor: pointer;">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout Session
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        
+        <header class="top-navbar">
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass text-grey"></i>
+                <input type="text" id="liveSearch" placeholder="Search recent inquiries by name, email, or division...">
+            </div>
+
+            <div class="admin-profile">
+                <div class="admin-info" style="text-align: right;">
+                    <p class="font-weight-700" id="navAdminName" style="font-size: 0.95rem; color: var(--color-onyx);">Principal Architect</p>
+                    <p class="text-gold" style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">Admin Command</p>
+                </div>
+                <div id="navAvatar" style="width: 40px; height: 40px; background: var(--color-onyx); color: var(--color-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; border: 2px solid var(--color-gold); margin-left: 15px;">AD</div>
+            </div>
+        </header>
+
+        <div class="content-padding">
+            <div class="recent-header">
+                <div>
+                    <h2 class="page-title">Command Overview</h2>
+                    <p class="text-grey text-sm" id="currentDate">--</p>
+                </div>
+                <div class="status-chip status-closed" style="background: rgba(39, 174, 96, 0.1); color: #27ae60; padding: 10px 20px; border-radius: 30px; font-weight: 700; font-size: 0.8rem;">
+                    <i class="fa-solid fa-shield-check"></i> System Secure
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-label">Active Projects</span>
+                    <div class="stat-value" id="statProjects">00 <i class="fa-solid fa-folder-open text-onyx"></i></div>
+                </div>
+                <div class="stat-card weddings">
+                    <span class="stat-label">Thread & Knot Leads</span>
+                    <div class="stat-value" id="statTK">00 <i class="fa-solid fa-ring text-crimson"></i></div>
+                </div>
+                <div class="stat-card corporate">
+                    <span class="stat-label">Prism Planner Leads</span>
+                    <div class="stat-value" id="statPrism">00 <i class="fa-solid fa-building-columns text-blue"></i></div>
+                </div>
+                <div class="stat-card new">
+                    <span class="stat-label">Empaneled Vendors</span>
+                    <div class="stat-value" id="statVendors">00 <i class="fa-solid fa-handshake text-gold"></i></div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div class="table-header" style="padding: 25px;">
+                    <div>
+                        <h3 class="serif-font" style="margin-bottom: 5px;">Recent Inquiry Stream</h3>
+                        <p style="font-size: 0.8rem; color: #888;">Displaying leads generated in the last 24 hours.</p>
+                    </div>
+                    <a href="enquiries.html" class="view-all-link">Access All Records <i class="fa-solid fa-chevron-right ml-5"></i></a>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Client Profile</th>
+                            <th>Division</th>
+                            <th>Contact Node</th>
+                            <th>Reception Time</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dashboardInquiryBody">
+                        <tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--color-gold);"><i class="fa-solid fa-circle-notch fa-spin"></i> Fetching live records...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-container" style="padding: 40px; margin-top: 40px;">
+                <div class="recent-header" style="margin-bottom: 10px;">
+                    <div>
+                        <span class="eyebrow text-gold">Visual Recon</span>
+                        <h3 class="serif-font mt-5">Behind the Curtain</h3>
+                    </div>
+                </div>
+                <div class="bts-admin-grid">
+                    <div class="bts-item"><img src="../images/t&K/2.jpg" alt="Production"></div>
+                    <div class="bts-item"><img src="../images/vendor/1.jpg" alt="AV Setup"></div>
+                    <div class="bts-item"><img src="../images/t&K/9.jpg" alt="Blueprint Execution"></div>
+                    <div class="bts-item"><img src="../images/t&K/13.jpg" alt="Floral Engineering"></div>
+                </div>
+            </div>
+
+            <div class="cta-container">
+                <h3 class="serif-font text-white mb-20" style="font-size: 2rem;">Ready to Architect a New Milestone?</h3>
+                <button class="btn-save" style="background: var(--color-gold); color: var(--color-onyx); padding: 18px 40px; border-radius: 30px; font-weight: 700; border: none; font-size: 1rem; cursor: pointer;" onclick="window.location.href='enquiries.html'">
+                    Review Pending Consultations <i class="fa-solid fa-arrow-right ml-10"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="briefModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+        <div class="modal-content" style="background: white; border-radius: 12px; padding: 30px; width: 90%; max-width: 500px; position: relative; border: 1px solid var(--color-gold);">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px;">
+                <h3 class="serif-font" style="margin: 0; font-size: 1.5rem; color: var(--color-onyx);">Brief Intelligence Report</h3>
+                <button style="background: transparent; border: none; font-size: 1.5rem; cursor: pointer; color: var(--color-onyx); transition: 0.3s;" onclick="closeBriefModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div>
+                <div style="margin-bottom: 15px;">
+                    <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--color-grey); font-weight: 700;">Personnel</span>
+                    <p id="modalClientName" style="font-size: 1.1rem; color: var(--color-onyx); font-weight: 600; margin-top: 5px;">---</p>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--color-grey); font-weight: 700;">Assigned Division</span>
+                    <p id="modalDivision" style="font-size: 1rem; color: var(--color-onyx); margin-top: 5px;">---</p>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--color-grey); font-weight: 700;">Strategic Vision</span>
+                    <p id="modalVision" style="font-style: italic; color: #555; background: #f9f9f9; padding: 15px; border-left: 3px solid var(--color-gold); border-radius: 4px; margin-top: 5px; line-height: 1.5;">---</p>
+                </div>
+                
+                <div style="display: flex; gap: 15px; margin-top: 30px;">
+                    <button style="flex: 1; padding: 12px; background: var(--color-onyx); color: var(--color-gold); border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.3s;" onclick="window.location.href='enquiries.html'">Go to Full Manager</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="logoutConfirmModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+        <div class="modal-content" style="background: white; border-radius: 12px; max-width: 400px; text-align: center; padding: 40px; border: 1px solid var(--color-gold);">
+            <i class="fa-solid fa-right-from-bracket" style="font-size: 3.5rem; color: var(--color-crimson); margin-bottom: 20px; display: block;"></i>
+            <h3 class="serif-font mb-10" style="font-size: 1.5rem;">Secure Logout?</h3>
+            <p class="text-grey text-sm mb-30" style="line-height: 1.5;">Are you sure you want to securely exit the Admin Terminal?</p>
+            
+            <div style="display: flex; gap: 15px;">
+                <button style="flex: 1; padding: 12px; border-radius: 30px; background: var(--color-crimson); border: none; color: white; font-weight: 700; cursor: pointer;" onclick="executeLogout()">Confirm Logout</button>
+                <button onclick="document.getElementById('logoutConfirmModal').style.display='none'" style="flex: 1; background: var(--color-ivory); color: var(--color-onyx); border: 1px solid #ddd; border-radius: 30px; font-weight: 700; cursor: pointer;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin-main.js"></script>
+    
+    <script>
+        let allRecentInquiries = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. Date formatting
+            document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-GB', { 
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+            });
+
+            // 2. Authentication Check
+            const token = localStorage.getItem('adminToken');
+            if (!token) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const headers = { 'Authorization': `Bearer ${token}` };
+
+            // 3. Fetch Live Vault Data
+            try {
+                const [inqRes, cliRes, venRes] = await Promise.all([
+                    fetch('http://localhost:5000/api/enquiries', { headers }),
+                    fetch('http://localhost:5000/api/clients', { headers }),
+                    fetch('http://localhost:5000/api/vendors', { headers })
+                ]);
+
+                const inquiries = await inqRes.json();
+                const clients = await cliRes.json();
+                const vendors = await venRes.json();
+
+                // 4. Populate High Level Stats
+                // Count TOTAL leads for the stats cards (not just 24h)
+                const tkLeads = inquiries.filter(i => (i.division || '').includes('Thread')).length;
+                const prismLeads = inquiries.filter(i => (i.division || '').includes('Prism')).length;
+                
+                document.getElementById('statProjects').innerHTML = `${clients.length} <i class="fa-solid fa-folder-open text-onyx"></i>`;
+                document.getElementById('statTK').innerHTML = `${tkLeads} <i class="fa-solid fa-ring text-crimson"></i>`;
+                document.getElementById('statPrism').innerHTML = `${prismLeads} <i class="fa-solid fa-building-columns text-blue"></i>`;
+                document.getElementById('statVendors').innerHTML = `${vendors.length} <i class="fa-solid fa-handshake text-gold"></i>`;
+
+                // 5. THE 24 HOUR FILTER LOGIC
+                const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+                allRecentInquiries = inquiries.filter(i => new Date(i.createdAt) >= twentyFourHoursAgo);
+
+                // Render up to 8 of the recent ones
+                renderInquiryTable(allRecentInquiries.slice(0, 8));
+
+            } catch(err) {
+                console.error("Dashboard Sync Error:", err);
+                document.getElementById('dashboardInquiryBody').innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 30px; color: var(--color-crimson);">Failed to sync with Vault. Ensure backend is online.</td></tr>`;
+            }
+        });
+
+        // --- RENDER TABLE LOGIC ---
+        function renderInquiryTable(data) {
+            const tbody = document.getElementById('dashboardInquiryBody');
+            
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 30px; color: #888;">No new inquiries in the last 24 hours.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = data.map(item => {
+                const dateObj = new Date(item.createdAt);
+                const timeStr = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                
+                // Determine Status CSS
+                let statusClass = 'status-new';
+                if(item.status === 'Contacted') statusClass = 'status-contacted';
+                if(item.status === 'Converted') statusClass = 'status-converted';
+
+                // Determine Division CSS & Icon
+                let divClass = 'bg-blue-light';
+                let divIcon = '<i class="fa-solid fa-building-columns" style="margin-right: 5px;"></i>';
+                
+                if((item.division || '').includes('Thread')) {
+                    divClass = 'bg-crimson-light';
+                    divIcon = '<i class="fa-solid fa-ring" style="margin-right: 5px;"></i>';
+                }
+
+                return `
+                <tr class="fade-in">
+                    <td><strong>${item.clientName}</strong></td>
+                    <td><span class="div-badge ${divClass}">${divIcon} ${item.division}</span></td>
+                    <td><a href="mailto:${item.email}" style="color: var(--color-gold); text-decoration: none; font-weight: 600;"><i class="fa-solid fa-envelope mr-5"></i> Email Lead</a></td>
+                    <td><span style="font-weight: 600;">${timeStr}</span></td>
+                    <td><span class="status-pill ${statusClass}">${item.status || 'New Lead'}</span></td>
+                    <td>
+                        <button style="background: var(--color-onyx); color: var(--color-gold); border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: 0.3s;" onclick="viewQuickDetails('${escapeHtml(item.clientName)}', '${escapeHtml(item.division)}', '${escapeHtml(item.eventDetails)}')">
+                            <i class="fa-solid fa-eye"></i> View
+                        </button>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        // --- LIVE SEARCH LOGIC ---
+        document.getElementById('liveSearch').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            if (!allRecentInquiries) return;
+
+            const filtered = allRecentInquiries.filter(i => 
+                (i.clientName && i.clientName.toLowerCase().includes(term)) || 
+                (i.email && i.email.toLowerCase().includes(term)) ||
+                (i.division && i.division.toLowerCase().includes(term))
+            );
+            
+            // Limit to 8 results max on the dashboard view
+            renderInquiryTable(filtered.slice(0, 8));
+        });
+
+        // --- QUICK VIEW MODAL LOGIC ---
+        function viewQuickDetails(name, division, details) {
+            document.getElementById('modalClientName').innerText = name;
+            document.getElementById('modalDivision').innerText = division;
+            document.getElementById('modalVision').innerText = details;
+            
+            document.getElementById('briefModal').style.display = 'flex';
+        }
+
+        function closeBriefModal() {
+            document.getElementById('briefModal').style.display = 'none';
+        }
+
+        // Secure string injection helper
+        function escapeHtml(unsafe) {
+            if(!unsafe) return "";
+            return unsafe
+                 .replace(/&/g, "&amp;")
+                 .replace(/</g, "&lt;")
+                 .replace(/>/g, "&gt;")
+                 .replace(/"/g, "&quot;")
+                 .replace(/'/g, "&#039;");
+        }
+
+        // --- SECURE LOGOUT LOGIC ---
+        function logoutAdmin() {
+            document.getElementById('logoutConfirmModal').style.display = 'flex';
+        }
+
+        function executeLogout() {
+            localStorage.removeItem('adminToken');
+            window.location.href = 'index.html'; 
+        }
+
+
+        // --- GLOBAL ADMIN NAME & AVATAR SYNC ---
+        function syncAdminProfile() {
+            const adminName = localStorage.getItem('adminDisplayName') || 'Principal Architect';
+            const nameEl = document.getElementById('navAdminName');
+            const avatarEl = document.getElementById('navAvatar');
+            
+            if (nameEl) nameEl.innerText = adminName;
+            
+            if (avatarEl) {
+                const words = adminName.trim().split(' ');
+                let initials = "AD"; // Fallback
+                if (words.length > 1) {
+                    initials = (words[0][0] + words[1][0]).toUpperCase();
+                } else if (words.length === 1 && words[0].length > 0) {
+                    initials = words[0].substring(0, 2).toUpperCase();
+                }
+                avatarEl.innerText = initials;
+            }
+        }
+        // Run immediately on page load
+        syncAdminProfile();
+
+        
+    </script>
+</body>
+</html>

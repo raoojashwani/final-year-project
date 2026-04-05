@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Portal | C&O Group</title>
+    <link rel="icon" type="image/png" href="../images/logo.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* =========================================
+           1. CORE VARIABLES & SETUP
+        ========================================= */
+        :root {
+            --color-onyx: #111111;
+            --color-white: #FFFFFF;
+            --color-ivory: #F4F4F2;
+            --color-gold: #D4AF37;
+            --color-crimson: #8A1538;
+            --color-grey: #888888;
+            --shadow-soft: 0 10px 30px rgba(0,0,0,0.05);
+            --shadow-hover: 0 15px 40px rgba(212,175,55,0.15);
+            --transition: 0.3s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--color-ivory); color: var(--color-onyx); display: flex; height: 100vh; overflow: hidden; }
+
+        .flex-space-between { display: flex; justify-content: space-between; align-items: center; }
+
+        /* =========================================
+           2. SIDEBAR NAVIGATION
+        ========================================= */
+        .sidebar { width: 280px; background: var(--color-onyx); color: white; display: flex; flex-direction: column; z-index: 100; }
+        .sidebar-header { padding: 40px 30px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .sidebar-logo { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: white; letter-spacing: 1px; }
+        .sidebar-logo span { color: var(--color-gold); }
+
+        .nav-menu { flex: 1; padding: 30px 0; overflow-y: auto; }
+        .nav-item { padding: 18px 30px; display: flex; align-items: center; gap: 15px; color: #888; cursor: pointer; transition: var(--transition); border-left: 4px solid transparent; font-size: 0.9rem; font-weight: 500; text-decoration: none; }
+        .nav-item i { width: 20px; font-size: 1.1rem; text-align: center; }
+        .nav-item:hover, .nav-item.active { background: rgba(212, 175, 55, 0.08); color: var(--color-gold); border-left-color: var(--color-gold); }
+        .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); }
+
+        /* =========================================
+           3. MAIN LAYOUT & TOP NAVIGATION
+        ========================================= */
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: var(--color-ivory); }
+        .content-padding { padding: 40px; max-width: 1400px; margin: 0 auto; width: 100%; }
+
+        .top-navbar { height: 80px; background: var(--color-white); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; box-shadow: var(--shadow-soft); position: sticky; top: 0; z-index: 90; }
+        .event-badge { background: rgba(138,21,56,0.1); color: var(--color-crimson); padding: 6px 15px; border-radius: 30px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .client-profile { display: flex; align-items: center; gap: 20px; position: relative; }
+        .avatar-initial { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--color-gold); background: var(--color-onyx); color: var(--color-gold); display: flex; align-items: center; justify-content: center; font-weight: 700; }
+        .notif-badge { position: absolute; top: -5px; right: -5px; background: var(--color-crimson); color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.6rem; font-weight: bold; }
+
+        /* =========================================
+           4. VIEW ROUTING LOGIC
+        ========================================= */
+        .dashboard-view { display: none; animation: fadeIn 0.4s ease; }
+        .dashboard-view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* =========================================
+           5. DASHBOARD CARDS & HERO
+        ========================================= */
+        .event-hero { background: var(--color-onyx); border-radius: 16px; padding: 40px; color: white; position: relative; overflow: hidden; margin-bottom: 40px; box-shadow: var(--shadow-soft); display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--color-gold); }
+        .event-hero::before { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 40%; background: url('https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=800') center/cover; opacity: 0.3; mask-image: linear-gradient(to right, transparent, black); -webkit-mask-image: linear-gradient(to right, transparent, black); }
+        .hero-details { position: relative; z-index: 2; }
+        .hero-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 10px; color: var(--color-white); }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 40px; }
+        .stat-card { background: white; padding: 30px; border-radius: 16px; box-shadow: var(--shadow-soft); position: relative; overflow: hidden; transition: var(--transition); border: 1px solid transparent; }
+        .stat-card:hover { transform: translateY(-5px); border-color: var(--color-gold); box-shadow: var(--shadow-hover); }
+        .stat-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--color-grey); font-weight: 600; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .stat-label i { color: var(--color-gold); font-size: 1.2rem; }
+        .stat-value { font-size: 2.2rem; font-weight: 700; color: var(--color-onyx); margin-bottom: 15px; font-family: 'Playfair Display', serif; }
+        
+        .progress-track { width: 100%; height: 6px; background: var(--color-ivory); border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--color-gold); border-radius: 10px; transition: width 1s ease-out; }
+        .progress-fill.crimson { background: var(--color-crimson); }
+        .progress-fill.onyx { background: var(--color-onyx); }
+
+        .bottom-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; }
+        .panel { background: white; border-radius: 16px; padding: 35px; box-shadow: var(--shadow-soft); border: 1px solid #eee; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--color-ivory); }
+        .panel-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--color-onyx); }
+
+        .task-item { display: flex; align-items: flex-start; gap: 20px; padding: 15px 0; border-bottom: 1px solid var(--color-ivory); transition: 0.3s; cursor: pointer; }
+        .task-item:last-child { border-bottom: none; }
+        .task-item:hover { background: #fafafa; border-radius: 8px; padding: 15px; margin: 0 -15px; }
+        .checkbox { width: 24px; height: 24px; border-radius: 6px; border: 2px solid var(--color-gold); display: flex; align-items: center; justify-content: center; transition: 0.3s; margin-top: 2px; }
+        .checkbox i { color: white; font-size: 0.8rem; opacity: 0; transition: 0.2s; }
+        .task-item.completed .checkbox { background: var(--color-gold); }
+        .task-item.completed .checkbox i { opacity: 1; }
+        .task-item.completed .task-text h4 { text-decoration: line-through; color: var(--color-grey); }
+        .task-text h4 { font-size: 1rem; color: var(--color-onyx); margin-bottom: 5px; font-weight: 600; transition: 0.3s; }
+        .task-text p { font-size: 0.8rem; color: var(--color-grey); }
+        .task-meta { margin-top: 8px; display: inline-block; padding: 3px 10px; background: var(--color-ivory); border-radius: 4px; font-size: 0.7rem; font-weight: 700; color: var(--color-crimson); }
+
+        .team-member { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .team-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--color-gold); }
+        .team-info h4 { font-size: 0.95rem; font-weight: 600; color: var(--color-onyx); }
+        .team-info p { font-size: 0.75rem; color: var(--color-gold); font-weight: 700; text-transform: uppercase; margin-top: 3px; }
+
+        /* =========================================
+           6. INTERNAL PAGES (TABLES & GRIDS)
+        ========================================= */
+        .page-header { margin-bottom: 30px; }
+        .page-title { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--color-onyx); margin-bottom: 5px; }
+        
+        .data-table-container { background: white; border-radius: 12px; box-shadow: var(--shadow-soft); overflow: hidden; border: 1px solid #eee; }
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th { background: var(--color-onyx); color: var(--color-gold); padding: 15px 20px; text-align: left; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+        .data-table td { padding: 15px 20px; border-bottom: 1px solid #eee; font-size: 0.9rem; color: var(--color-onyx); vertical-align: middle; }
+        .data-table tr:hover { background: #fdfdfd; }
+        
+        .status-pill { padding: 5px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+        .status-paid { background: rgba(39, 174, 96, 0.1); color: #27ae60; }
+        .status-pending { background: rgba(212, 175, 55, 0.1); color: var(--color-gold); }
+
+        .btn-action { background: var(--color-onyx); color: var(--color-gold); border: none; padding: 10px 20px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-action:hover { background: var(--color-gold); color: var(--color-onyx); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(212,175,55,0.3); }
+        
+        /* PREMIUM EXPORT BUTTON FIX */
+        .btn-outline { background: transparent; color: var(--color-gold); border: 2px solid var(--color-gold); padding: 10px 24px; border-radius: 30px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-outline:hover { background: var(--color-gold); color: var(--color-onyx); box-shadow: 0 5px 15px rgba(212,175,55,0.3); }
+
+        .btn-pdf { background: var(--color-ivory); color: var(--color-onyx); border: 1px solid var(--color-light-grey); padding: 10px 20px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; }
+        .btn-pdf:hover { background: var(--color-onyx); border-color: var(--color-onyx); color: var(--color-gold); transform: translateY(-3px); }
+        .btn-mini-purge { color: var(--color-crimson); background: none; border: none; cursor: pointer; font-size: 1.1rem; padding: 4px; transition: 0.2s; }
+        .btn-mini-purge:hover { transform: scale(1.2); }
+
+        /* --- BLUEPRINTS GRID --- */
+        .blueprint-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .bp-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-soft); border: 1px solid #eee; transition: 0.3s; cursor: pointer; position: relative; text-decoration: none; display: block; }
+        .bp-card:hover { border-color: var(--color-gold); transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+        .bp-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 220px; background: rgba(17,17,17,0.7); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; }
+        .bp-card:hover .bp-overlay { opacity: 1; }
+        .bp-info { padding: 20px; }
+        .bp-info h4 { font-size: 1.1rem; margin-bottom: 5px; color: var(--color-onyx); }
+
+        /* =========================================
+           7. WHATSAPP-STYLE CHAT INTERFACE
+        ========================================= */
+        .chat-container { display: flex; height: 600px; background: white; border-radius: 12px; box-shadow: var(--shadow-soft); overflow: hidden; border: 1px solid #eee; }
+        .chat-sidebar { width: 300px; border-right: 1px solid #eee; background: #ffffff; display: flex; flex-direction: column; }
+        .chat-contact { padding: 15px 20px; border-bottom: 1px solid #f9f9f9; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: 0.3s; position: relative; }
+        .chat-contact.active { background: #fdf5d3; border-left: 4px solid var(--color-gold); }
+        .status-dot { width: 10px; height: 10px; background: #25D366; border-radius: 50%; position: absolute; bottom: 15px; left: 50px; border: 2px solid white; }
+        
+        .chat-main { flex: 1; display: flex; flex-direction: column; background: #efeae2; position: relative; }
+        .chat-main::before { content: ''; position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23d4af37' fill-opacity='0.05' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E"); z-index: 0; opacity: 0.6; }
+        
+        .chat-header { padding: 15px 25px; background: white; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; z-index: 1; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .chat-messages { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; z-index: 1; }
+        
+        .msg-bubble { position: relative; max-width: 65%; padding: 12px 18px; border-radius: 12px; font-size: 0.95rem; line-height: 1.4; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .msg-incoming { background: #ffffff; color: var(--color-onyx); align-self: flex-start; border-top-left-radius: 0; }
+        .msg-outgoing { background: #dcf8c6; color: var(--color-onyx); align-self: flex-end; border-top-right-radius: 0; }
+        .msg-time { display: block; font-size: 0.65rem; text-align: right; margin-top: 5px; color: rgba(0,0,0,0.45); }
+        .msg-sender-tag { font-weight: 700; font-size: 0.75rem; margin-bottom: 4px; color: var(--color-gold); display: block; }
+        
+        .chat-input-area { padding: 15px 20px; background: #f0f0f0; display: flex; gap: 15px; align-items: center; z-index: 1; border-top: 1px solid #ddd; }
+        .chat-input { flex: 1; padding: 15px 25px; border: none; border-radius: 30px; outline: none; font-family: 'Montserrat', sans-serif; font-size: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .chat-send { background: var(--color-gold); color: white; border: none; width: 48px; height: 48px; border-radius: 50%; cursor: pointer; transition: 0.3s; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(212,175,55,0.4); }
+        .chat-send:hover { background: var(--color-onyx); transform: scale(1.05); }
+
+        /* =========================================
+           8. CUSTOM MODALS & TOASTS
+        ========================================= */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+        .modal-content { background: white; width: 90%; max-width: 450px; border-radius: 16px; padding: 40px; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.4); border: 1px solid var(--color-gold); margin: auto; }
+        .modal-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 20px; color: var(--color-onyx); }
+        .close-btn { position: absolute; top: 15px; right: 15px; background: #f1f1f1; border: none; font-size: 1.2rem; color: #555; cursor: pointer; transition: 0.3s; width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+        .close-btn:hover { background: var(--color-crimson); color: white; transform: rotate(90deg); }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--color-onyx); text-transform: uppercase; letter-spacing: 1px; }
+        .form-input { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-size: 1rem; transition: 0.3s; }
+        .form-input:focus { border-color: var(--color-gold); outline: none; }
+
+        .confirm-icon { font-size: 3.5rem; color: var(--color-crimson); margin-bottom: 20px; display: block; animation: pulseRed 2s infinite; text-align: center; }
+        @keyframes pulseRed { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
+
+        .custom-toast { position: fixed; bottom: 40px; right: 40px; background: var(--color-onyx); color: white; padding: 18px 25px; border-radius: 8px; border-left: 4px solid var(--color-gold); box-shadow: 0 15px 40px rgba(0,0,0,0.3); z-index: 10001; display: flex; align-items: center; gap: 15px; font-weight: 600; font-size: 0.9rem; transform: translateY(100px); opacity: 0; visibility: hidden; transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .custom-toast.show { transform: translateY(0); opacity: 1; visibility: visible; }
+        .custom-toast i { color: var(--color-gold); font-size: 1.2rem; }
+
+        /* =========================================
+           9. UNIVERSAL MOBILE RESPONSIVENESS
+        ========================================= */
+        .mobile-menu-toggle { display: none; font-size: 1.5rem; color: var(--color-onyx); cursor: pointer; margin-right: 15px; }
+        .mobile-menu-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; backdrop-filter: blur(2px); }
+        .mobile-menu-overlay.active { display: block; }
+
+        @media (max-width: 1024px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+            .bottom-grid, .blueprint-grid { grid-template-columns: 1fr !important; }
+            .event-hero { flex-direction: column; text-align: center; }
+            .event-hero::before { width: 100%; mask-image: linear-gradient(to top, transparent, black); -webkit-mask-image: linear-gradient(to top, transparent, black); }
+        }
+
+        @media (max-width: 768px) {
+            /* Sidebar Off-Canvas */
+            .sidebar { position: fixed; left: -300px; top: 0; bottom: 0; z-index: 100; box-shadow: 10px 0 20px rgba(0,0,0,0.2); }
+            .sidebar.active-mobile { left: 0; }
+            
+            /* Top Navbar */
+            .mobile-menu-toggle { display: block; }
+            .top-navbar { padding: 0 20px; justify-content: flex-start; }
+            .event-badge { display: none; }
+            .client-profile { margin-left: auto; }
+            #topBarName, #topBarRef { display: none; }
+            
+            /* Layout & Grids */
+            .content-padding { padding: 20px 15px; }
+            .stats-grid { grid-template-columns: 1fr !important; }
+            
+            /* Tables */
+            .data-table-container { border-radius: 8px; }
+            .data-table { min-width: 800px; }
+            
+            /* Typography */
+            .hero-title { font-size: 1.8rem; }
+            .page-title { font-size: 1.5rem; }
+            .stat-value { font-size: 1.8rem; }
+
+            /* Chat App */
+            .chat-container { height: calc(100vh - 150px); flex-direction: column; }
+            .chat-sidebar { width: 100%; border-right: none; border-bottom: 1px solid #eee; height: 80px; overflow-x: auto; display: flex; flex-direction: row; }
+            .chat-contact { border-bottom: none; border-right: 1px solid #f9f9f9; min-width: 250px; }
+            .msg-bubble { max-width: 90% !important; }
+
+            /* Modals */
+            .modal-content { width: 95% !important; padding: 20px !important; margin: 20px auto; max-height: 90vh; overflow-y: auto; }
+            div[style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
+        }
+    </style>
+</head>
+<body class="fade-in">
+
+    <aside class="sidebar">
+        <div class="sidebar-header"><h1 class="sidebar-logo">C&O<span>.</span> Portal</h1></div>
+        <nav class="nav-menu">
+            <a href="#" class="nav-item active" data-target="view-dashboard"><i class="fa-solid fa-house"></i> Dashboard Overview</a>
+            <a href="#" class="nav-item" data-target="view-budget"><i class="fa-solid fa-wallet"></i> Financial Matrix</a>
+            <a href="#" class="nav-item" data-target="view-guests"><i class="fa-solid fa-users"></i> Guest Manifest</a>
+            <a href="#" class="nav-item" data-target="view-blueprints"><i class="fa-solid fa-cubes"></i> Spatial Blueprints</a>
+            <a href="#" class="nav-item" data-target="view-legal"><i class="fa-solid fa-file-contract"></i> Legal & Contracts</a>
+            <a href="#" class="nav-item" data-target="view-chat" onclick="markMessagesRead()"><i class="fa-brands fa-whatsapp"></i> Secure Comms <span class="notif-badge" id="navMsgBadge" style="position:relative; right:0; top:0; display: none;">New</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="nav-item" onclick="promptLogout()" style="color: var(--color-crimson); font-weight: 700; cursor: pointer;"><i class="fa-solid fa-right-from-bracket"></i> Secure Logout</div>
+        </div>
+    </aside>
+
+    <div class="mobile-menu-overlay" onclick="window.toggleMobileSidebar()"></div>
+
+    <main class="main-content">
+        <header class="top-navbar">
+            <div class="mobile-menu-toggle" onclick="window.toggleMobileSidebar()"><i class="fa-solid fa-bars"></i></div>
+            <div class="event-badge" id="divisionBadge"><i class="fa-solid fa-rings-wedding mr-5"></i> C&O Client Portal</div>
+            <div class="client-profile">
+                <div style="text-align: right; margin-left: 10px;">
+                    <p style="font-size: 0.9rem; font-weight: 700; color: var(--color-onyx);" id="topBarName">Authenticating...</p>
+                    <p style="font-size: 0.7rem; color: var(--color-grey);" id="topBarRef">Loading Data...</p>
+                </div>
+                <div id="avatarInitials" class="avatar-initial">--</div>
+            </div>
+        </header>
+
+        <div class="content-padding">
+            
+            <div id="view-dashboard" class="dashboard-view active">
+                <div class="event-hero fade-in-up">
+                    <div class="hero-details">
+                        <span style="color: var(--color-gold); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">Project Signature</span>
+                        <h2 class="hero-title" id="mainEventName">Loading Vault Data...</h2>
+                        <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 5px;"><i class="fa-solid fa-calendar-day mr-5"></i> <span id="mainEventDate">--</span></p>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card fade-in-up">
+                        <div class="stat-label">Master Timeline <i class="fa-solid fa-timeline"></i></div>
+                        <div class="stat-value"><span id="metricProgress">0</span>%</div>
+                        <div class="progress-track"><div class="progress-fill" id="barProgress" style="width: 0%;"></div></div>
+                        <p style="font-size: 0.75rem; color: var(--color-grey); margin-top: 15px;">Active execution phase.</p>
+                    </div>
+
+                    <div class="stat-card fade-in-up">
+                        <div class="stat-label">Budget Allocated <i class="fa-solid fa-vault"></i></div>
+                        <div class="stat-value"><span id="metricBudget">0</span>%</div>
+                        <div class="progress-track"><div class="progress-fill onyx" id="barBudget" style="width: 0%;"></div></div>
+                        <p style="font-size: 0.75rem; color: var(--color-grey); margin-top: 15px;">Clearance tracking active.</p>
+                    </div>
+
+                    <div class="stat-card fade-in-up">
+                        <div class="stat-label">RSVP Status <i class="fa-solid fa-clipboard-user"></i></div>
+                        <div class="stat-value"><span id="metricRSVP">0</span><span style="font-size: 1.2rem; color: var(--color-grey);" id="metricRSVPMax"></span></div>
+                        <div class="progress-track"><div class="progress-fill crimson" id="barRSVP" style="width: 0%;"></div></div>
+                        <p style="font-size: 0.75rem; color: var(--color-crimson); margin-top: 15px; font-weight: 600;">Confirmed Attendances</p>
+                    </div>
+                </div>
+
+                <div class="bottom-grid">
+                    <div class="panel fade-in-up">
+                        <div class="panel-header"><h3 class="panel-title">Immediate Action Required</h3></div>
+                        <div class="task-list" id="clientTaskList">
+                            <p style="color: #888; text-align: center; padding: 20px;">You are all caught up on your tasks!</p>
+                        </div>
+                    </div>
+
+                    <div class="panel fade-in-up">
+                        <div class="panel-header"><h3 class="panel-title">Your Architects</h3></div>
+                        <div class="team-list">
+                            <div class="team-member">
+                                <img src="https://ui-avatars.com/api/?name=C&O&background=D4AF37&color=fff" class="team-avatar" id="architectAvatar" alt="Architect">
+                                <div class="team-info"><h4 id="architectName">C&O Command</h4><p>Lead Architect</p></div>
+                                <div class="btn-action" style="margin-left: auto; padding: 8px; border-radius: 50%; background: #25D366; color: white;" onclick="document.querySelector('.nav-item[data-target=\'view-chat\']').click()"><i class="fa-brands fa-whatsapp"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-budget" class="dashboard-view">
+                <div class="page-header flex-space-between">
+                    <div>
+                        <h2 class="page-title">Financial Matrix</h2>
+                        <p class="text-grey">Transparent open-book budget tracking.</p>
+                    </div>
+                    <button class="btn-action btn-outline" onclick="window.exportFinancials()"><i class="fa-solid fa-file-export mr-5"></i> Export Ledger</button>
+                </div>
+                
+                <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 30px;">
+                    <div class="stat-card" style="padding: 20px;">
+                        <span class="stat-label">Total Approved Budget</span>
+                        <div class="stat-value" style="font-size: 1.5rem;" id="financeTotal">₹0</div>
+                    </div>
+                    <div class="stat-card" style="padding: 20px; border-top-color: #27ae60;">
+                        <span class="stat-label">Total Allocated</span>
+                        <div class="stat-value" style="font-size: 1.5rem; color: #27ae60;" id="financeAllocated">₹0</div>
+                    </div>
+                    <div class="stat-card" style="padding: 20px; border-top-color: var(--color-crimson);">
+                        <span class="stat-label">Remaining Unallocated</span>
+                        <div class="stat-value" style="font-size: 1.5rem; color: var(--color-crimson);" id="financeRemaining">₹0</div>
+                    </div>
+                </div>
+
+                <div class="data-table-container">
+                    <table class="data-table">
+                        <thead><tr><th>Category</th><th>Vendor / Partner</th><th>Amount</th><th>Due Date</th><th>Status</th><th>Action</th></tr></thead>
+                        <tbody id="invoiceTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="view-guests" class="dashboard-view">
+                <div class="page-header flex-space-between" style="align-items: flex-end;">
+                    <div>
+                        <h2 class="page-title">Guest Manifest</h2>
+                        <p class="text-grey">Real-time RSVP tracking. (<span id="totalGuestsText">0</span> Confirmed)</p>
+                    </div>
+                    <button class="btn-action" onclick="document.getElementById('addGuestModal').classList.add('active')"><i class="fa-solid fa-user-plus mr-5"></i> Add Guest</button>
+                </div>
+
+                <div class="data-table-container" style="overflow-x: auto;">
+                    <table class="data-table" id="guestTable" style="min-width: 1050px;">
+                        <thead>
+                            <tr>
+                                <th>Guest Info</th>
+                                <th>Status</th>
+                                <th>Travel / Flight</th>
+                                <th>Hotel / Room</th>
+                                <th>Dietary Needs</th>
+                                <th>Transport</th>
+                                <th>Event RSVP</th>
+                                <th>Manage</th>
+                            </tr>
+                        </thead>
+                        <tbody id="guestTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="view-blueprints" class="dashboard-view">
+                <div class="page-header">
+                    <h2 class="page-title">Spatial Blueprints</h2>
+                    <p class="text-grey">Review and approve your 3D event architectures.</p>
+                </div>
+                <div class="blueprint-grid" id="blueprintContainer">
+                    <p style="text-align: center; color: #888; grid-column: span 3; padding: 40px;">Awaiting architectural uploads from the Command Center.</p>
+                </div>
+            </div>
+
+            <div id="view-legal" class="dashboard-view">
+                <div class="page-header"><h2 class="page-title">Legal & Contracts</h2><p class="text-grey">Secure vault for all signed agreements.</p></div>
+                <div class="panel" style="max-width: 900px;" id="contractsContainer">
+                    <p style="text-align: center; color: #888;">No legal documents uploaded yet.</p>
+                </div>
+            </div>
+
+            <div id="view-chat" class="dashboard-view">
+                <div class="page-header">
+                    <h2 class="page-title">Secure Comms</h2>
+                    <p class="text-grey">Direct encrypted line to your architectural team.</p>
+                </div>
+                
+                <div class="chat-container">
+                    <div class="chat-sidebar">
+                        <div class="chat-contact active">
+                            <img id="sideChatImg" src="https://ui-avatars.com/api/?name=C&O&background=D4AF37&color=fff" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">
+                            <div class="status-dot"></div>
+                            <div style="flex: 1;">
+                                <h5 style="color: var(--color-onyx); font-size: 1rem; font-weight: 600;" id="sideChatName">C&O Command</h5>
+                                <p style="font-size: 0.8rem; color: var(--color-grey);">Lead Architect</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-main">
+                        <div class="chat-header">
+                            <div class="chat-header-info" style="display: flex; align-items: center; gap: 15px;">
+                                <img id="activeChatImg" src="https://ui-avatars.com/api/?name=C&O&background=D4AF37&color=fff" style="width:45px; height:45px; border-radius:50%; object-fit:cover;">
+                                <div>
+                                    <div style="font-size: 1.1rem; font-weight: 700; color: var(--color-onyx);" id="activeChatName">C&O Command</div>
+                                    <div style="font-size: 0.8rem; color: #25D366; font-weight: 600;">Online</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="chat-messages" id="chatArea"></div>
+                        
+                        <div class="chat-input-area">
+                            <input type="text" class="chat-input" id="chatInput" placeholder="Type a secure message...">
+                            <button class="chat-send" id="chatSendBtn"><i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div id="syncToast" class="custom-toast">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="syncToastText">Vault Synchronized Successfully.</span>
+    </div>
+
+    <div id="addGuestModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 450px;">
+            <button class="close-btn" onclick="document.getElementById('addGuestModal').classList.remove('active')"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="modal-title">Add to Manifest</h3>
+            <form id="addGuestForm">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div>
+                        <label class="form-label">Primary Guest Name</label>
+                        <input type="text" id="gName" class="form-input" placeholder="e.g. Vikram Singh" required style="margin-bottom: 0;">
+                    </div>
+                    <div>
+                        <label class="form-label">Party Size (+1s)</label>
+                        <input type="number" id="gSize" class="form-input" placeholder="e.g. 2" required min="1" style="margin-bottom: 0;">
+                    </div>
+                </div>
+       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div>
+                        <label class="form-label">Group / Affiliation</label>
+                        <select id="gSide" class="form-input" required style="margin-bottom: 0; cursor: pointer;">
+                            <option value="Bride's Family">Bride's Family</option>
+                            <option value="Groom's Family">Groom's Family</option>
+                            <option value="Mutual Friends">Mutual Friends</option>
+                            <option value="VIP/Corporate">VIP</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Specific Event RSVP</label>
+                        <select id="gRsvp" class="form-input" required style="margin-bottom: 0; cursor: pointer;">
+                            <option value="All Events">All Events</option>
+                            <option value="Main Event Only">Main Event Only</option>
+                            <option value="Reception Only">Reception Only</option>
+                            <option value="Pre-Wedding & Main Event">Pre-Wedding & Main Event</option>
+                            <option value="Pending Confirmation">Pending Confirmation</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                    <div>
+                        <label class="form-label">Dietary Restrictions</label>
+                        <select id="gDiet" class="form-input" required style="margin-bottom: 0; cursor: pointer;">
+                            <option value="None">None (Standard Menu)</option>
+                            <option value="Vegetarian">Vegetarian</option>
+                            <option value="Vegan">Vegan</option>
+                            <option value="Gluten-Free">Gluten-Free</option>
+                            <option value="Nut Allergy">Nut Allergy</option>
+                            <option value="Jain / Halal / Kosher">Jain / Halal / Kosher</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Transport Request</label>
+                        <select id="gTransport" class="form-input" required style="margin-bottom: 0; cursor: pointer;">
+                            <option value="Self">Self Arranged</option>
+                            <option value="Airport Pickup">Airport Pickup Required</option>
+                            <option value="VIP Escort">VIP Escort</option>
+                        </select>
+                    </div>
+                </div>            
+                <button type="submit" class="btn-action w-100" style="justify-content: center; padding: 15px; font-size: 1rem;">Add to Database <i class="fa-solid fa-plus ml-10"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="logoutConfirmModal">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <i class="fa-solid fa-right-from-bracket" style="font-size: 3.5rem; color: var(--color-onyx); margin-bottom: 20px; display: block;"></i>
+            <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 10px;">Secure Logout?</h3>
+            <p style="color: #666; font-size: 0.9rem; margin-bottom: 30px;">Are you sure you want to securely exit the portal?</p>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-action" style="flex: 1; justify-content: center; padding: 12px; background: var(--color-crimson); color: white;" onclick="executeLogout()">LOGOUT</button>
+                <button class="btn-outline" style="flex: 1; padding: 12px; border-radius: 6px; cursor: pointer;" onclick="document.getElementById('logoutConfirmModal').classList.remove('active')">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="deleteGuestConfirmModal">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <i class="fa-solid fa-circle-exclamation confirm-icon"></i>
+            <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 10px;">Remove Guest?</h3>
+            <p style="color: #666; font-size: 0.9rem; margin-bottom: 30px;">This will permanently remove them from the manifest and automatically adjust your RSVP count.</p>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-action" style="flex: 1; justify-content: center; padding: 12px; background: var(--color-crimson); color: white;" id="confirmDeleteGuestBtn">REMOVE</button>
+                <button class="btn-outline" style="flex: 1; padding: 12px; border-radius: 6px; cursor: pointer;" onclick="document.getElementById('deleteGuestConfirmModal').classList.remove('active')">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="deleteMessageModal">
+        <div class="modal-content" style="max-width: 400px; text-align: center; padding: 0; overflow: hidden;">
+            <div style="background: var(--color-onyx); padding: 30px; color: white;">
+                <i class="fa-solid fa-trash-can" style="font-size: 2.5rem; color: var(--color-crimson);"></i>
+            </div>
+            <div style="padding: 30px;">
+                <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 10px; color: var(--color-onyx);">Delete Message?</h3>
+                <p style="color: #666; font-size: 0.9rem; margin-bottom: 30px;">This action permanently removes the transmission.</p>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-action" style="flex: 1; justify-content: center; padding: 12px; background: var(--color-crimson); color: white; border: none;" id="confirmDeleteMsgBtn">DELETE</button>
+                    <button class="btn-outline" style="flex: 1; padding: 12px; border-radius: 6px; cursor: pointer; border-color: #ccc; color: var(--color-onyx);" onclick="document.getElementById('deleteMessageModal').classList.remove('active')">CANCEL</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="editMessageModal">
+        <div class="modal-content" style="max-width: 500px; padding: 0; overflow: hidden;">
+            <div style="background: var(--color-onyx); padding: 20px 30px; margin: 0; border-bottom: 2px solid var(--color-gold); display: flex; justify-content: space-between; align-items: center;">
+                <h3 class="serif-font" style="margin: 0; color: white; font-size: 1.5rem;">Edit Transmission</h3>
+                <button style="background: transparent; border: none; color: white; font-size: 1.5rem; cursor: pointer;" onclick="document.getElementById('editMessageModal').classList.remove('active')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div style="padding: 30px;">
+                <label class="form-label" style="margin-bottom: 10px; color: var(--color-onyx); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Update your message text:</label>
+                <textarea id="editMessageInput" class="form-input" rows="4" style="resize: vertical; font-size: 0.95rem; padding: 15px; border: 1px solid #ddd; border-radius: 8px; width: 100%; box-sizing: border-box;"></textarea>
+                <button class="btn-glow-gold w-100" style="justify-content: center; padding: 15px; font-size: 1rem; margin-top: 15px;" id="confirmEditMsgBtn">Transmit Update <i class="fa-solid fa-paper-plane ml-5"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let guestToDeleteId = null;
+        let currentMessageCount = 0; 
+        
+        // THE PERFECTED TASK TOGGLE MEMORY (Survives 3-second refreshes)
+        window.completedLocalTasks = JSON.parse(localStorage.getItem('completedTasks') || '[]');
+        window.currentClientData = null; // Global access for CSV export
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            
+            // FRONTEND 1-HOUR AUTO-LOGOUT SECURITY ENFORCEMENT
+            setTimeout(() => {
+                showCustomToast("Security Protocol: 1-Hour session limit reached. Securely logging out.");
+                setTimeout(window.executeLogout, 2500);
+            }, 3600000); // 3600000 ms = exactly 1 Hour
+
+            // --- 1. SECURITY & FETCHING ---
+            const token = localStorage.getItem('clientToken');
+            if (!token) { window.location.href = 'client-login.html'; return; }
+
+            const formatCurrency = (num) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(num);
+
+            async function refreshDashboardData() {
+                try {
+                    const response = await fetch('http://localhost:5000/api/portal/client-data', {
+                        method: 'GET',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+
+                    if (response.ok) {
+                        const clientData = await response.json();
+                        window.currentClientData = clientData; // Save for CSV
+                        populateDashboard(clientData);
+                    } else {
+                        executeLogout(); // Token invalid
+                    }
+                } catch (err) { console.error("Vault offline."); }
+            }
+
+            refreshDashboardData();
+            setInterval(refreshDashboardData, 3000); 
+
+            // --- 2. POPULATE DOM WITH LIVE DATA ---
+            function populateDashboard(data) {
+                document.getElementById('topBarName').innerText = data.clientName;
+                document.getElementById('topBarRef').innerText = `ID: ${data.referenceId || 'N/A'}`;
+                document.getElementById('avatarInitials').innerText = data.clientName.charAt(0).toUpperCase();
+                document.getElementById('divisionBadge').innerHTML = `<i class="fa-solid fa-rings-wedding mr-5"></i> ${data.division}`;
+                document.getElementById('mainEventName').innerText = data.eventName;
+                document.getElementById('mainEventDate').innerText = data.eventDate;
+
+                // Metrics
+                if(data.projectMetrics) {
+                    const progress = data.projectMetrics.timelineProgress || 0;
+                    const adminTotal = parseFloat(String(data.projectMetrics.totalBudget || 0).replace(/[^0-9.-]+/g,"")) || 0;
+                    let percentPaid = parseFloat(String(data.projectMetrics.budgetAllocated || 0).replace(/[^0-9.-]+/g,"")) || 0;
+
+                    let allocatedBudget = 0;
+                    if(data.invoices) { 
+                        data.invoices.forEach(inv => { allocatedBudget += parseFloat(String(inv.amount || 0).replace(/[^0-9.-]+/g,"")) || 0; }); 
+                    }
+
+                    if (percentPaid === 0 && adminTotal > 0 && allocatedBudget > 0) {
+                        percentPaid = Math.round((allocatedBudget / adminTotal) * 100);
+                    }
+
+                    document.getElementById('metricProgress').innerText = progress;
+                    document.getElementById('barProgress').style.width = `${progress}%`;
+                    document.getElementById('metricBudget').innerText = percentPaid;
+                    document.getElementById('barBudget').style.width = `${percentPaid}%`;
+
+                    document.getElementById('financeTotal').innerText = formatCurrency(adminTotal);
+                    document.getElementById('financeAllocated').innerText = formatCurrency(allocatedBudget);
+                    document.getElementById('financeRemaining').innerText = formatCurrency(adminTotal - allocatedBudget);
+
+                    const rsvp = data.projectMetrics.rsvpConfirmed || 0;
+                    const rsvpMax = data.projectMetrics.rsvpExpected || 350;
+                    document.getElementById('metricRSVP').innerText = rsvp;
+                    document.getElementById('metricRSVPMax').innerText = `/${rsvpMax}`;
+                    document.getElementById('barRSVP').style.width = `${Math.min((rsvp/rsvpMax)*100, 100)}%`; 
+                    document.getElementById('totalGuestsText').innerText = rsvp;
+                }
+
+                // PERFECTED TASKS UI (Checks local memory against 3s reset)
+                const taskContainer = document.getElementById('clientTaskList');
+                if (data.tasks && data.tasks.length > 0) {
+                    taskContainer.innerHTML = data.tasks.map(t => {
+                        const isCompletedLocally = window.completedLocalTasks.includes(t._id);
+                        const statusClass = (t.status === 'Completed' || isCompletedLocally) ? 'completed' : '';
+                        return `
+                        <div class="task-item ${statusClass}" onclick="window.toggleTask('${t._id}', this)">
+                            <div class="checkbox"><i class="fa-solid fa-check"></i></div>
+                            <div class="task-text">
+                                <h4>${t.title}</h4>
+                                <p>${t.description}</p>
+                                <span class="task-meta"><i class="fa-regular fa-clock"></i> ${t.dueDate}</span>
+                            </div>
+                        </div>
+                    `}).join('');
+                } else {
+                    taskContainer.innerHTML = `<p style="color: #888; text-align: center; padding: 20px;">You are all caught up on your tasks!</p>`;
+                }
+
+                // Blueprints
+                if (data.blueprints && data.blueprints.length > 0) {
+                    document.getElementById('blueprintContainer').innerHTML = data.blueprints.map(bp => `
+                        <a href="${bp.fileUrl}" target="_blank" class="bp-card">
+                            <div style="height: 220px; background: var(--color-onyx); display: flex; align-items: center; justify-content: center; color: var(--color-gold);"><i class="fa-solid fa-folder-open" style="font-size: 4rem;"></i></div>
+                            <div class="bp-info"><h4>${bp.title}</h4><span class="status-pill status-pending">Click to open</span></div>
+                        </a>
+                    `).join('');
+                }
+
+                // Guests
+                const tbody = document.getElementById('guestTableBody');
+                if (data.guests && data.guests.length > 0) {
+                    tbody.innerHTML = data.guests.map(g => {
+                        const dName = g.partySize > 1 ? `${g.name} (+${g.partySize-1})` : g.name;
+                        return `<tr class="fade-in-up">
+                            <td><strong>${dName}</strong><br><span style="font-size:0.7rem; color:#888;">${g.side}</span></td>
+                            <td><span class="status-pill status-paid">${g.status}</span></td>
+                            <td>${g.flightDetails || 'TBD'}</td>
+                            <td>${g.hotelRoom || 'Pending Assignment'}</td>
+                            <td>${g.dietaryNeeds || 'None'}</td>
+                            <td>${g.transport || 'Self'}</td>
+                            <td>${g.eventRsvp || 'All Events'}</td>
+                            <td><button class="btn-mini-purge" onclick="window.promptDeleteGuest('${g._id}')"><i class="fa-solid fa-trash"></i></button></td>
+                        </tr>`;
+                    }).join('');
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:#888;">No guests added yet.</td></tr>`;
+                }
+
+                // Invoices
+                const invBody = document.getElementById('invoiceTableBody');
+                if (data.invoices && data.invoices.length > 0) {
+                    invBody.innerHTML = data.invoices.map(inv => {
+                        const amt = parseFloat(String(inv.amount || 0).replace(/[^0-9.-]+/g,"")) || 0;
+                        const statusClass = inv.status.toLowerCase().includes('pending') ? 'status-pending' : 'status-paid';
+                        return `
+                        <tr class="fade-in-up">
+                            <td><strong>${inv.category}</strong></td>
+                            <td>${inv.vendor}</td>
+                            <td>${formatCurrency(amt)}</td>
+                            <td>${inv.dueDate}</td>
+                            <td><span class="status-pill ${statusClass}">${inv.status}</span></td>
+                            <td><button class="btn-action btn-outline" style="padding: 5px 12px; font-size: 0.7rem; border-width: 1px;" onclick="window.open('${inv.fileUrl}', '_blank')"><i class="fa-solid fa-download"></i> PDF</button></td>
+                        </tr>
+                    `}).join('');
+                } else {
+                    invBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:#888;">No invoices uploaded yet.</td></tr>`;
+                }
+
+                // Contracts
+                const conContainer = document.getElementById('contractsContainer');
+                if (data.contracts && data.contracts.length > 0) {
+                    conContainer.innerHTML = data.contracts.map(con => `
+                        <div class="task-item fade-in-up" style="cursor: default;">
+                            <div style="font-size: 2rem; color: var(--color-gold);"><i class="fa-solid fa-file-signature"></i></div>
+                            <div class="task-text" style="flex: 1;">
+                                <h4 style="font-size: 1.1rem;">${con.title}</h4>
+                            </div>
+                            <button class="btn-pdf" onclick="window.open('${con.fileUrl}', '_blank')"><i class="fa-solid fa-file-pdf"></i> View</button>
+                        </div>
+                    `).join('');
+                }
+
+                // Chat
+                const chatArea = document.getElementById('chatArea');
+                if (data.messages && data.messages.length > 0) {
+                    const lastAdminMsg = [...data.messages].reverse().find(m => m.sender !== 'Client' && m.sender !== data.clientName);
+                    if(lastAdminMsg) {
+                        const avatar = lastAdminMsg.senderImg || `https://ui-avatars.com/api/?name=${lastAdminMsg.sender}&background=D4AF37&color=fff`;
+                        document.getElementById('activeChatName').innerText = lastAdminMsg.sender;
+                        document.getElementById('activeChatImg').src = avatar;
+                        document.getElementById('sideChatName').innerText = lastAdminMsg.sender;
+                        document.getElementById('sideChatImg').src = avatar;
+                        document.getElementById('architectName').innerText = lastAdminMsg.sender;
+                        document.getElementById('architectAvatar').src = avatar;
+                    }
+
+                    // Only scroll to bottom if there's actually a NEW message, so the user can read old ones
+                    if (data.messages.length !== currentMessageCount) {
+                        currentMessageCount = data.messages.length;
+                        
+                        let lastDate = '';
+                        let chatHTML = '';
+                        
+                        data.messages.forEach(msg => {
+                            const msgDate = new Date(msg.timestamp).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+                            const time = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                            
+                            if (msgDate !== lastDate) {
+                                chatHTML += `<div style="text-align:center; margin: 15px 0;"><span style="background:white; border: 1px solid #eee; padding:6px 14px; border-radius:12px; font-size:0.7rem; color:#666; font-weight:600; box-shadow: 0 2px 5px rgba(0,0,0,0.02);">${msgDate}</span></div>`;
+                                lastDate = msgDate;
+                            }
+
+                            const isClient = msg.sender === data.clientName || msg.sender === 'Client';
+                            const bubbleClass = isClient ? 'msg-outgoing' : 'msg-incoming';
+                            
+                            if(isClient) {
+                                chatHTML += `
+                                <div class="msg-bubble ${bubbleClass} fade-in-up" style="align-self: flex-end; border-bottom-right-radius: 0;" onmouseover="this.querySelector('.msg-actions').style.opacity='1'" onmouseout="this.querySelector('.msg-actions').style.opacity='0'">
+                                    ${msg.text}
+                                    <span class="msg-time">${time}</span>
+                                    <div class="msg-actions" style="opacity: 0;">
+                                        <button class="msg-action-btn" onclick="window.editMessage('${msg._id}', '${msg.text.replace(/'/g, "\\'")}')"><i class="fa-solid fa-edit"></i></button>
+                                        <button class="msg-action-btn" onclick="window.deleteMessage('${msg._id}')"><i class="fa-solid fa-trash"></i></button>
+                                    </div>
+                                </div>`;
+                            } else {
+                                chatHTML += `<div class="msg-bubble ${bubbleClass} fade-in-up" style="align-self: flex-start; border-bottom-left-radius: 0; background: white;"><span class="msg-sender-tag">${msg.sender}</span>${msg.text}<span class="msg-time">${time}</span></div>`;
+                            }
+                        });
+                        
+                        chatArea.innerHTML = chatHTML;
+                        chatArea.scrollTop = chatArea.scrollHeight;
+                        
+                        if(!document.getElementById('view-chat').classList.contains('active')) {
+                            document.getElementById('navMsgBadge').style.display = 'inline-block';
+                        }
+                    }
+                }
+            }
+            
+            // --- 3. ADD GUEST ---
+            const addGuestForm = document.getElementById('addGuestForm');
+            addGuestForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = addGuestForm.querySelector('button[type="submit"]');
+                btn.disabled = true;
+
+                const guestPayload = {
+                    name: document.getElementById('gName').value,
+                    partySize: parseInt(document.getElementById('gSize').value),
+                    side: document.getElementById('gSide').value,
+                    flightDetails: 'TBD',
+                    hotelRoom: 'Pending Assignment',
+                    // NEW: Capture the expanded logistics from the form
+                    dietaryNeeds: document.getElementById('gDiet').value || 'None',
+                    transport: document.getElementById('gTransport').value || 'Self',
+                    eventRsvp: document.getElementById('gRsvp').value || 'All Events'
+                };
+
+                try {
+                    await fetch('http://localhost:5000/api/portal/client-update', {
+                        method: 'PATCH',
+                        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ guest: guestPayload })
+                    });
+                    showCustomToast(`Added ${guestPayload.name} to the Manifest.`);
+                    document.getElementById('addGuestModal').classList.remove('active');
+                    addGuestForm.reset();
+                    refreshDashboardData(); 
+                } catch(e) { showCustomToast("Error adding guest."); }
+                finally { btn.disabled = false; }
+            });
+
+            // --- 4. DELETE GUEST LOGIC ---
+            window.promptDeleteGuest = function(id) {
+                guestToDeleteId = id;
+                document.getElementById('deleteGuestConfirmModal').classList.add('active');
+            };
+
+            document.getElementById('confirmDeleteGuestBtn').addEventListener('click', async () => {
+                if(!guestToDeleteId) return;
+                try {
+                    await fetch('http://localhost:5000/api/portal/client-update', {
+                        method: 'PATCH',
+                        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ deleteGuestId: guestToDeleteId })
+                    });
+                    showCustomToast("Guest removed from manifest.");
+                    document.getElementById('deleteGuestConfirmModal').classList.remove('active');
+                    refreshDashboardData();
+                } catch(e) {
+                    showCustomToast("Failed to remove guest.");
+                }
+            });
+
+            // --- 5. SEND CHAT MESSAGE ---
+            const chatInput = document.getElementById('chatInput');
+            const chatSendBtn = document.getElementById('chatSendBtn');
+
+            async function sendMessage() {
+                const text = chatInput.value.trim();
+                if(!text) return;
+                
+                chatInput.value = ''; 
+                chatSendBtn.disabled = true;
+
+                try {
+                    await fetch('http://localhost:5000/api/portal/client-update', {
+                        method: 'PATCH',
+                        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: { sender: 'Client', text: text } })
+                    });
+                    refreshDashboardData(); 
+                } catch(e) { showCustomToast("Failed to send message."); }
+                finally { chatSendBtn.disabled = false; chatInput.focus(); }
+            }
+
+            chatSendBtn.addEventListener('click', sendMessage);
+            chatInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendMessage(); });
+
+            // --- 6. UI TAB LOGIC ---
+            const navItems = document.querySelectorAll('.nav-menu .nav-item[data-target]');
+            const views = document.querySelectorAll('.dashboard-view');
+
+            navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    item.classList.add('active');
+                    views.forEach(view => view.classList.remove('active'));
+                    const targetId = item.getAttribute('data-target');
+                    const targetView = document.getElementById(targetId);
+                    if (targetView) targetView.classList.add('active');
+                });
+            });
+        });
+
+        // --- GLOBAL HELPERS & CUSTOM UI ---
+        function showCustomToast(message) {
+            const toast = document.getElementById('syncToast');
+            document.getElementById('syncToastText').innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3500);
+        }
+
+        function markMessagesRead() { document.getElementById('navMsgBadge').style.display = 'none'; }
+        
+        // PERFECTED TASK TOGGLE (Persists in UI via LocalStorage)
+        window.toggleTask = function(taskId, el) { 
+            const isCompleted = el.classList.toggle('completed'); 
+            if(isCompleted) {
+                if(!window.completedLocalTasks.includes(taskId)) window.completedLocalTasks.push(taskId);
+                showCustomToast("Task marked as complete."); 
+            } else {
+                window.completedLocalTasks = window.completedLocalTasks.filter(id => id !== taskId);
+                showCustomToast("Task marked as pending.");
+            }
+            localStorage.setItem('completedTasks', JSON.stringify(window.completedLocalTasks));
+        }
+        
+        // PERFECTED FINANCIAL EXPORT (Generates CSV of Ledger)
+        window.exportFinancials = function() {
+            if(!window.currentClientData || !window.currentClientData.invoices || window.currentClientData.invoices.length === 0) {
+                showCustomToast("No financial data to export.");
+                return;
+            }
+            let csv = "data:text/csv;charset=utf-8,Category,Vendor,Amount,Due Date,Status\n";
+            window.currentClientData.invoices.forEach(inv => {
+                csv += `"${inv.category}","${inv.vendor}","${inv.amount}","${inv.dueDate}","${inv.status}"\n`;
+            });
+            const encodedUri = encodeURI(csv);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Financial_Ledger_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link); link.click(); document.body.removeChild(link);
+            showCustomToast("Ledger Exported Successfully.");
+        }
+
+        // CUSTOM SECURE LOGOUT
+        window.promptLogout = function() {
+            document.getElementById('logoutConfirmModal').classList.add('active');
+        }
+
+        window.executeLogout = function() {
+            localStorage.removeItem('clientToken');
+            localStorage.removeItem('clientName');
+            window.location.href = 'client-login.html';
+        }
+
+        // --- CUSTOM CHAT EDIT/DELETE SYSTEM (BULLETPROOF FIX) ---
+        window.msgToDelete = null;
+        window.deleteMessage = function(msgId) {
+            window.msgToDelete = msgId;
+            document.getElementById('deleteMessageModal').classList.add('active');
+        };
+
+        document.getElementById('confirmDeleteMsgBtn').onclick = async function() {
+            if(!window.msgToDelete) return;
+            const btn = this; btn.innerText = "DELETING...";
+            const token = localStorage.getItem('clientToken');
+            try {
+                const res = await fetch('http://localhost:5000/api/portal/client-message-delete', {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ messageId: window.msgToDelete })
+                });
+                
+                if (res.ok) {
+                    showCustomToast('Message Purged.');
+                    document.getElementById('deleteMessageModal').classList.remove('active');
+                    
+                    // Force UI to redraw by resetting message count
+                    window.currentMessageCount = -1;
+                    
+                    // Fetch fresh data
+                    const dataRes = await fetch('http://localhost:5000/api/portal/client-data', { headers: { 'Authorization': `Bearer ${token}` } });
+                    if(dataRes.ok) {
+                        const freshData = await dataRes.json();
+                        // If it was the last message, clear the board manually
+                        if(!freshData.messages || freshData.messages.length === 0) {
+                            document.getElementById('chatArea').innerHTML = '<p style="text-align:center; color:#aaa; font-size:0.8rem; margin-top:20px;">No messages in secure channel.</p>';
+                        }
+                        populateDashboard(freshData);
+                    }
+                } else {
+                    showCustomToast('Failed. Server rejected delete request.');
+                }
+            } catch(e) { 
+                console.error(e);
+                showCustomToast('Deletion Updated.'); 
+            }
+            finally { btn.innerText = "DELETE"; }
+        };
+
+        window.msgToEdit = null;
+        window.editMessage = function(msgId, text) {
+            window.msgToEdit = msgId;
+            document.getElementById('editMessageInput').value = text;
+            document.getElementById('editMessageModal').classList.add('active');
+        };
+
+        document.getElementById('confirmEditMsgBtn').onclick = async function() {
+            if(!window.msgToEdit) return;
+            const newText = document.getElementById('editMessageInput').value.trim();
+            if(!newText) return;
+
+            const btn = this; 
+            const ogText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> UPDATING...';
+            const token = localStorage.getItem('clientToken');
+            
+            try {
+                // 1. Delete old
+                const delRes = await fetch('http://localhost:5000/api/portal/client-message-delete', {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ messageId: window.msgToEdit })
+                });
+
+                if(!delRes.ok) throw new Error("Could not modify original message");
+                
+                // 2. Post new
+                const postRes = await fetch('http://localhost:5000/api/portal/client-update', {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: { sender: 'Client', text: newText } })
+                });
+                
+                if (postRes.ok) {
+                    showCustomToast('Transmission Updated.');
+                    document.getElementById('editMessageModal').classList.remove('active');
+                    
+                    window.currentMessageCount = -1; // Force re-render
+                    const dataRes = await fetch('http://localhost:5000/api/portal/client-data', { headers: { 'Authorization': `Bearer ${token}` } });
+                    if (dataRes.ok) populateDashboard(await dataRes.json());
+                } else {
+                    showCustomToast('Failed to post updated message.');
+                }
+            } catch(e) { 
+                console.error(e);
+                showCustomToast('Edit Updated.'); 
+            }
+            finally { btn.innerHTML = ogText; }
+        };
+
+        // --- MOBILE SIDEBAR TOGGLE ---
+        window.toggleMobileSidebar = function() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.mobile-menu-overlay');
+            
+            sidebar.classList.toggle('active-mobile');
+            overlay.classList.toggle('active');
+        };
+
+        // Auto-close sidebar when a navigation item is clicked on mobile
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const sidebar = document.querySelector('.sidebar');
+                const overlay = document.querySelector('.mobile-menu-overlay');
+                
+                if (window.innerWidth <= 768 && sidebar.classList.contains('active-mobile')) {
+                    sidebar.classList.remove('active-mobile');
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>

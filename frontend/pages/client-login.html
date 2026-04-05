@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Client Portal | C&O Group</title>
+    <link rel="icon" type="image/png" href="../images/logo.png">
+    <meta name="description" content="Secure access to your personalized C&O Group event planning dashboard.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    
+    <link rel="stylesheet" href="../css/style.css">
+
+    <script>
+        if (history.scrollRestoration) { history.scrollRestoration = 'manual'; }
+        window.scrollTo(0, 0);
+    </script>
+
+    <style>
+        /* =========================================
+           CLIENT PORTAL SPECIFIC CSS
+        ========================================= */
+        
+        :root {
+            --color-onyx: #111111;
+            --color-crimson: #8A1538;
+            --color-blue: #0B192C;
+        }
+
+        /* 1. Cinematic Hero */
+        .portal-hero { height: 75vh; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; background-color: var(--color-onyx); }
+        .hero-bg-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6) grayscale(20%); }
+        .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(17,17,17,0.8) 0%, rgba(17,17,17,0.3) 100%); z-index: 1; }
+
+        /* 2. Floating Login Panel */
+        .login-section { position: relative; z-index: 10; margin-top: -150px; padding-bottom: 80px; }
+        .login-card { background: var(--color-white); max-width: 500px; margin: 0 auto; padding: 50px; border-radius: var(--radius-large); box-shadow: 0 30px 60px rgba(0,0,0,0.15); border: 1px solid var(--color-gold); position: relative; }
+        .login-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--color-gold); border-radius: var(--radius-large) var(--radius-large) 0 0; }
+        
+        .form-input { width: 100%; padding: 15px 0; font-family: var(--font-body); font-size: 1rem; color: var(--color-onyx); background: transparent; border: none; border-bottom: 1px solid var(--color-light-grey); outline: none; transition: border-color 0.3s ease; }
+        .form-input:focus { border-bottom-color: var(--color-gold); }
+        .form-input::placeholder { color: #bbb; font-weight: 300; }
+        
+        .toggle-password { position: absolute; right: 0; bottom: 15px; cursor: pointer; color: var(--color-grey); background: none; border: none; outline: none; font-size: 1.1rem; }
+        .toggle-password:hover { color: var(--color-gold); }
+
+        .btn-glow-gold { background: var(--color-gold); color: var(--color-onyx); border: 1px solid var(--color-gold); display: inline-flex; align-items: center; justify-content: center; padding: 16px 30px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; border-radius: 30px; cursor: pointer; transition: all 0.4s ease; box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3); width: 100%; }
+        .btn-glow-gold:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(212, 175, 55, 0.5); background: white; border-color: var(--color-gold); }
+
+        /* 3. Benefits Grid */
+        .benefit-card { background: var(--color-ivory); padding: 40px 30px; border-radius: var(--radius-large); text-align: center; transition: all 0.3s; border: 1px solid transparent; }
+        .benefit-card:hover { background: var(--color-white); border-color: var(--color-gold); box-shadow: var(--shadow-soft); transform: translateY(-5px); }
+        .b-icon { width: 70px; height: 70px; background: var(--color-white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: var(--color-gold); margin: 0 auto 20px; box-shadow: var(--shadow-soft); }
+
+        /* 4. Journey Timeline */
+        .journey-track { display: flex; justify-content: space-between; align-items: center; position: relative; margin-top: 60px; padding: 40px; background: var(--color-white); border-radius: 100px; border: 1px solid var(--color-light-grey); box-shadow: var(--shadow-soft); overflow-x: auto; }
+        .j-step { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; color: var(--color-onyx); }
+        .j-step.active { color: var(--color-gold); }
+        .j-arrow { color: var(--color-light-grey); }
+
+        /* 5. Dashboard Mockup (UI Preview) */
+        .mock-dashboard { background: #F8F9FA; border-radius: 20px; border: 1px solid var(--color-light-grey); box-shadow: 0 30px 60px rgba(0,0,0,0.1); overflow: hidden; display: flex; max-width: 1000px; margin: 0 auto; text-align: left; }
+        .mock-sidebar { width: 250px; background: var(--color-onyx); padding: 40px 30px; color: white; }
+        .mock-logo { font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 40px; }
+        .mock-nav-item { padding: 15px 0; color: #aaa; font-size: 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 15px; }
+        .mock-nav-item.active { color: var(--color-gold); border-bottom-color: var(--color-gold); }
+        
+        .mock-main { flex: 1; padding: 40px; }
+        .mock-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .mock-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+        .m-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .m-card-value { font-family: var(--font-heading); font-size: 2rem; color: var(--color-onyx); margin-top: 10px; }
+        
+        .mock-progress-bar { width: 100%; height: 6px; background: var(--color-light-grey); border-radius: 10px; margin-top: 15px; overflow: hidden; }
+        .mock-progress-fill { height: 100%; background: var(--color-gold); width: 75%; }
+        
+        .mock-tasks { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .m-task { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid var(--color-light-grey); }
+        .m-task:last-child { border-bottom: none; padding-bottom: 0; }
+        .m-check { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--color-gold); display: flex; align-items: center; justify-content: center; color: white; }
+        .m-check.done { background: var(--color-gold); }
+
+        /* 6. Security Section */
+        .security-section { background: var(--color-onyx); color: white; padding: 80px 0; }
+        .sec-icon { font-size: 3rem; color: var(--color-gold); margin-bottom: 20px; }
+
+        /* General Forms & Buttons */
+        .btn-solid-onyx { background-color: var(--color-onyx); color: var(--color-gold); border: 1px solid var(--color-onyx); display: inline-flex; align-items: center; justify-content: center; padding: 16px 30px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; border-radius: 30px; cursor: pointer; transition: all 0.4s ease; width: 100%; }
+        .btn-solid-onyx:hover { background-color: var(--color-gold); color: var(--color-onyx); border-color: var(--color-gold); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2); }
+
+        /* Modals & Nav */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(17, 17, 17, 0.95); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+        .modal-content { background: var(--color-ivory); padding: 50px; border-radius: var(--radius-large); max-width: 500px; width: 90%; position: relative; border: 1px solid var(--color-gold); box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: var(--color-onyx); background: var(--color-white); border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: 0.3s; z-index: 10; }
+        .close-modal:hover { background: var(--color-crimson); color: white; transform: rotate(90deg); }
+
+        /* Custom Success Message (Toast) */
+        .toast-msg {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--color-onyx);
+            color: var(--color-white);
+            padding: 16px 24px;
+            border-left: 4px solid var(--color-gold);
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 10001;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        .toast-msg.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Floating Bubbles */
+        .floating-shape { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.15; z-index: 0; pointer-events: none; animation: float 6s ease-in-out infinite; }
+        .shape-gold { background: var(--color-gold); }
+        .shape-onyx { background: var(--color-onyx); }
+        .shape-lg { width: 400px; height: 400px; }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-30px); } 100% { transform: translateY(0px); } }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .mock-dashboard { flex-direction: column; }
+            .mock-sidebar { width: 100%; display: flex; justify-content: space-between; padding: 20px; }
+            .mock-logo { margin-bottom: 0; }
+            .mock-nav-item { display: none; }
+            .mock-cards { grid-template-columns: 1fr; }
+            .journey-track { border-radius: var(--radius-large); flex-direction: column; align-items: flex-start; gap: 20px; }
+            .j-arrow { transform: rotate(90deg); margin-left: 10px; }
+            .mobile-toggle { display: block; color: white; } .nav-links, .nav-actions { display: none; }
+            .navbar.scrolled .mobile-toggle { color: var(--color-onyx); }
+        }
+        @media (max-width: 768px) {
+            .login-section { margin-top: -80px; }
+            .login-card { padding: 40px 30px; }
+            .portal-hero { height: 60vh; }
+        }
+    </style>
+</head>
+<body class="bg-ivory text-black">
+
+    <div id="bookingModal" class="modal-overlay">
+        <div class="modal-content shadow-glow">
+            <button class="close-modal" id="closeBooking"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="serif-font text-onyx mb-10">Start Your Journey</h3>
+            <p class="text-sm mb-30 text-grey">Fill in your details and our lead architect will reach out within 24 hours.</p>
+            <form id="popupContactForm">
+                <input type="text" name="name" placeholder="Full Name / Company" class="form-input mb-20 border-bottom-only" required>
+                <input type="email" name="email" placeholder="Email Address" class="form-input mb-20 border-bottom-only" required>
+                <select name="eventType" class="form-input mb-20 border-bottom-only text-grey" required>
+                    <option value="" disabled selected>Select Event Type</option>
+                    <option value="wedding">Thread & Knot (Wedding/Social)</option>
+                    <option value="corporate">Prism Planner (Corporate MICE)</option>
+                </select>
+                <textarea name="message" placeholder="Briefly describe your vision..." class="form-input mb-30 border-bottom-only" rows="2"></textarea>
+                <button type="submit" class="btn-solid-onyx">Request Consultation</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="forgotPasswordModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 450px;">
+            <button class="close-modal" id="closeForgot"><i class="fa-solid fa-xmark"></i></button>
+            <div class="text-center mb-30">
+                <i class="fa-solid fa-key text-gold massive-icon mb-10"></i>
+                <h3 class="serif-font text-onyx" style="font-size: 2rem;">Secure Recovery</h3>
+                <p class="text-sm text-grey">Enter your registered corporate email to request a new cryptographic key.</p>
+            </div>
+            
+            <form id="forgotPasswordForm">
+                <div class="mb-30">
+                    <label class="text-onyx font-weight-600 text-sm mb-5 block">Registered Email Address</label>
+                    <input type="email" id="forgotEmail" class="form-input border-bottom-only" placeholder="client@domain.com" required>
+                </div>
+                <button type="submit" class="btn-glow-gold" id="submitForgotBtn" style="width: 100%;">Initiate Protocol <i class="fa-solid fa-paper-plane ml-10"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <nav class="navbar glass-header" id="navbar">
+        <div class="container nav-container flex-space-between relative-z-content">
+            <a href="../index.html" class="brand-logo text-white serif-font" id="nav-logo">C&O<span class="text-gold">.</span> Group</a>
+            
+            <ul class="nav-links text-white" id="nav-links-color">
+                <li><a href="about.html">Our Story</a></li>
+                <li class="has-dropdown">
+                    <a href="#">Divisions <i class="fa-solid fa-chevron-down text-sm ml-10"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="thread-knot.html" class="text-onyx">Thread & Knot (Weddings)</a></li>
+                        <li><a href="prism-planner.html" class="text-onyx">Prism Planner (Corporate)</a></li>
+                    </ul>
+                </li>
+                <li><a href="process.html">Process</a></li>
+                <li><a href="portfolio.html">Masterpieces</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button class="btn-header-premium text-white trigger-booking" style="border-color: var(--color-white);" onmouseover="this.style.color='var(--color-onyx)'; this.style.backgroundColor='white';" onmouseout="this.style.color='white'; this.style.backgroundColor='transparent';">Plan Your Event</button>
+            </div>
+            
+            <div class="mobile-toggle"><i class="fa-solid fa-bars" id="mob-icon" style="color: white;"></i></div>
+        </div>
+    </nav>
+
+    <header class="portal-hero">
+        <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2098" alt="Event Setup" class="hero-bg-img">
+        <div class="hero-overlay"></div>
+        <div class="floating-shape shape-gold shape-lg" style="top: -10%; right: 10%;"></div>
+
+        <div class="container text-center relative-z-content" style="margin-top: -80px;">
+            <span class="eyebrow text-gold mb-20">Private Access</span>
+            <h1 class="massive-title text-white serif-font mb-20">Your Event.<br><span class="text-gold italic">Your Dashboard.</span></h1>
+            <p class="text-white font-size-lg opacity-70 max-w-600 mx-auto">Manage your logistics, track financial frameworks, and communicate directly with your principal architects.</p>
+        </div>
+    </header>
+
+    <section class="login-section">
+        <div class="container">
+            <div class="login-card fade-up-slow">
+                <div class="text-center mb-40">
+                    <i class="fa-solid fa-shield-halved text-gold massive-icon mb-10"></i>
+                    <h2 class="serif-font text-onyx" style="font-size: 2rem;">Portal Login</h2>
+                    <p class="text-sm text-grey">Secure access for active C&O clients.</p>
+                </div>
+                
+                <form id="clientLoginForm">
+                    <div class="mb-30 relative">
+                        <label class="text-onyx font-weight-600 text-sm mb-5 block text-uppercase letter-spacing-1">Email Address</label>
+                        <input type="email" id="clientEmailInput" class="form-input" placeholder="client@domain.com" required>
+                    </div>
+
+                    <div class="mb-30 relative">
+                        <label class="text-onyx font-weight-600 text-sm mb-5 block text-uppercase letter-spacing-1">Passcode</label>
+                        <input type="password" id="passwordInput" class="form-input" placeholder="CO-XXXXXX" required>
+                        <button type="button" class="toggle-password" id="togglePassBtn">
+                            <i class="fa-regular fa-eye" id="toggleIcon"></i>
+                        </button>
+                    </div>
+
+                    <div class="flex-space-between mb-40">
+                        <label class="text-sm text-grey flex-align-center cursor-pointer">
+                            <input type="checkbox" class="mr-10" style="accent-color: var(--color-gold);"> Remember Me
+                        </label>
+                        <a href="#" class="text-sm text-gold hover-underline" onclick="window.triggerForgotPassword(event)">Forgot Password?</a>
+                    </div>
+
+                    <button type="submit" class="btn-glow-gold" id="loginSubmitBtn">Access Dashboard <i class="fa-solid fa-arrow-right ml-10"></i></button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding bg-ivory text-center relative overflow-hidden">
+        <div class="floating-shape shape-onyx shape-lg" style="top: 20%; left: -10%;"></div>
+
+        <div class="container relative-z-content">
+            <span class="eyebrow text-gold">The Ecosystem</span>
+            <h2 class="section-title serif-font text-onyx mt-10 mb-60">Inside The Command Center</h2>
+            
+            <div class="grid-3-cols">
+                <div class="benefit-card fade-up-slow">
+                    <div class="b-icon"><i class="fa-solid fa-chart-line"></i></div>
+                    <h4 class="serif-font font-size-lg text-onyx mb-10">Progress Tracking</h4>
+                    <p class="text-sm text-grey">Monitor planning milestones, venue confirmations, and active tasks in real-time.</p>
+                </div>
+                <div class="benefit-card fade-up-slow delay-1">
+                    <div class="b-icon"><i class="fa-solid fa-money-bill-transfer"></i></div>
+                    <h4 class="serif-font font-size-lg text-onyx mb-10">Financial Framework</h4>
+                    <p class="text-sm text-grey">Total transparency. Track open-book budgets, vendor allocations, and payment schedules.</p>
+                </div>
+                <div class="benefit-card fade-up-slow delay-2">
+                    <div class="b-icon"><i class="fa-solid fa-compass-drafting"></i></div>
+                    <h4 class="serif-font font-size-lg text-onyx mb-10">Blueprint Approvals</h4>
+                    <p class="text-sm text-grey">View and officially approve 3D stage renders, moodboards, and floral architectures.</p>
+                </div>
+                <div class="benefit-card fade-up-slow">
+                    <div class="b-icon"><i class="fa-solid fa-address-book"></i></div>
+                    <h4 class="serif-font font-size-lg text-onyx mb-10">Guest Management</h4>
+                    <p class="text-sm text-grey">Digital RSVP tracking, flight manifest mapping, and hotel room allocations.</p>
+                </div>
+                <div class="benefit-card fade-up-slow delay-1">
+                    <div class="b-icon"><i class="fa-solid fa-clock"></i></div>
+                    <h4 class="serif-font font-size-lg text-onyx mb-10">Live Event Timeline</h4>
+                    <p class="text-sm text-grey">Minute-by-minute schedules for ceremonies, vendor load-ins, and artist cues.</p>
+                </div>
+                <div class="benefit-card fade-up-slow delay-2">
+                    <div class="b-icon"><i class="fa-solid fa-comments"></i></div>
+                    <h4 class="serif-font font-size-lg text-onyx mb-10">Direct Comms</h4>
+                    <p class="text-sm text-grey">Secure messaging directly with your designated C&O Principal Architect.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding bg-white border-top-gold relative overflow-hidden">
+        <div class="floating-shape shape-gold shape-lg" style="bottom: -10%; right: -10%;"></div>
+
+        <div class="container relative-z-content text-center">
+            <span class="eyebrow text-onyx">Platform Preview</span>
+            <h2 class="section-title serif-font mt-10 mb-60">A Glimpse Inside</h2>
+
+            <div class="mock-dashboard fade-up-slow">
+                <div class="mock-sidebar">
+                    <div class="mock-logo">C&O<span class="text-gold">.</span> Portal</div>
+                    <div class="mock-nav-item active"><i class="fa-solid fa-house"></i> Dashboard</div>
+                    <div class="mock-nav-item"><i class="fa-solid fa-wallet"></i> Budget Matrix</div>
+                    <div class="mock-nav-item"><i class="fa-solid fa-users"></i> Guest List</div>
+                    <div class="mock-nav-item"><i class="fa-solid fa-image"></i> 3D Blueprints</div>
+                    <div class="mock-nav-item"><i class="fa-solid fa-message"></i> Architect Chat</div>
+                </div>
+                <div class="mock-main">
+                    <div class="mock-header">
+                        <div>
+                            <h3 class="serif-font font-size-xl text-onyx">Jaipur Royal Wedding</h3>
+                            <p class="text-sm text-grey mt-5">Event Date: 12 Feb 2027 • Guests: 350</p>
+                        </div>
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=150" alt="Client" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--color-gold);">
+                    </div>
+
+                    <div class="mock-cards">
+                        <div class="m-card">
+                            <span class="text-sm text-grey font-weight-600 text-uppercase">Overall Progress</span>
+                            <div class="m-card-value">75%</div>
+                            <div class="mock-progress-bar"><div class="mock-progress-fill"></div></div>
+                        </div>
+                        <div class="m-card">
+                            <span class="text-sm text-grey font-weight-600 text-uppercase">Budget Allocated</span>
+                            <div class="m-card-value text-gold">68%</div>
+                            <p class="text-sm text-grey mt-10">Zero variances reported.</p>
+                        </div>
+                        <div class="m-card">
+                            <span class="text-sm text-grey font-weight-600 text-uppercase">RSVP Status</span>
+                            <div class="m-card-value">280/350</div>
+                            <p class="text-sm text-grey mt-10">70 Pending Confirmation</p>
+                        </div>
+                    </div>
+
+                    <div class="mock-tasks">
+                        <h4 class="serif-font font-size-lg text-onyx mb-20">Immediate Action Required</h4>
+                        <div class="m-task">
+                            <div class="m-check done"><i class="fa-solid fa-check text-sm"></i></div>
+                            <div>
+                                <h5 class="text-onyx font-weight-600">Approve Mandap 3D Render</h5>
+                                <p class="text-sm text-grey">Completed by Client on Oct 12.</p>
+                            </div>
+                        </div>
+                        <div class="m-task">
+                            <div class="m-check"></div>
+                            <div>
+                                <h5 class="text-onyx font-weight-600">Finalize Sangeet Menu Tasting</h5>
+                                <p class="text-sm text-crimson">Pending • Due Oct 20</p>
+                            </div>
+                        </div>
+                        <div class="m-task">
+                            <div class="m-check"></div>
+                            <div>
+                                <h5 class="text-onyx font-weight-600">Review Artist Contract</h5>
+                                <p class="text-sm text-grey">Awaiting Legal Review</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding bg-white border-top-gold relative overflow-hidden">
+        <div class="container split-layout">
+            <div class="fade-up-slow">
+                <span class="eyebrow text-crimson">Account Generation</span>
+                <h2 class="section-title serif-font text-onyx mt-10 mb-20">Need Portal <br><span class="italic text-gold">Access?</span></h2>
+                <p class="text-grey mb-30">If you are an active C&O client and have not yet received your encrypted portal credentials, please request access. Our team will verify your contract and provision your dashboard.</p>
+                <div class="bg-ivory p-40 rounded-corners border-light-grey shadow-soft">
+                    <h4 class="serif-font font-weight-600 mb-10"><i class="fa-solid fa-headset text-gold mr-10"></i> Immediate Assistance</h4>
+                    <p class="text-sm text-grey">If you require immediate access, please contact your designated Principal Architect directly via their corporate line.</p>
+                </div>
+            </div>
+
+            <div class="bg-ivory p-50 rounded-corners border-gold shadow-glow fade-up-slow delay-1">
+                <form id="requestAccessForm">
+                    <div class="grid-2-cols" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div>
+                            <label class="text-onyx font-weight-600 text-sm mb-5 block">Full Name / Entity</label>
+                            <input type="text" id="reqName" class="form-input border-bottom-only" placeholder="e.g. Rahul Sharma" required>
+                        </div>
+                        <div>
+                            <label class="text-onyx font-weight-600 text-sm mb-5 block">Phone Number</label>
+                            <input type="tel" id="reqPhone" class="form-input border-bottom-only" placeholder="+91 ..." required>
+                        </div>
+                    </div>
+
+                    <div class="mb-20">
+                        <label class="text-onyx font-weight-600 text-sm mb-5 block">Project Signature (Event Name)</label>
+                        <input type="text" id="reqEventName" class="form-input border-bottom-only" placeholder="e.g. The Sharma-Mehta Wedding" required>
+                    </div>
+
+                    <div class="mb-20">
+                        <label class="text-onyx font-weight-600 text-sm mb-5 block">Registered Email Address</label>
+                        <input type="email" id="reqEmail" class="form-input border-bottom-only" placeholder="name@domain.com" required>
+                    </div>
+
+                    <div class="grid-2-cols" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+                        <div>
+                            <label class="text-onyx font-weight-600 text-sm mb-5 block">Event Date / Month</label>
+                            <input type="text" id="reqDate" class="form-input border-bottom-only" placeholder="e.g. Dec 2026" required>
+                        </div>
+                        <div>
+                            <label class="text-onyx font-weight-600 text-sm mb-5 block">Division</label>
+                            <select id="reqDivision" class="form-input border-bottom-only text-grey" required>
+                                <option value="wedding">Thread & Knot</option>
+                                <option value="corporate">Prism Planner</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-30">
+                        <label class="text-onyx font-weight-600 text-sm mb-5 block">Contract Reference ID (Optional)</label>
+                        <input type="text" id="reqRefId" class="form-input border-bottom-only" placeholder="e.g. CO-2026-99">
+                    </div>
+
+                    <button type="submit" class="btn-solid-onyx" id="requestSubmitBtn">Request Secure Credentials</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="security-section text-center relative overflow-hidden">
+        <div class="floating-shape shape-gold shape-md" style="top: 10%; left: 10%;"></div>
+
+        <div class="container relative-z-content">
+            <span class="eyebrow text-gold mb-10">Trust Architecture</span>
+            <h2 class="section-title serif-font text-white mb-60">Secure & Confidential</h2>
+            
+            <div class="grid-3-cols">
+                <div class="fade-up-slow">
+                    <i class="fa-solid fa-shield-halved sec-icon"></i>
+                    <h4 class="serif-font font-size-lg text-white mb-10">Encrypted Gateway</h4>
+                    <p class="text-sm text-grey max-w-300 mx-auto">All portal communications and financial data are secured via 256-bit enterprise encryption.</p>
+                </div>
+                <div class="fade-up-slow delay-1">
+                    <i class="fa-solid fa-user-lock sec-icon"></i>
+                    <h4 class="serif-font font-size-lg text-white mb-10">Absolute Privacy</h4>
+                    <p class="text-sm text-grey max-w-300 mx-auto">Guest lists, VIP flight manifests, and corporate strategy documents remain strictly confidential.</p>
+                </div>
+                <div class="fade-up-slow delay-2">
+                    <i class="fa-solid fa-server sec-icon"></i>
+                    <h4 class="serif-font font-size-lg text-white mb-10">Data Sovereignty</h4>
+                    <p class="text-sm text-grey max-w-300 mx-auto">Your event blueprints are hosted on dedicated, isolated servers with zero third-party data sharing.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="custom-footer relative overflow-hidden bg-ivory border-top-gold">
+        <div class="container relative-z-content">
+            <div class="footer-top-row">
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Subscribe to receive exciting gifts!</h4>
+                    <form class="newsletter-form" id="newsletterForm">
+                        <input type="email" placeholder="Your email address" class="nl-input" required>
+                        <button type="submit" class="nl-btn bg-onyx"><i class="fa-solid fa-envelope-open-text text-gold"></i></button>
+                    </form>
+                    <ul class="footer-info-list">
+                        <li><i class="fa-solid fa-location-dot text-gold"></i> <a href="https://www.google.com/maps/search/?api=1&query=Sant+Nagar+East+of+Kailash+New+Delhi+110065" target="_blank"><span>Sant Nagar, East of Kailash, New Delhi, Delhi 110065</span></a></li>
+                        <li><i class="fa-solid fa-phone text-gold"></i> <a href="tel:+918882373939"><span>+91 8882373939</span></a></li>
+                        <li><i class="fa-solid fa-at text-gold"></i> <a href="mailto:info.cogroup@gmail.com"><span>info.cogroup@gmail.com</span></a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Our Divisions</h4>
+                    <ul class="footer-links">
+                        <li><a href="thread-knot.html">Thread & Knot</a></li>
+                        <li><a href="prism-planner.html">Prism Planner</a></li>
+                        <li><a href="portfolio.html">Portfolio Showcase</a></li>
+                        <li><a href="case-studies.html">Featured Case Studies</a></li>
+                        <li><a href="client-login.html" class="text-gold font-weight-600">Client Portal Login</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Capabilities</h4>
+                    <ul class="footer-links">
+                        <li><a href="thread-knot.html">Luxury Wedding Planning</a></li>
+                        <li><a href="prism-planner.html">Corporate MICE & Summits</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html">About C&O Group</a></li>
+                        <li><a href="process.html">Our Execution Framework</a></li>
+                        <li><a href="vendor-portal.html">Vendor Network Portal</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                        <li><a href="contact.html">Contact Command Center</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom-row border-top-grey">
+                <div class="footer-socials">    
+                    <a href="https://instagram.com/yourhandle" target="_blank" class="text-onyx hover-gold"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://youtube.com/yourchannel" target="_blank" class="text-onyx hover-gold"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+                <div class="footer-copyright text-grey"><p>All Rights Reserved © 2026 C&O Group LLP.</p></div>
+                <div class="payment-icons">
+                    <i class="fa-brands fa-google-pay fa-2x" style="color: #5f6368; vertical-align: middle;"></i>
+                    <i class="fa-brands fa-cc-visa fa-2x ml-10" style="color: #1434CB; vertical-align: middle;"></i>
+                    <i class="fa-brands fa-cc-mastercard fa-2x ml-10" style="color: #EB001B; vertical-align: middle;"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+<script>
+    // 1. Check Global Command Switch (Maintenance)
+    (function() {
+        if (localStorage.getItem('maintenanceMode') === 'true') {
+            document.addEventListener('DOMContentLoaded', () => {
+                document.body.innerHTML = `
+                    <div style="position: fixed; inset: 0; background: #0A0A0A; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-family: 'Montserrat', sans-serif; padding: 20px;">
+                        <div style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: white; letter-spacing: 2px; margin-bottom: 50px; font-weight: 700;">
+                            C&O<span style="color: #D4AF37;">.</span>
+                        </div>
+                        <div style="width: 80px; height: 80px; border-radius: 50%; border: 1px dashed #D4AF37; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; animation: spin 10s linear infinite;">
+                            <i class="fa-solid fa-compass-drafting" style="font-size: 2rem; color: #D4AF37;"></i>
+                        </div>
+                        <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
+                        <h1 style="font-family: 'Playfair Display', serif; font-size: 3.5rem; color: #D4AF37; margin-bottom: 20px; line-height: 1.1;">Site Under<br>Architecture</h1>
+                        <p style="color: #888; font-size: 1rem; max-width: 500px; line-height: 1.8; margin-bottom: 50px;">
+                            Our digital environment is currently undergoing an encrypted upgrade. Our principal architects are refining the mainframe to ensure flawless execution for your future events.
+                        </p>
+                        <div style="font-size: 0.75rem; color: #444; text-transform: uppercase; letter-spacing: 3px; border-top: 1px solid #222; padding-top: 20px; width: 100%; max-width: 300px;">
+                            <i class="fa-solid fa-lock text-gold mr-5"></i> Secure Protocol Active
+                        </div>
+                    </div>
+                `;
+                document.body.style.overflow = 'hidden';
+            });
+        }
+    })();
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // ==========================================
+        //  1. UI, NAVIGATION & ANIMATION LOGIC
+        // ==========================================
+
+        // --- Global Booking Modal ---
+        const bookingModal = document.getElementById('bookingModal');
+        const openBookingBtns = document.querySelectorAll('.trigger-booking');
+        
+        openBookingBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                bookingModal.classList.add('active');
+            });
+        });
+
+        document.getElementById('closeBooking').addEventListener('click', () => bookingModal.classList.remove('active'));
+        window.addEventListener('click', (e) => { if (e.target === bookingModal) bookingModal.classList.remove('active'); });
+
+        // --- Password Visibility Toggle ---
+        const togglePassBtn = document.getElementById('togglePassBtn');
+        const passwordInput = document.getElementById('passwordInput');
+        const toggleIcon = document.getElementById('toggleIcon');
+        
+        if(togglePassBtn && passwordInput) {
+            togglePassBtn.addEventListener('click', () => {
+                const isPass = passwordInput.type === 'password';
+                passwordInput.type = isPass ? 'text' : 'password';
+                toggleIcon.classList.toggle('fa-eye');
+                toggleIcon.classList.toggle('fa-eye-slash');
+            });
+        }
+
+        // --- Mobile Navigation Controller ---
+        const mobileToggle = document.querySelector('.mobile-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        if (mobileToggle && navLinks) {
+            mobileToggle.addEventListener('click', () => {
+                const isActive = navLinks.style.display === 'flex';
+                if (isActive) { 
+                    navLinks.style.display = 'none'; 
+                } else {
+                    navLinks.style.display = 'flex'; 
+                    navLinks.style.flexDirection = 'column';
+                    navLinks.style.position = 'absolute'; 
+                    navLinks.style.top = '100%'; 
+                    navLinks.style.left = '0';
+                    navLinks.style.width = '100%'; 
+                    navLinks.style.background = '#FCFBF9'; 
+                    navLinks.style.padding = '20px';
+                    navLinks.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
+                }
+            });
+        }
+
+        // --- Dynamic Navbar Scroll Effects ---
+        const navbar = document.getElementById('navbar');
+        const navLogo = document.getElementById('nav-logo');
+        const navLinksColor = document.getElementById('nav-links-color');
+        const planBtn = document.querySelector('.btn-header-premium');
+        const mobIcon = document.getElementById('mob-icon');
+        
+        window.addEventListener('scroll', () => {
+            const isScrolled = window.scrollY > 50;
+            navbar.classList.toggle('scrolled', isScrolled);
+            
+            if(navLogo) {
+                navLogo.classList.toggle('text-white', !isScrolled);
+                navLogo.classList.toggle('text-onyx', isScrolled);
+            }
+            if(navLinksColor) {
+                navLinksColor.classList.toggle('text-white', !isScrolled);
+                navLinksColor.classList.toggle('text-onyx', isScrolled);
+            }
+            if(planBtn) {
+                planBtn.style.color = isScrolled ? 'var(--color-onyx)' : 'white';
+                planBtn.style.borderColor = isScrolled ? 'var(--color-onyx)' : 'white';
+            }
+            if(mobIcon) {
+                mobIcon.style.color = isScrolled ? 'var(--color-onyx)' : 'white';
+            }
+        });
+
+        // --- Scroll Reveal Animations ---
+        const revealElements = document.querySelectorAll('.fade-up-slow');
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) { 
+                    entry.target.classList.add('active'); 
+                    observer.unobserve(entry.target); 
+                }
+            });
+        }, { threshold: 0.15 });
+        revealElements.forEach(el => revealObserver.observe(el));
+
+
+        // ==========================================
+        //  2. SHARED UTILITIES & TOASTS
+        // ==========================================
+
+        const showToast = (message) => {
+            const toast = document.createElement('div');
+            toast.className = 'toast-msg';
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-gold"></i> <span style="margin-left:8px;">${message}</span>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => { 
+                toast.classList.remove('show'); 
+                setTimeout(() => toast.remove(), 500);
+            }, 4000);
+        };
+
+        const translateDivision = (val) => {
+            if (val === 'wedding') return 'Thread & Knot';
+            if (val === 'corporate') return 'Prism Planner';
+            return 'General';
+        };
+
+
+        // ==========================================
+        //  3. FORM SUBMISSION LOGIC (MONGODB SYNC)
+        // ==========================================
+
+        // --- SUBMIT 1: Newsletter Form ---
+        const newsletterForm = document.getElementById('newsletterForm');
+        if (newsletterForm) {
+            newsletterForm.addEventListener('submit', async (e) => {
+                e.preventDefault(); 
+                const btn = newsletterForm.querySelector('button[type="submit"]');
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-gold"></i>';
+                btn.disabled = true;
+
+                const emailInput = newsletterForm.querySelector('input[type="email"]').value;
+
+                try {
+                    const response = await fetch('http://localhost:5000/api/subscribe', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: emailInput })
+                    });
+
+                    if (response.ok) {
+                        showToast('Welcome to the inner circle! Your gift is on the way.');
+                        newsletterForm.reset();
+                    } else if (response.status === 400) {
+                        showToast('You are already on our exclusive list!');
+                    } else {
+                        showToast('Transmission failed. Please try again.');
+                    }
+                } catch (err) { showToast('Server connection lost.'); }
+                finally {
+                    btn.innerHTML = originalHTML;
+                    btn.disabled = false;
+                }
+            });
+        }
+
+        // --- SUBMIT 2: Modal Consultation Form ---
+        const popupForm = document.getElementById('popupContactForm');
+        if (popupForm) {
+            popupForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = popupForm.querySelector('button[type="submit"]');
+                const originalText = btn.innerText;
+                btn.innerText = "Securing Connection...";
+                btn.disabled = true;
+
+                const formData = new FormData(popupForm);
+                const payload = {
+                    clientName: formData.get('name'),
+                    email: formData.get('email'),
+                    division: translateDivision(formData.get('eventType')),
+                    eventDetails: formData.get('message') || "Consultation requested from Client Login page."
+                };
+
+                try {
+                    const response = await fetch('http://localhost:5000/api/enquiries', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.ok) {
+                        showToast('Architectural Vision Dispatched. Expect contact within 24hrs.');
+                        popupForm.reset();
+                        bookingModal.classList.remove('active');
+                    } else { showToast('Submission error. Please try again.'); }
+                } catch (err) { showToast('Secure Gateway Offline.'); }
+                finally {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }
+            });
+        }
+
+        // --- SUBMIT 3: Request Credentials (DETAILED DOSSIER) ---
+        const requestForm = document.getElementById('requestAccessForm');
+        if(requestForm) {
+            requestForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('requestSubmitBtn');
+                const ogText = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing Dossier...';
+                btn.disabled = true;
+                
+                const payload = {
+                    clientName: document.getElementById('reqName').value.trim(),
+                    phone: document.getElementById('reqPhone').value.trim(),
+                    eventName: document.getElementById('reqEventName').value.trim(),
+                    email: document.getElementById('reqEmail').value.trim().toLowerCase(),
+                    eventDate: document.getElementById('reqDate').value.trim(),
+                    division: translateDivision(document.getElementById('reqDivision').value),
+                    referenceId: document.getElementById('reqRefId').value.trim()
+                };
+
+                try {
+                    const response = await fetch('http://localhost:5000/api/clients', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.ok) {
+                        showToast('Vault Access Requested. Our team will verify your contract.');
+                        btn.innerHTML = '<i class="fa-solid fa-check"></i> Dispatched';
+                        btn.style.backgroundColor = 'var(--color-gold)';
+                        btn.style.color = 'var(--color-onyx)';
+                        setTimeout(() => { 
+                            requestForm.reset(); 
+                            btn.innerHTML = ogText; 
+                            btn.style.backgroundColor = '';
+                            btn.style.color = '';
+                            btn.disabled = false;
+                        }, 3000);
+                    } else { 
+                        showToast('Dossier transmission failed. Email may already be registered.');
+                        btn.innerHTML = ogText;
+                        btn.disabled = false;
+                    }
+                } catch (err) { 
+                    showToast('Secure Vault Offline.'); 
+                    btn.innerHTML = ogText;
+                    btn.disabled = false;
+                }
+            });
+        }
+
+        // Check if already logged in (Auto-Redirect)
+        if(localStorage.getItem('clientToken')) {
+            window.location.href = 'client-dashboard.html';
+        }
+
+        // --- SUBMIT 4: PHASE 5 REAL LOGIN LOGIC ---
+        const loginForm = document.getElementById('clientLoginForm');
+        const loginBtn = document.getElementById('loginSubmitBtn');
+        
+        if(loginForm) {
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const emailInput = document.getElementById('clientEmailInput').value.trim().toLowerCase();
+                const passInput = document.getElementById('passwordInput').value.trim();
+
+                const originalBtnText = loginBtn.innerHTML;
+                loginBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Verifying Keys...';
+                loginBtn.style.pointerEvents = 'none';
+                
+                try {
+                    const response = await fetch('http://localhost:5000/api/portal/client-login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: emailInput, passcode: passInput })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok && data.token) {
+                        localStorage.setItem('clientToken', data.token);
+                        localStorage.setItem('clientName', data.clientName);
+                        
+                        loginBtn.innerHTML = '<i class="fa-solid fa-check"></i> Authorization Granted';
+                        loginBtn.style.backgroundColor = 'var(--color-gold)';
+                        loginBtn.style.color = 'var(--color-onyx)';
+                        showToast('Welcome back. Decrypting your project dashboard...');
+
+                        setTimeout(() => { 
+                            window.location.href = 'client-dashboard.html'; 
+                        }, 1200);
+                    } else {
+                        showToast(data.error || 'Invalid Credentials');
+                        loginBtn.innerHTML = originalBtnText;
+                        loginBtn.style.pointerEvents = 'auto';
+                    }
+                } catch(err) {
+                    showToast('Secure Vault Offline. Backend Server Not Responding.');
+                    loginBtn.innerHTML = originalBtnText;
+                    loginBtn.style.pointerEvents = 'auto';
+                }
+            });
+        }
+
+        // REAL SUBMIT: Client Forgot Password Protocol -> MongoDB (Luxury UI)
+        const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+        const forgotModal = document.getElementById('forgotPasswordModal');
+        
+        if (document.getElementById('closeForgot')) {
+            document.getElementById('closeForgot').addEventListener('click', () => forgotModal.classList.remove('active'));
+        }
+        
+        window.addEventListener('click', (e) => { 
+            if (e.target === forgotModal) forgotModal.classList.remove('active'); 
+        });
+
+        window.triggerForgotPassword = function(e) {
+            e.preventDefault();
+            // Scroll to top and show modal
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => { forgotModal.classList.add('active'); }, 300);
+        };
+
+        if (forgotPasswordForm) {
+            forgotPasswordForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const btn = document.getElementById('submitForgotBtn');
+                const ogText = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Transmitting...';
+                btn.disabled = true;
+
+                const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
+
+                try {
+                    const response = await fetch('http://localhost:5000/api/portal/client-forgot', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: email })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        // Uses the correct response message from the new Command Center workflow
+                        showToast(data.message || "Reset request sent to Command Center.");
+                        forgotPasswordForm.reset();
+                        forgotModal.classList.remove('active');
+                    } else {
+                        showToast("Error: " + (data.error || "Failed to initiate recovery."));
+                    }
+                } catch (error) {
+                    console.error('Reset Error:', error);
+                    showToast("Server offline. Please ensure the backend is running.");
+                } finally {
+                    btn.innerHTML = ogText;
+                    btn.disabled = false;
+                }
+            });
+        }
+
+    }); // <-- DOMContentLoaded properly closes here now!
+</script>
+</body>
+</html>

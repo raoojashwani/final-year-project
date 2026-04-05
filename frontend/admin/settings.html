@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Configuration | Admin Command</title>
+    <link rel="icon" type="image/png" href="../images/logo.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="admin-style.css">
+
+    <style>
+        /* Specific Settings Architecture */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        .settings-card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid #eee;
+            transition: all 0.3s ease;
+        }
+
+        .settings-card:hover {
+            border-color: var(--color-gold-dim);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .settings-card h3 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--color-light-grey);
+            padding-bottom: 15px;
+            color: var(--color-onyx);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.4rem;
+        }
+
+        .settings-card h3 i { color: var(--color-gold); }
+
+        .form-group { margin-bottom: 25px; }
+
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--color-grey);
+            margin-bottom: 10px;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 22px 0;
+            border-bottom: 1px solid #f8f8f8;
+        }
+        
+        .toggle-switch:last-child { border-bottom: none; }
+
+        .toggle-info p { font-size: 0.95rem; color: var(--color-onyx); font-weight: 600; margin-bottom: 4px; }
+        .toggle-info span { font-size: 0.75rem; color: var(--color-grey); }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 4px;
+            background: rgba(39, 174, 96, 0.1);
+            color: #27ae60;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .log-item {
+            font-family: 'Courier New', monospace;
+            font-size: 0.7rem;
+            padding: 10px 0;
+            border-bottom: 1px solid #222;
+            color: #aaa;
+        }
+
+        .log-item span { color: var(--color-gold); font-weight: bold; }
+
+        .avatar-preview {
+            width: 80px;
+            height: 80px;
+            background: var(--color-onyx);
+            color: var(--color-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            border: 2px solid var(--color-gold);
+        }
+
+        /* MODALS */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-content { background: white; border-radius: 12px; padding: 35px; width: 90%; max-width: 600px; position: relative; border: 1px solid var(--color-gold); box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+        .modal-body { padding: 10px; }
+
+        .btn-purge { background-color: var(--color-crimson); color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center;}
+        .btn-purge:hover { background-color: #6a0f2a; transform: translateY(-2px); }
+        .btn-manage { background-color: var(--color-onyx); color: var(--color-gold); border: 1px solid var(--color-gold); padding: 8px 14px; border-radius: 6px; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; }
+        .btn-manage:hover { background: var(--color-gold); color: var(--color-onyx); transform: translateY(-2px); }
+
+        @media (max-width: 1100px) {
+            .settings-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body class="fade-in">
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h1 class="sidebar-logo">C&O<span>.</span></h1>
+        </div>
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+            <a href="enquiries.html" class="nav-item"><i class="fa-solid fa-envelope-open-text"></i> Event Inquiries</a>
+            <a href="vendors.html" class="nav-item"><i class="fa-solid fa-handshake"></i> Vendor Network</a>
+            <a href="clients.html" class="nav-item"><i class="fa-solid fa-key"></i> Client Access</a>
+            <a href="subscribers.html" class="nav-item"><i class="fa-solid fa-users"></i> Newsletter List</a>
+            <a href="analytics.html" class="nav-item"><i class="fa-solid fa-magnifying-glass-chart"></i> Event Analytics</a>
+            <a href="staff.html" class="nav-item"><i class="fa-solid fa-users-gear"></i> Manage Staff</a>
+            <a href="settings.html" class="nav-item active"><i class="fa-solid fa-gear"></i> Settings</a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="nav-item" onclick="logoutAdmin()" style="color: var(--color-crimson); cursor: pointer;">
+                <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+            </div>
+        </div> 
+    </aside>
+
+    <main class="main-content">
+        <header class="top-navbar">
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass text-grey"></i>
+                <input type="text" placeholder="Search system configuration...">
+            </div>
+            <div class="admin-profile">
+                <div style="text-align: right;">
+                    <p class="font-weight-700" id="navAdminName" style="color: var(--color-onyx); font-size: 0.9rem;">Principal Architect</p>
+                    <p class="text-gold" style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">System Config</p>
+                </div>
+                <div id="navAvatar" style="width: 40px; height: 40px; background: var(--color-onyx); color: var(--color-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; border: 2px solid var(--color-gold); margin-left: 15px;">AD</div>
+            </div>
+        </header>
+
+        <div class="content-padding">
+            <h2 class="page-title">System Settings</h2>
+            <p class="text-grey text-sm" style="margin-top: -30px; margin-bottom: 40px;">Global control for administrative credentials, session security, and mainframe protocols.</p>
+
+            <div class="settings-grid">
+                
+                <div class="settings-card">
+                    <h3><i class="fa-solid fa-user-gear"></i> Administrative Profile</h3>
+                    <div id="settingAvatarPreview" class="avatar-preview">AD</div>
+                    <form id="profileForm">
+                        <div class="form-group">
+                            <label>Designated Display Name</label>
+                            <input type="text" id="adminNameInput" class="admin-input" placeholder="e.g. Principal Architect" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Secure Recovery Email</label>
+                            <input type="email" id="adminEmailInput" class="admin-input" placeholder="admin@cogroup.com" required>
+                        </div>
+                        <button type="submit" class="btn-save">Sync Profile Change</button>
+                    </form>
+                </div>
+
+                <div class="settings-card">
+                    <h3><i class="fa-solid fa-shield-halved"></i> Security Authorization</h3>
+                    <p class="text-grey text-xs mb-20">Rotating these keys will permanently update your backend `.env` configuration file.</p>
+                    <form id="securityForm">
+                        <div class="form-group">
+                            <label>Update Master Access ID</label>
+                            <input type="text" id="accessIdInput" class="admin-input" placeholder="Enter new username..." required>
+                        </div>
+                        <div class="form-group">
+                            <label>New Master Security Key</label>
+                            <input type="password" id="newKeyInput" class="admin-input" placeholder="••••••••" required>
+                        </div>
+                        <button type="button" id="btnSecurityRotate" class="btn-save" style="background: var(--color-crimson); border-color: var(--color-crimson); color: white; width: 100%; justify-content: center;" onclick="alert('Feature locked for security during local testing phase.')">
+                            Rotate Security Keys <i class="fa-solid fa-key ml-10"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="settings-card">
+                    <h3><i class="fa-solid fa-sliders"></i> Global Preferences</h3>
+                    
+                    <div class="toggle-switch">
+                        <div class="toggle-info"><p>Maintenance Protocol</p><span>Disable public forms during site architecture updates.</span></div>
+                        <i class="fa-solid fa-toggle-off text-grey" id="maintenanceToggle" style="font-size: 1.8rem; cursor: pointer;"></i>
+                    </div>
+
+                    <div class="toggle-switch">
+                        <div class="toggle-info"><p>Lead Transmission Alerts</p><span>Enable instant audio-visual cues for new enquiries.</span></div>
+                        <i class="fa-solid fa-toggle-on text-gold" style="font-size: 1.8rem;"></i>
+                    </div>
+
+                    <div class="toggle-switch">
+                        <div class="toggle-info"><p>Auto-Purge Logs</p><span>Clear system audit trail every 30 days.</span></div>
+                        <i class="fa-solid fa-toggle-off text-grey" style="font-size: 1.8rem;"></i>
+                    </div>
+                </div>
+
+                <div class="settings-card" style="background: var(--color-onyx); color: white;">
+                    <h3 style="color: var(--color-gold); border-bottom-color: #333;"><i class="fa-solid fa-microchip"></i> System Mainframe</h3>
+                    
+                    <div class="form-group">
+                        <label style="color: #666;">Mainframe Status</label>
+                        <div class="status-badge"><i class="fa-solid fa-circle-check"></i> Encrypted & Operational</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="color: #666;">Live Audit Trail</label>
+                        <div id="auditTrail">
+                            </div>
+                    </div>
+
+                    <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid #333; font-size: 0.7rem; color: #444;">
+                        VERSION: C&O-ADMIN-v2.6.0 | ENCRYPTION: AES-256-GCM
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="logoutConfirmModal">
+        <div class="modal-content" style="max-width: 400px; text-align: center; padding: 40px;">
+            <i class="fa-solid fa-right-from-bracket" style="font-size: 3.5rem; color: var(--color-onyx); margin-bottom: 20px; display: block;"></i>
+            <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 10px; color: var(--color-onyx);">Secure Logout?</h3>
+            <p style="color: #666; font-size: 0.9rem; margin-bottom: 30px;">Are you sure you want to securely exit the Admin Terminal?</p>
+            <div style="display: flex; gap: 15px;">
+                <button class="btn-purge" style="flex: 1; padding: 12px; border-radius: 30px;" onclick="executeLogout()">Logout</button>
+                <button class="btn-manage" style="flex: 1; background: var(--color-ivory); color: var(--color-onyx); border-color: #ddd; border-radius: 30px;" onclick="closeModal('logoutConfirmModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminToast" class="custom-toast" style="position: fixed; bottom: 40px; right: 40px; background: var(--color-onyx); color: white; padding: 18px 25px; border-radius: 8px; border-left: 4px solid var(--color-gold); box-shadow: 0 15px 40px rgba(0,0,0,0.3); z-index: 10000; display: flex; align-items: center; gap: 15px; font-weight: 600; font-size: 0.9rem; transform: translateY(100px); opacity: 0; visibility: hidden; transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);">
+        <i class="fa-solid fa-circle-check" style="color: var(--color-gold);"></i>
+        <span id="toastText">Action Successful.</span>
+    </div>
+
+    <script src="admin-main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSettings();
+            addLog("AUTH_SUCCESS", "Admin session verified via JWT Token.");
+        });
+
+        // 1. Load Settings from memory
+        function loadSettings() {
+            const currentName = localStorage.getItem('adminDisplayName') || 'Principal Architect';
+            const currentEmail = localStorage.getItem('adminEmail') || 'admin@cogroup.com';
+            
+            document.getElementById('adminNameInput').value = currentName;
+            document.getElementById('adminEmailInput').value = currentEmail;
+
+            updateVisualAvatars(currentName);
+
+            // Maintenance Toggle State
+            const isMaint = localStorage.getItem('maintenanceMode') === 'true';
+            if(isMaint) {
+                const t = document.getElementById('maintenanceToggle');
+                t.classList.replace('fa-toggle-off', 'fa-toggle-on');
+                t.classList.add('text-gold');
+            }
+        }
+
+        // 2. Avatar Initial Logic
+        function updateVisualAvatars(name) {
+            // Get initials safely (handles single words or multiple words)
+            const words = name.trim().split(' ');
+            let initials = "AD";
+            if (words.length > 1) {
+                initials = (words[0][0] + words[1][0]).toUpperCase();
+            } else if (words.length === 1 && words[0].length > 0) {
+                initials = words[0].substring(0, 2).toUpperCase();
+            }
+
+            document.getElementById('settingAvatarPreview').innerText = initials;
+            document.getElementById('navAvatar').innerText = initials;
+            document.getElementById('navAdminName').innerText = name;
+        }
+
+        // 3. Profile Form Submission
+        document.getElementById('profileForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newName = document.getElementById('adminNameInput').value;
+            const newEmail = document.getElementById('adminEmailInput').value;
+
+            localStorage.setItem('adminDisplayName', newName);
+            localStorage.setItem('adminEmail', newEmail);
+            
+            updateVisualAvatars(newName);
+            showToast("Profile synchronization complete.");
+            addLog("CONFIG_CHANGE", "Profile Display Name updated.");
+        });
+
+        // 4. Maintenance Toggle
+        document.getElementById('maintenanceToggle').addEventListener('click', function() {
+            const isActive = this.classList.contains('fa-toggle-on');
+            if(isActive) {
+                this.classList.replace('fa-toggle-on', 'fa-toggle-off');
+                this.classList.remove('text-gold');
+                localStorage.setItem('maintenanceMode', 'false');
+                addLog("SYSTEM_STATE", "Maintenance Mode: DEACTIVATED");
+            } else {
+                this.classList.replace('fa-toggle-off', 'fa-toggle-on');
+                this.classList.add('text-gold');
+                localStorage.setItem('maintenanceMode', 'true');
+                addLog("SYSTEM_STATE", "Maintenance Mode: ACTIVATED");
+            }
+            showToast("System protocol updated.");
+            
+            // Force the nav bar UI to update immediately if function exists
+            if(typeof applyGlobalSettings === 'function') applyGlobalSettings();
+        });
+
+        // 5. Logging Utility
+        function addLog(action, details) {
+            const trail = document.getElementById('auditTrail');
+            const time = new Date().toLocaleTimeString();
+            const log = document.createElement('div');
+            log.className = 'log-item';
+            log.innerHTML = `<span>[${time}]</span> ${action} | ${details}`;
+            trail.prepend(log);
+            
+            // Keep log count under 5 so it doesn't break the layout box
+            if(trail.children.length > 5) {
+                trail.removeChild(trail.lastChild);
+            }
+        }
+
+        // 6. UI UTILITIES
+        function showToast(message) {
+            const toast = document.getElementById('adminToast');
+            document.getElementById('toastText').innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3500);
+        }
+
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        // 7. LOGOUT SECURE TERMINAL (NEW FIX)
+        function logoutAdmin() {
+            document.getElementById('logoutConfirmModal').style.display = 'flex';
+        }
+
+        function executeLogout() {
+            localStorage.removeItem('adminToken');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

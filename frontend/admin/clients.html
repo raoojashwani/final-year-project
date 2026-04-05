@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Private Vaults | Admin Command</title>
+    <link rel="icon" type="image/png" href="../images/logo.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="admin-style.css">
+
+    <style>
+        /* =========================================
+           1. CORE VARIABLES & BASE
+        ========================================= */
+        :root {
+            --color-onyx: #111111;
+            --color-gold: #D4AF37;
+            --color-ivory: #F4F4F2;
+            --color-crimson: #8A1538;
+            --color-grey: #888888;
+            --shadow-soft: 0 10px 30px rgba(0,0,0,0.05);
+            --transition: 0.3s ease;
+        }
+
+        /* =========================================
+           2. KPI CARDS & TABS
+        ========================================= */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 25px; border-radius: 12px; box-shadow: var(--shadow-soft); text-align: center; border: 1px solid #eee; transition: 0.3s; }
+        .stat-card:hover { transform: translateY(-5px); border-color: var(--color-gold); }
+        .stat-label { font-size: 0.75rem; text-transform: uppercase; color: var(--color-grey); letter-spacing: 1px; font-weight: 700; }
+        .stat-value { font-size: 2.2rem; font-family: 'Playfair Display', serif; font-weight: 700; color: var(--color-onyx); margin-top: 10px; }
+
+        .tab-strip { display: flex; background: var(--color-ivory); padding: 6px; border-radius: 8px; margin-bottom: 30px; width: fit-content; border: 1px solid #e5e5e5; }
+        .tab-item { padding: 10px 25px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: 0.3s; color: var(--color-grey); text-transform: uppercase; letter-spacing: 1px; border: none; background: transparent; }
+        .tab-item.active { background: var(--color-onyx); color: var(--color-gold); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+
+        /* =========================================
+           3. TABLE DATA & IDENTITIES
+        ========================================= */
+        .table-container { background: white; border-radius: 12px; box-shadow: var(--shadow-soft); overflow-x: auto; border: 1px solid #eee; }
+        table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        th { background: var(--color-onyx); color: var(--color-gold); padding: 15px 20px; text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
+        td { padding: 15px 20px; border-bottom: 1px solid #eee; font-size: 0.85rem; vertical-align: middle; color: var(--color-onyx); }
+        tr:hover { background: #fafafa; }
+
+        .avatar-initial { width: 42px; height: 42px; background: var(--color-onyx); color: var(--color-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; border: 2px solid var(--color-gold); }
+        .project-signature { font-weight: 700; color: var(--color-gold); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .division-tag { font-size: 0.65rem; font-weight: 800; color: #aaa; text-transform: uppercase; margin-top: 4px; display: block;}
+        .key-badge { font-family: 'Courier New', monospace; background: #f8f8f8; padding: 6px 12px; border-radius: 4px; font-weight: 700; color: var(--color-onyx); border: 1px dashed var(--color-gold); font-size: 0.85rem; }
+
+        .status-pill { padding: 6px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; display: inline-block; }
+        .status-pending { background: rgba(212, 175, 55, 0.1); color: var(--color-gold); }
+        .status-approved { background: rgba(39, 174, 96, 0.1); color: #27ae60; }
+
+        /* =========================================
+           4. COMMAND ACTIONS & BUTTONS
+        ========================================= */
+        .btn-manage { background-color: var(--color-onyx); color: var(--color-gold); border: 1px solid var(--color-gold); padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: 0.3s; font-size: 0.9rem; display: inline-flex; align-items: center; justify-content: center; }
+        .btn-manage:hover { background: var(--color-gold); color: var(--color-onyx); transform: translateY(-2px); }
+        
+        .btn-authorize { background-color: #27ae60; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: 0.3s; font-size: 0.9rem; display: inline-flex; align-items: center; justify-content: center;}
+        .btn-authorize:hover { background-color: #1e8449; transform: translateY(-2px); }
+        
+        .btn-purge { background-color: var(--color-crimson); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: 0.3s; font-size: 0.9rem; display: inline-flex; align-items: center; justify-content: center;}
+        .btn-purge:hover { background-color: #6a0f2a; transform: translateY(-2px); }
+
+        .btn-sync-vault { background: linear-gradient(135deg, #111111 0%, #2a2a2a 100%); color: var(--color-gold); border: 1px solid var(--color-gold); padding: 18px; border-radius: 30px; font-size: 1rem; font-weight: 700; cursor: pointer; width: 100%; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-sync-vault:hover { background: var(--color-gold); color: var(--color-onyx); box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4); transform: translateY(-2px); }
+
+        [data-tooltip] { position: relative; cursor: pointer; }
+        [data-tooltip]::after { content: attr(data-tooltip); position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%); background: var(--color-onyx); color: var(--color-gold); padding: 6px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; white-space: nowrap; opacity: 0; visibility: hidden; transition: 0.2s ease; z-index: 100; border: 1px solid var(--color-gold); }
+        [data-tooltip]:hover::after { opacity: 1; visibility: visible; bottom: 135%; }
+
+        /* =========================================
+           5. MODALS & FORMS
+        ========================================= */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-content { background: white; border-radius: 16px; padding: 35px; position: relative; border: 1px solid var(--color-gold); box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+        .action-btn { background: #f1f1f1; border: none; font-size: 1.2rem; color: #555; cursor: pointer; transition: 0.3s; width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+        .action-btn:hover { background: var(--color-crimson); color: white; transform: rotate(90deg); }
+
+        .manager-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-height: 65vh; overflow-y: auto; padding-right: 10px; }
+        .manager-section { background: #f9f9f9; padding: 20px; border-radius: 12px; border: 1px solid #eee; }
+        .manager-section h4 { font-family: 'Playfair Display', serif; font-size: 1rem; margin-bottom: 15px; color: var(--color-onyx); border-bottom: 1px solid #ddd; padding-bottom: 8px; text-transform: uppercase; }
+        
+        .vault-list { background: white; border: 1px solid #eee; border-radius: 8px; margin-top: 10px; max-height: 120px; overflow-y: auto; }
+        .vault-item-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #f5f5f5; font-size: 0.8rem; }
+        .btn-mini-purge { color: var(--color-crimson); background: none; border: none; cursor: pointer; font-size: 0.9rem; opacity: 0.6; transition: 0.2s; }
+        .btn-mini-purge:hover { opacity: 1; transform: scale(1.2); }
+
+        /* ENHANCED SECURE COMMS (WHATSAPP STYLE) */
+        .chat-box { background: #F4F4F2; border-radius: 12px; height: 400px; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; border: 1px solid #ddd; margin-bottom: 15px; }
+        .chat-date-separator { text-align: center; margin: 10px 0; font-size: 0.7rem; text-transform: uppercase; color: #999; font-weight: 600; letter-spacing: 1px; }
+        .chat-date-separator span { background: #F4F4F2; padding: 0 12px; }
+        .msg-group { display: flex; flex-direction: column; gap: 5px; align-items: flex-start; width: 100%; }
+        .msg-group.admin { align-items: flex-end; }
+        .msg-bubble { max-width: 75%; padding: 12px 16px; border-radius: 12px; font-size: 0.9rem; line-height: 1.5; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; align-items: flex-end; gap: 8px; word-wrap: break-word; }
+        .msg-bubble.incoming { background: white; border: 1px solid #eee; border-bottom-left-radius: 2px; }
+        .msg-bubble.outgoing { background: #e3f2fd; border: 1px solid #bbdefb; border-bottom-right-radius: 2px; }
+        .msg-sender-tag { font-weight: 700; font-size: 0.7rem; color: var(--color-gold); text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 4px; }
+        .msg-text { color: var(--color-onyx); }
+        .msg-time { font-size: 0.65rem; color: rgba(0,0,0,0.4); margin-left: auto; flex-shrink: 0; white-space: nowrap; }
+        .msg-actions { display: flex; gap: 5px; margin-top: 5px; opacity: 0; transition: opacity 0.3s; }
+        .msg-bubble:hover .msg-actions { opacity: 1; }
+        .msg-action-btn { background: transparent; border: none; color: #999; cursor: pointer; font-size: 0.8rem; padding: 3px 6px; border-radius: 4px; transition: 0.3s; }
+        .msg-action-btn:hover { background: rgba(0,0,0,0.05); color: var(--color-crimson); }
+
+        /* EXPANDED MANIFEST TABLE */
+        .manifest-table-wrapper { width: 100%; overflow-x: auto; }
+        .manifest-table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 1000px; }
+        .manifest-table th { background: var(--color-onyx); color: var(--color-gold); padding: 12px; text-align: left; font-size: 0.75rem; text-transform: uppercase; white-space: nowrap;}
+        .manifest-table td { padding: 12px; border-bottom: 1px solid #eee; font-size: 0.85rem; vertical-align: middle; }
+        .logistics-input { padding: 8px 10px; border: 1px solid #ddd; border-radius: 4px; font-family: 'Montserrat', sans-serif; font-size: 0.8rem; width: 100%; box-sizing: border-box; }
+        .logistics-input:focus { border-color: var(--color-gold); outline: none; }
+
+        .audit-item { padding: 12px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
+        .audit-item:hover { background: #fcfcfc; }
+        .audit-action { font-weight: 600; color: var(--color-onyx); }
+        .audit-meta { color: #888; font-size: 0.7rem; text-align: right; line-height: 1.4; }
+
+        .confirm-icon { font-size: 3.5rem; color: var(--color-crimson); margin-bottom: 20px; display: block; text-align: center;}
+        .btn-purge-confirm { background: var(--color-crimson); color: white; border: none; padding: 15px; border-radius: 30px; font-weight: 700; cursor: pointer; flex: 1; transition: 0.3s; }
+        .btn-purge-confirm:hover { background: #6a0f2a; }
+
+        .custom-toast { position: fixed; bottom: 40px; right: 40px; background: var(--color-onyx); color: var(--color-white); padding: 18px 25px; border-radius: 8px; border-left: 4px solid var(--color-gold); box-shadow: 0 15px 40px rgba(0,0,0,0.3); z-index: 10000; display: flex; align-items: center; gap: 15px; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.9rem; transform: translateY(100px); opacity: 0; visibility: hidden; transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .custom-toast.show { transform: translateY(0); opacity: 1; visibility: visible; }
+        .custom-toast i { color: var(--color-gold); font-size: 1.2rem; }
+    </style>
+</head>
+<body class="fade-in">
+
+    <aside class="sidebar">
+        <div class="sidebar-header"><h1 class="sidebar-logo">C&O<span>.</span></h1></div>
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+            <a href="enquiries.html" class="nav-item"><i class="fa-solid fa-envelope-open-text"></i> Event Inquiries</a>
+            <a href="vendors.html" class="nav-item"><i class="fa-solid fa-handshake"></i> Vendor Network</a>
+            <a href="clients.html" class="nav-item active"><i class="fa-solid fa-key"></i> Client Access</a>
+            <a href="subscribers.html" class="nav-item"><i class="fa-solid fa-users"></i> Newsletter List</a>
+            <a href="analytics.html" class="nav-item"><i class="fa-solid fa-magnifying-glass-chart"></i> Event Analytics</a>
+            <a href="staff.html" class="nav-item"><i class="fa-solid fa-users-gear"></i> Manage Staff</a>
+            <a href="settings.html" class="nav-item"><i class="fa-solid fa-gear"></i> Settings</a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="nav-item" onclick="window.logoutAdmin()" style="color: var(--color-crimson); cursor: pointer;"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-navbar">
+            <div class="search-bar"><i class="fa-solid fa-magnifying-glass text-grey"></i><input type="text" id="clientSearch" placeholder="Search by Client, Event or ID..."></div>
+            <div class="admin-profile">
+                <div style="text-align: right;"><p class="font-weight-700" id="navAdminName" style="color: var(--color-onyx); font-size: 0.9rem;">Principal Architect</p><p style="color: var(--color-gold); font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">Command Control</p></div>
+                <div id="navAvatar" class="avatar-initial" style="margin-left: 15px;">AD</div>
+            </div>
+        </header>
+
+        <div class="content-padding">
+            <div class="flex-space-between mb-10">
+                <div>
+                    <h2 class="page-title">Client Private Vaults</h2>
+                    <p class="text-grey text-sm" style="margin-top: -30px;">Strategic Management of Client Access & Event Logistics.</p>
+                </div>
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <div class="stats-badge" style="background: white; padding: 10px 20px; border-radius: 30px; border: 1px solid #ddd; font-weight: 800; font-size: 0.75rem;"><i class="fa-solid fa-shield-halved mr-5" style="color:var(--color-gold);"></i> ENCRYPTION ACTIVE</div>
+                    <button class="btn-save" onclick="window.exportClientsToCSV()"><i class="fa-solid fa-file-csv mr-5"></i> Export Vault</button>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card"><span class="stat-label">Total Vault Requests</span><div class="stat-value" id="totalRequests">0</div></div>
+                <div class="stat-card"><span class="stat-label">Active Access</span><div class="stat-value" style="color: #27ae60;" id="activeAccess">0</div></div>
+                <div class="stat-card"><span class="stat-label">Pending Review</span><div class="stat-value" style="color: var(--color-crimson);" id="pendingAccess">0</div></div>
+            </div>
+
+            <div class="tab-strip" id="clientTabs">
+                <button class="tab-item active" data-filter="all">All Archives</button>
+                <button class="tab-item" data-filter="Pending">New Requests 🔴</button>
+                <button class="tab-item" data-filter="Approved">Authorized 🟢</button>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Primary Client</th>
+                            <th>Project Signature</th>
+                            <th>Contact Detail</th>
+                            <th>Target Date</th>
+                            <th>Status / Key</th>
+                            <th style="text-align: center;">Command Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clientTableBody">
+                        <tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--color-gold);"><i class="fa-solid fa-circle-notch fa-spin"></i> Syncing Vaults...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="projectManagerModal">
+        <div class="modal-content" style="max-width: 950px; width: 95%;">
+            <div class="modal-header">
+                <h3 class="serif-font" id="manageClientName">Project Commander</h3>
+                <button class="action-btn" onclick="window.closeModal('projectManagerModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="manager-grid">
+                    
+                    <div class="manager-section">
+                        <h4><i class="fa-solid fa-chart-pie mr-5" style="color:var(--color-gold);"></i> Vault Metrics & RSVP</h4>
+                        <div style="display:flex; gap:10px; margin-bottom: 15px;">
+                            <div style="flex:1;"><label class="modal-label">Total Budget (₹)</label><input type="number" id="inputTotalBudget" class="admin-input"></div>
+                            <div style="flex:1;"><label class="modal-label">Paid (%)</label><input type="number" id="inputBudgetPaid" class="admin-input"></div>
+                        </div>
+                        <div style="display:flex; gap:10px;">
+                            <div style="flex:1;"><label class="modal-label">Timeline (%)</label><input type="number" id="inputProgress" class="admin-input"></div>
+                            <div style="flex:1;"><label class="modal-label">Expected RSVP</label><input type="number" id="inputRSVPExpected" class="admin-input"></div>
+                        </div>
+                        <div class="form-group mt-15">
+                            <label class="modal-label">Confirmed Override (Manual)</label>
+                            <input type="number" id="inputRSVPOverride" class="admin-input" placeholder="Overrides auto-sum">
+                        </div>
+                    </div>
+
+                    <div class="manager-section" style="background:#fff3f3; border-color:#ffcccc;">
+                        <h4 style="color:var(--color-crimson);"><i class="fa-solid fa-trash-can mr-5"></i> Live Vault Control</h4>
+                        <p style="font-size:0.7rem; color:#888; margin-top:-10px; margin-bottom:10px;">Delete items already pushed to the client.</p>
+                        
+                        <label class="modal-label">Existing Blueprints</label>
+                        <div class="vault-list" id="listBlueprints"></div>
+                        
+                        <label class="modal-label mt-10">Legal & Contracts</label>
+                        <div class="vault-list" id="listContracts"></div>
+
+                        <label class="modal-label mt-10">Existing Invoices</label>
+                        <div class="vault-list" id="listInvoices"></div>
+
+                        <label class="modal-label mt-10">Assigned Tasks</label>
+                        <div class="vault-list" id="listTasks"></div>
+                    </div>
+
+                    <div class="manager-section">
+                        <h4><i class="fa-solid fa-plus mr-5" style="color:var(--color-gold);"></i> Push Data & Finance</h4>
+                        <div style="display:flex; gap:10px; margin-bottom:10px;">
+                            <input type="text" id="addBPTitle" class="admin-input" placeholder="Blueprint Title" style="flex:1;">
+                            <input type="url" id="addBPUrl" class="admin-input" placeholder="Blueprint URL" style="flex:1;">
+                        </div>
+                        
+                        <div style="display:flex; gap:10px; margin-bottom:10px;">
+                            <input type="text" id="addContractTitle" class="admin-input" placeholder="Contract Name (e.g. Venue Agreement)" style="flex:1;">
+                            <input type="url" id="addContractUrl" class="admin-input" placeholder="Contract PDF Link" style="flex:1;">
+                        </div>
+
+                        <div style="display:flex; gap:10px; margin-bottom:10px;">
+                            <input type="text" id="addInvCat" class="admin-input" placeholder="Invoice Category" style="flex:1;">
+                            <input type="number" id="addInvAmt" class="admin-input" placeholder="Amount (₹)" style="flex:1;">
+                        </div>
+                        <div style="display:flex; gap:10px;">
+                            <select id="addInvStatus" class="admin-input" style="flex:1;">
+                                <option value="Pending">Pending</option>
+                                <option value="50% Advance Paid">50% Advance Paid</option>
+                                <option value="Paid in Full">Paid in Full</option>
+                            </select>
+                            <input type="url" id="addInvUrl" class="admin-input" placeholder="Invoice PDF Link" style="flex:1;">
+                        </div>
+                    </div>
+
+                    <div class="manager-section">
+                        <h4><i class="fa-solid fa-list-check mr-5" style="color:var(--color-gold);"></i> Assign Immediate Action</h4>
+                        <input type="text" id="addTaskTitle" class="admin-input mb-10" placeholder="Task Name">
+                        <input type="text" id="addTaskDesc" class="admin-input mb-10" placeholder="Instructions">
+                        <input type="text" id="addTaskDate" class="admin-input" placeholder="Deadline (e.g. Nov 15)">
+                    </div>
+
+                </div>
+                <button class="btn-sync-vault mt-25" id="btnSyncVault" onclick="window.broadcastToClient()">SYNCHRONIZE VAULT <i class="fa-solid fa-satellite-dish ml-10"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="adminChatModal">
+        <div class="modal-content" style="max-width: 550px;">
+            <div class="modal-header">
+                <h3 class="serif-font" id="chatClientName">Secure Comms</h3>
+                <button class="action-btn" onclick="window.closeModal('adminChatModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div style="display:flex; gap:10px; margin-bottom: 15px; background: #f9f9f9; padding: 10px; border-radius: 8px; border:1px solid #eee;">
+                    <input type="text" id="adminChatPersona" class="admin-input" placeholder="Send as... (e.g. CEO)" value="Principal Architect" style="flex:1; font-size: 0.8rem;">
+                    <input type="text" id="adminChatAvatar" class="admin-input" placeholder="Avatar URL" style="flex:1; font-size: 0.8rem;">
+                </div>
+                <div class="chat-box" id="adminChatArea"></div>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <input type="text" id="adminChatInput" class="admin-input" placeholder="Type secure message..." style="flex:1; border-radius: 25px;">
+                    <button class="btn-manage" style="border-radius: 50%; width: 45px; height: 45px; padding:0;" onclick="window.sendAdminMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="adminGuestModal">
+        <div class="modal-content" style="max-width: 900px; width: 95%;">
+            <div class="modal-header">
+                <h3 class="serif-font" id="guestClientName">Guest Logistics Manager</h3>
+                <button class="action-btn" onclick="window.closeModal('adminGuestModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" style="max-height: 500px; overflow-y: auto; padding: 20px;">
+                <div class="manifest-table-wrapper">
+                    <table class="manifest-table">
+                        <thead>
+                            <tr>
+                                <th>Guest Info</th>
+                                <th>Travel / Flight</th>
+                                <th>Hotel / Room</th>
+                                <th>Dietary Needs</th>
+                                <th>Transport</th>
+                                <th>Event RSVP</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminGuestBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="auditModal">
+        <div class="modal-content" style="max-width: 550px;">
+            <div class="modal-header">
+                <h3 class="serif-font">System Audit History</h3>
+                <button class="action-btn" onclick="window.closeModal('auditModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="auditLogBody" style="max-height: 450px; overflow-y: auto; padding: 10px;"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="approveClientModal">
+        <div class="modal-content" style="max-width: 450px;">
+            <div class="modal-header"><h3 class="serif-font">Authorize Vault</h3><button class="action-btn" onclick="window.closeModal('approveClientModal')"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="modal-body">
+                <label class="modal-label" style="display:block; margin-bottom:10px; font-weight:700; color:#888;">PROJECT SECURITY KEY</label>
+                <div style="display:flex; gap:10px; margin-bottom: 20px;">
+                    <input type="text" id="generatedKey" class="admin-input" readonly style="flex:1; text-align:center; font-weight:800; font-family:monospace; font-size:1.2rem; background:#f9f9f9;">
+                    <button class="btn-manage" onclick="window.generateRandomKey()"><i class="fa-solid fa-dice"></i></button>
+                </div>
+                <button class="btn-authorize w-100" id="confirmApproveBtn" style="justify-content:center; border-radius:30px; padding:15px; width:100%; font-weight:700;">GENERATE & DEPLOY KEY</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="deleteConfirmModal">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <i class="fa-solid fa-shield-virus confirm-icon"></i>
+            <h3 class="serif-font">Confirm Client Purge?</h3>
+            <p style="color: #666; font-size: 0.85rem; margin-top: 10px;">This action permanently destroys the client's vault and all associated records.</p>
+            <div style="display: flex; gap: 10px; margin-top: 30px;">
+                <button class="btn-purge-confirm" id="confirmDeleteClientBtn">PERMANENT PURGE</button>
+                <button class="btn-manage" onclick="window.closeModal('deleteConfirmModal')" style="flex: 1; background: #eee; border: 1px solid #ddd; color: #333; border-radius: 30px;">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="deleteVaultItemModal" style="z-index: 1050;">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <i class="fa-solid fa-trash-can confirm-icon" style="color:var(--color-onyx); animation:none;"></i>
+            <h3 class="serif-font">Remove Vault Item?</h3>
+            <p style="color: #666; font-size: 0.85rem; margin-top: 10px;">This item will be instantly removed from the client dashboard.</p>
+            <div style="display: flex; gap: 10px; margin-top: 30px;">
+                <button class="btn-purge" id="confirmVaultItemDeleteBtn" style="flex:1; border-radius:30px; font-weight:700; padding:15px;">DELETE ITEM</button>
+                <button class="btn-manage" onclick="window.closeModal('deleteVaultItemModal')" style="flex: 1; background: #eee; border: 1px solid #ddd; color: #333; border-radius: 30px;">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="logoutConfirmModal">
+        <div class="modal-content" style="max-width: 400px; text-align: center; padding: 40px;">
+            <i class="fa-solid fa-right-from-bracket" style="font-size: 3.5rem; color: var(--color-onyx); margin-bottom: 20px; display: block;"></i>
+            <h3 class="serif-font mb-10" style="font-size: 1.5rem;">Secure Logout?</h3>
+            <p class="text-grey text-sm mb-30" style="line-height: 1.5;">Are you sure you want to securely exit the Admin Terminal?</p>
+            <div style="display: flex; gap: 15px;">
+                <button class="btn-purge" style="flex: 1; padding: 12px; border-radius: 30px;" onclick="window.executeLogout()">Logout</button>
+                <button class="btn-manage" style="flex: 1; background: var(--color-ivory); color: var(--color-onyx); border: 1px solid #ddd; border-radius: 30px;" onclick="window.closeModal('logoutConfirmModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="resetKeyConfirmModal">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <i class="fa-solid fa-key confirm-icon" style="color: var(--color-gold); animation: none;"></i>
+            <h3 class="serif-font">Deploy New Vault Key?</h3>
+            <p style="color: #666; font-size: 0.85rem; margin-top: 10px;">This will generate a new secure passcode and instantly email it to the client.</p>
+            <div style="display: flex; gap: 10px; margin-top: 30px;">
+                <button class="btn-action" id="confirmResetKeyBtn" style="flex:1; justify-content:center; padding:15px; border-radius:30px;">DEPLOY KEY <i class="fa-solid fa-paper-plane ml-5"></i></button>
+                <button class="btn-manage" onclick="window.closeModal('resetKeyConfirmModal')" style="flex: 1; background: #eee; border: 1px solid #ddd; color: #333; border-radius: 30px;">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="syncToast" class="custom-toast">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="syncToastText">Vault Synchronized Successfully.</span>
+    </div>
+
+    <datalist id="flightOptions">
+        <option value="TBD">
+        <option value="Self Arranged">
+        <option value="Host Provided">
+    </datalist>
+    <datalist id="hotelOptions">
+        <option value="Pending Assignment">
+        <option value="Self Arranged">
+        <option value="Standard Room">
+        <option value="Suite">
+    </datalist>
+
+    <script src="admin-main.js"></script>
+
+    <script>
+        // GLOBALS EXPLICITLY BOUND TO WINDOW TO PREVENT SCOPE CRASHES
+        window.allClients = [];
+        window.currentFilter = 'all';
+        window.selectedClientId = null;
+        window.vaultItemToDelete = null;
+        window.clientToDelete = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // FRONTEND 1-HOUR AUTO-LOGOUT SECURITY ENFORCEMENT
+            setTimeout(() => {
+                window.showCustomToast("Security Protocol: 1-Hour session limit reached. Securely logging out.");
+                setTimeout(window.executeLogout, 2500);
+            }, 3600000); // 3600000 ms = exactly 1 Hour
+
+         
+            window.fetchClients();
+
+            // Tabs Initialization
+            document.getElementById('clientTabs').addEventListener('click', (e) => {
+                if(e.target.classList.contains('tab-item')) {
+                    document.querySelectorAll('#clientTabs .tab-item').forEach(t => t.classList.remove('active'));
+                    e.target.classList.add('active');
+                    window.currentFilter = e.target.getAttribute('data-filter');
+                    window.applyFilters();
+                }
+            });
+
+            // Live Search Initialization
+            document.getElementById('clientSearch').addEventListener('input', window.applyFilters);
+            
+            // Explicit Event Listeners for action confirmations
+            document.getElementById('confirmApproveBtn').addEventListener('click', window.confirmApproveClient);
+            document.getElementById('confirmVaultItemDeleteBtn').addEventListener('click', window.confirmVaultItemDelete);
+            document.getElementById('confirmDeleteClientBtn').addEventListener('click', window.confirmClientDelete);
+        });
+
+        // --- 1. CORE DATA LOGIC ---
+        window.fetchClients = async function() {
+            const token = localStorage.getItem('adminToken');
+            if(!token) { window.location.href = 'index.html'; return; }
+
+            try {
+                const response = await fetch('http://localhost:5000/api/clients', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if(response.ok) {
+                    window.allClients = await response.json();
+                    console.log("Data successfully pulled from Vault:", window.allClients);
+                    window.updateKPIs(window.allClients);
+                    window.applyFilters();
+                } else {
+                    window.showCustomToast("Session Expired or Unauthorized.");
+                }
+            } catch(error) {
+                console.error("Database connection error:", error);
+                document.getElementById('clientTableBody').innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 30px; color: var(--color-crimson);">Vault connection failed. Ensure backend server.js is running.</td></tr>`;
+            }
+        };
+
+        window.updateKPIs = function(data) {
+            document.getElementById('totalRequests').innerText = data.length;
+            document.getElementById('activeAccess').innerText = data.filter(c => c.status === 'Approved').length;
+            document.getElementById('pendingAccess').innerText = data.filter(c => c.status !== 'Approved').length;
+        };
+
+        window.applyFilters = function() {
+            const term = document.getElementById('clientSearch').value.toLowerCase();
+            let filtered = window.allClients;
+
+            if(window.currentFilter !== 'all') {
+                filtered = filtered.filter(c => c.status === window.currentFilter);
+            }
+            if(term) {
+                filtered = filtered.filter(c => 
+                    (c.clientName && c.clientName.toLowerCase().includes(term)) ||
+                    (c.eventName && c.eventName.toLowerCase().includes(term)) ||
+                    (c.email && c.email.toLowerCase().includes(term))
+                );
+            }
+            window.renderClientTable(filtered);
+        };
+
+        window.renderClientTable = function(data) {
+            const tbody = document.getElementById('clientTableBody');
+            if(data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 40px; color: #888;">No client vaults found.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = data.map(c => {
+                const isApproved = c.status === 'Approved';
+                const safeName = c.clientName || 'Unknown Client';
+                const safeInitial = safeName.substring(0, 2).toUpperCase();
+                const safeDate = c.eventDate ? new Date(c.eventDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'TBD';
+                
+                // Add Reset Badge if requested
+                const resetBadge = c.resetRequested ? `<span style="background:var(--color-crimson); color:white; padding:3px 8px; border-radius:4px; font-size:0.6rem; font-weight:bold; margin-left:5px; animation: pulseRed 2s infinite;">RESET REQUESTED</span>` : '';
+
+                let statusHtml = `<span class="status-pill status-pending">Pending Review</span>`;
+                if(isApproved) {
+                    statusHtml = `
+                        <span class="status-pill status-approved mb-5" style="display:inline-block;">Authorized</span><br>
+                        <span class="key-badge"><i class="fa-solid fa-key text-gold mr-5"></i>${c.plainKey || 'ERR-NO-KEY'}</span>
+                    `;
+                }
+
+                let actionsHtml = '';
+                if(c.resetRequested) {
+                    actionsHtml += `<button class="btn-manage" data-tooltip="Deploy New Key" style="background:var(--color-crimson); border-color:var(--color-crimson); color:white;" onclick="window.deployResetKey('${c._id}')"><i class="fa-solid fa-unlock-keyhole"></i></button>`;
+                }
+
+                if(isApproved) {
+                    actionsHtml += `
+                        <button class="btn-manage" data-tooltip="Project Commander" onclick="window.openProjectModal('${c._id}')"><i class="fa-solid fa-sliders"></i></button>
+                        <button class="btn-manage" data-tooltip="Secure Chat" style="color:#27ae60; border-color:#27ae60;" onclick="window.openAdminChat('${c._id}')"><i class="fa-solid fa-comments"></i></button>
+                        <button class="btn-manage" data-tooltip="Guest Logistics" onclick="window.openAdminGuests('${c._id}')"><i class="fa-solid fa-users-viewfinder"></i></button>
+                        <button class="btn-manage" data-tooltip="Audit Log" style="color:#8e44ad; border-color:#8e44ad;" onclick="window.openAuditModal('${c._id}')"><i class="fa-solid fa-clock-rotate-left"></i></button>
+                        <button class="btn-purge" data-tooltip="Purge Vault" onclick="window.triggerClientDelete('${c._id}')"><i class="fa-solid fa-trash"></i></button>
+                    `;
+                } else {
+                    actionsHtml += `
+                        <button class="btn-authorize" data-tooltip="Authorize Vault" onclick="window.openApproveModal('${c._id}')"><i class="fa-solid fa-shield-check"></i> Authorize</button>
+                        <button class="btn-purge" data-tooltip="Purge Request" onclick="window.triggerClientDelete('${c._id}')"><i class="fa-solid fa-trash"></i></button>
+                    `;
+                }
+
+                return `
+                <tr class="fade-in">
+                    <td>
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div class="avatar-initial">${safeInitial}</div>
+                            <div>
+                                <strong style="display:block; color:var(--color-onyx);">${safeName} ${resetBadge}</strong>
+                                <span class="division-tag">${c.division || 'Unassigned'}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="project-signature">${c.eventName || 'Unnamed Event'}</span></td>
+                    <td class="contact-stack">
+                        <div><i class="fa-solid fa-envelope mr-5" style="color:var(--color-gold);"></i> ${c.email || 'N/A'}</div>
+                        <span><i class="fa-solid fa-phone mr-5"></i> ${c.phone || 'N/A'}</span>
+                    </td>
+                    <td>${safeDate}</td>
+                    <td>${statusHtml}</td>
+                    <td><div style="display:flex; gap:8px; justify-content:center;">${actionsHtml}</div></td>
+                </tr>
+                `;
+            }).join('');
+        };
+
+        // NEW: Luxury Modal Reset Key Deployment
+        window.clientToReset = null;
+        window.deployResetKey = function(id) {
+            window.clientToReset = id;
+            document.getElementById('resetKeyConfirmModal').style.display = 'flex';
+        };
+
+        document.getElementById('confirmResetKeyBtn').addEventListener('click', async function() {
+            if(!window.clientToReset) return;
+            const btn = this;
+            const ogText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> DEPLOYING...';
+            btn.disabled = true;
+
+            const token = localStorage.getItem('adminToken');
+            const k = 'CO-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+            
+            try {
+                await fetch(`http://localhost:5000/api/admin/broadcast/${window.clientToReset}`, {
+                    method: 'PATCH', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ resetRequested: false })
+                });
+                
+                const res = await fetch(`http://localhost:5000/api/clients/${window.clientToReset}`, {
+                    method: 'PATCH', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'Approved', accessKey: k })
+                });
+                
+                if(res.ok) { 
+                    window.showCustomToast("New security key dispatched."); 
+                    window.closeModal('resetKeyConfirmModal');
+                    window.fetchClients(); 
+                } 
+                else { window.showCustomToast("Failed to deploy new key."); }
+            } catch(e) { window.showCustomToast("Network Error."); }
+            finally {
+                btn.innerHTML = ogText;
+                btn.disabled = false;
+            }
+        });
+
+        // --- 3. PROJECT COMMANDER ---
+        window.openProjectModal = function(id) {
+            window.selectedClientId = id;
+            const client = window.allClients.find(c => c._id === id);
+            if(!client) return;
+
+            document.getElementById('manageClientName').innerText = `Architectural Command: ${client.eventName || 'Unnamed Event'}`;
+            document.getElementById('inputTotalBudget').value = client.projectMetrics?.totalBudget || '';
+            document.getElementById('inputBudgetPaid').value = client.projectMetrics?.budgetAllocated || '';
+            document.getElementById('inputProgress').value = client.projectMetrics?.timelineProgress || '';
+            document.getElementById('inputRSVPExpected').value = client.projectMetrics?.rsvpExpected || '';
+            document.getElementById('inputRSVPOverride').value = client.projectMetrics?.rsvpConfirmed || '';
+            
+            window.populateVaultLists(client);
+            document.getElementById('projectManagerModal').style.display = 'flex';
+        };
+
+        window.populateVaultLists = function(client) {
+            const bp = document.getElementById('listBlueprints');
+            const contracts = document.getElementById('listContracts');
+            const inv = document.getElementById('listInvoices');
+            const tasks = document.getElementById('listTasks');
+
+            const makeLink = (url) => url ? `<a href="${url.startsWith('http') ? url : 'https://'+url}" target="_blank" style="color:var(--color-gold); font-size:0.75rem; text-decoration:none; margin-left:10px;"><i class="fa-solid fa-external-link"></i></a>` : '';
+
+            bp.innerHTML = (client.blueprints || []).map(b => `<div class="vault-item-row"><span style="flex:1;">${b.title} ${makeLink(b.fileUrl)}</span><button class="btn-mini-purge" onclick="window.triggerSubItemDelete('blueprints', '${b._id}')"><i class="fa-solid fa-trash"></i></button></div>`).join('') || '<p style="padding:10px; font-size:0.7rem; color:#ccc;">Empty</p>';
+            
+            contracts.innerHTML = (client.contracts || []).map(c => `<div class="vault-item-row"><span style="flex:1;">${c.title} ${makeLink(c.fileUrl)}</span><button class="btn-mini-purge" onclick="window.triggerSubItemDelete('contracts', '${c._id}')"><i class="fa-solid fa-trash"></i></button></div>`).join('') || '<p style="padding:10px; font-size:0.7rem; color:#ccc;">Empty</p>';
+            
+            inv.innerHTML = (client.invoices || []).map(i => `<div class="vault-item-row"><span style="flex:1;">${i.category} (₹${i.amount}) ${makeLink(i.fileUrl)}</span><button class="btn-mini-purge" onclick="window.triggerSubItemDelete('invoices', '${i._id}')"><i class="fa-solid fa-trash"></i></button></div>`).join('') || '<p style="padding:10px; font-size:0.7rem; color:#ccc;">Empty</p>';
+            
+            // FULL TASK DETAILS
+            tasks.innerHTML = (client.tasks || []).map(t => `<div class="vault-item-row" style="align-items:flex-start;"><div style="flex:1;"><strong>${t.title}</strong><br><span style="font-size:0.7rem; color:#888; display:block; margin-top:3px;">${t.description}</span><span style="font-size:0.65rem; color:var(--color-crimson); font-weight:bold;">Due: ${t.dueDate}</span></div><button class="btn-mini-purge" onclick="window.triggerSubItemDelete('tasks', '${t._id}')" style="margin-top:2px;"><i class="fa-solid fa-trash"></i></button></div>`).join('') || '<p style="padding:10px; font-size:0.7rem; color:#ccc;">Empty</p>';
+        };
+
+        window.broadcastToClient = async function() {
+            const token = localStorage.getItem('adminToken');
+            const client = window.allClients.find(c => c._id === window.selectedClientId);
+            const btn = document.getElementById('btnSyncVault');
+            
+            btn.innerHTML = 'SYNCHRONIZING... <i class="fa-solid fa-circle-notch fa-spin ml-10"></i>';
+            btn.disabled = true;
+
+            const data = {
+                adminPersona: document.getElementById('navAdminName').innerText, 
+                projectMetrics: {
+                    totalBudget: document.getElementById('inputTotalBudget').value || 0,
+                    budgetAllocated: document.getElementById('inputBudgetPaid').value || 0,
+                    timelineProgress: document.getElementById('inputProgress').value || 0,
+                    rsvpExpected: document.getElementById('inputRSVPExpected').value || 0,
+                    rsvpConfirmed: document.getElementById('inputRSVPOverride').value || client.projectMetrics?.rsvpConfirmed || 0
+                },
+                blueprints: client.blueprints || [], 
+                contracts: client.contracts || [], 
+                invoices: client.invoices || [], 
+                tasks: client.tasks || []
+            };
+
+            // Add new items
+            if(document.getElementById('addBPUrl').value) {
+                data.blueprints.push({ title: document.getElementById('addBPTitle').value || 'New Render', fileUrl: document.getElementById('addBPUrl').value });
+            }
+            if(document.getElementById('addContractUrl').value) {
+                data.contracts.push({ title: document.getElementById('addContractTitle').value || 'Legal Document', fileUrl: document.getElementById('addContractUrl').value });
+            }
+            if(document.getElementById('addInvUrl').value) {
+                data.invoices.push({ 
+                    category: document.getElementById('addInvCat').value || 'General', 
+                    vendor: 'C&O Group', 
+                    amount: document.getElementById('addInvAmt').value || 0, 
+                    dueDate: 'TBD', 
+                    status: document.getElementById('addInvStatus').value, 
+                    fileUrl: document.getElementById('addInvUrl').value 
+                });
+            }
+            if(document.getElementById('addTaskTitle').value) {
+                data.tasks.push({ 
+                    title: document.getElementById('addTaskTitle').value, 
+                    description: document.getElementById('addTaskDesc').value, 
+                    dueDate: document.getElementById('addTaskDate').value, 
+                    status: 'Pending' 
+                });
+            }
+
+            try {
+                const res = await fetch(`http://localhost:5000/api/admin/broadcast/${window.selectedClientId}`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if(res.ok) { 
+                    window.showCustomToast("Vault Synchronized Successfully."); 
+                    document.getElementById('addBPTitle').value = ''; document.getElementById('addBPUrl').value = '';
+                    document.getElementById('addContractTitle').value = ''; document.getElementById('addContractUrl').value = '';
+                    document.getElementById('addInvCat').value = ''; document.getElementById('addInvAmt').value = ''; document.getElementById('addInvUrl').value = '';
+                    document.getElementById('addTaskTitle').value = ''; document.getElementById('addTaskDesc').value = ''; document.getElementById('addTaskDate').value = '';
+                    window.closeModal('projectManagerModal'); 
+                    window.fetchClients(); 
+                } else {
+                    window.showCustomToast("Failed to Sync.");
+                }
+            } catch(e) { console.error(e); window.showCustomToast("Network Error."); } 
+            finally { btn.innerHTML = 'SYNCHRONIZE VAULT <i class="fa-solid fa-satellite-dish ml-10"></i>'; btn.disabled = false; }
+        };
+
+        // --- 4. SUB-ITEM DELETION ---
+        window.triggerSubItemDelete = function(arrayName, itemId) {
+            window.vaultItemToDelete = { arrayName, itemId };
+            document.getElementById('deleteVaultItemModal').style.display = 'flex';
+        };
+
+        window.confirmVaultItemDelete = async function() {
+            if(!window.vaultItemToDelete) return;
+            const token = localStorage.getItem('adminToken');
+            const btn = document.getElementById('confirmVaultItemDeleteBtn');
+            btn.innerText = "DELETING...";
+            
+            try {
+                const res = await fetch(`http://localhost:5000/api/admin/delete-item/${window.selectedClientId}`, {
+                    method: 'PATCH', 
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(window.vaultItemToDelete)
+                });
+                
+                if(res.ok) {
+                    window.showCustomToast("Item Purged from Vault.");
+                    window.closeModal('deleteVaultItemModal');
+                    const updatedData = await res.json();
+                    
+                    const cIndex = window.allClients.findIndex(c => c._id === updatedData._id);
+                    if(cIndex !== -1) window.allClients[cIndex] = updatedData;
+                    
+                    window.populateVaultLists(updatedData);
+                    window.renderClientTable(window.allClients); 
+                } else {
+                    window.showCustomToast("Failed to delete item.");
+                }
+            } catch(e) { console.error(e); window.showCustomToast("Error during deletion."); } 
+            finally { btn.innerText = "DELETE ITEM"; }
+        };
+
+        // --- 5. SECURE CHAT (WHATSAPP STYLE) ---
+        // --- 5. SECURE CHAT (WHATSAPP STYLE FIXED) ---
+        window.openAdminChat = function(id) {
+            window.selectedClientId = id;
+            const client = window.allClients.find(c => c._id === id);
+            document.getElementById('chatClientName').innerText = `${client.clientName || 'Client'} | Secure Comms`;
+            
+            // Load saved persona
+            const savedPersona = localStorage.getItem('adminClientPersona');
+            if (savedPersona) document.getElementById('adminChatPersona').value = savedPersona;
+
+            document.getElementById('adminChatModal').style.display = 'flex';
+            window.renderChatMessages(client.messages || []);
+        };
+
+        window.renderChatMessages = function(messages) {
+            const area = document.getElementById('adminChatArea');
+            const adminPersona = document.getElementById('adminChatPersona').value || 'Principal Architect';
+            
+            let lastDate = '';
+            let html = '';
+
+            messages.forEach(msg => {
+                const msgDate = new Date(msg.timestamp).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+                const msgTime = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+                if (msgDate !== lastDate) {
+                    html += `<div class="chat-date-separator"><span>${msgDate}</span></div>`;
+                    lastDate = msgDate;
+                }
+
+                // STRICT ADMIN CHECK: Only true admins are outgoing. Clients are incoming.
+                const isAdmin = msg.sender === adminPersona || msg.sender === 'Admin' || msg.sender === 'Principal Architect' || msg.sender === 'Command Control';
+                
+                const groupClass = isAdmin ? 'msg-group admin' : 'msg-group';
+                const bubbleClass = isAdmin ? 'msg-bubble outgoing' : 'msg-bubble incoming';
+
+                html += `
+                    <div class="${groupClass}">
+                        <div class="${bubbleClass}">
+                            ${!isAdmin ? `<span class="msg-sender-tag">${msg.sender}</span>` : ''}
+                            <span class="msg-text">${msg.text}</span>
+                            <span class="msg-time">${msgTime}</span>
+                            ${isAdmin ? `
+                            <div class="msg-actions">
+                                <button class="msg-action-btn" onclick="window.triggerSubItemDelete('messages', '${msg._id}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                            </div>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            area.innerHTML = html || '<p style="text-align:center; color:#aaa; font-size:0.8rem; margin-top:20px;">No messages in secure channel.</p>';
+            area.scrollTop = area.scrollHeight;
+        };
+
+        window.sendAdminMessage = async function() {
+            const text = document.getElementById('adminChatInput').value.trim();
+            if(!text) return;
+            const token = localStorage.getItem('adminToken');
+            const client = window.allClients.find(c => c._id === window.selectedClientId);
+            const personaInput = document.getElementById('adminChatPersona');
+            const persona = personaInput.value || 'Principal Architect';
+            
+            // Save persona state
+            localStorage.setItem('adminClientPersona', persona);
+            
+            const msgs = client.messages || [];
+            msgs.push({ sender: persona, text: text, timestamp: new Date() });
+            
+            try {
+                const res = await fetch(`http://localhost:5000/api/admin/broadcast/${window.selectedClientId}`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ messages: msgs })
+                });
+                
+                if(res.ok) {
+                    document.getElementById('adminChatInput').value = '';
+                    window.fetchClients();
+                    window.renderChatMessages(msgs); 
+                }
+            } catch(e) { console.error(e); window.showCustomToast("Failed to send."); }
+        };
+
+        // --- 6. EXPANDED GUEST LOGISTICS (ADMIN VIEW WITH STRICT DROPDOWNS) ---
+        window.openAdminGuests = function(id) {
+            window.selectedClientId = id;
+            const client = window.allClients.find(c => c._id === id);
+            document.getElementById('guestClientName').innerText = `${client.eventName || 'Event'} | Manifest Logistics`;
+            document.getElementById('adminGuestModal').style.display = 'flex';
+            
+            const tbody = document.getElementById('adminGuestBody');
+            if(!client.guests || client.guests.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#888; padding: 30px;">No guests added by client yet.</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = client.guests.map(g => {
+                const flight = g.flightDetails || 'TBD';
+                const hotel = g.hotelRoom || 'Pending Assignment';
+
+                return `
+                <tr>
+                    <td>
+                        <strong style="color:var(--color-onyx);">${g.name}</strong><br>
+                        <span style="font-size:0.7rem; color:#888; text-transform:uppercase;">Size: ${g.partySize} | ${g.side || 'Guest'}</span>
+                    </td>
+                    <td>
+                        <select id="f_${g._id}" class="logistics-input" style="cursor: pointer; min-width: 130px;">
+                            <option value="TBD" ${flight === 'TBD' ? 'selected' : ''}>TBD</option>
+                            <option value="Self Arranged" ${flight === 'Self Arranged' ? 'selected' : ''}>Self Arranged</option>
+                            <option value="Host Provided" ${flight === 'Host Provided' ? 'selected' : ''}>Host Provided</option>
+                            <option value="Flight Booked" ${flight === 'Flight Booked' ? 'selected' : ''}>Flight Booked</option>
+                            <option value="Not Required" ${flight === 'Not Required' ? 'selected' : ''}>Not Required</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select id="h_${g._id}" class="logistics-input" style="cursor: pointer; min-width: 150px;">
+                            <option value="Pending Assignment" ${hotel === 'Pending Assignment' ? 'selected' : ''}>Pending Assignment</option>
+                            <option value="Self Arranged" ${hotel === 'Self Arranged' ? 'selected' : ''}>Self Arranged</option>
+                            <option value="Standard Room" ${hotel === 'Standard Room' ? 'selected' : ''}>Standard Room</option>
+                            <option value="Premium Room" ${hotel === 'Premium Room' ? 'selected' : ''}>Premium Room</option>
+                            <option value="Suite" ${hotel === 'Suite' ? 'selected' : ''}>Suite</option>
+                            <option value="Not Required" ${hotel === 'Not Required' ? 'selected' : ''}>Not Required</option>
+                        </select>
+                    </td>
+                    
+                    <td style="font-size:0.8rem; color:var(--color-crimson); font-weight:600;">${g.dietaryNeeds || 'None'}</td>
+                    <td style="font-size:0.8rem; color:var(--color-onyx);">${g.transport || 'Self'}</td>
+                    <td style="font-size:0.8rem; color:var(--color-gold); font-weight:600;">${g.eventRsvp || 'All Events'}</td>
+                    
+                    <td>
+                        <div style="display:flex; gap:5px;">
+                            <button class="btn-authorize" style="padding:6px 10px;" data-tooltip="Save Allocations" onclick="window.saveLogistics('${g._id}', '${g.dietaryNeeds || 'None'}', '${g.transport || 'Self'}', '${g.eventRsvp || 'All Events'}')"><i class="fa-solid fa-save"></i></button>
+                            <button class="btn-purge" style="padding:6px 10px;" data-tooltip="Remove Guest" onclick="window.triggerSubItemDelete('guests', '${g._id}')"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            `}).join('');
+        };
+
+
+        window.saveLogistics = async function(guestId, diet, transport, rsvp) {
+            const flight = document.getElementById(`f_${guestId}`).value;
+            const hotel = document.getElementById(`h_${guestId}`).value;
+            const token = localStorage.getItem('adminToken');
+            
+            try {
+                const res = await fetch(`http://localhost:5000/api/admin/guest-logistics/${window.selectedClientId}/${guestId}`, {
+                    method: 'PATCH', 
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        flightDetails: flight, 
+                        hotelRoom: hotel, 
+                        dietaryNeeds: diet, // Keep existing values
+                        transport: transport, // Keep existing values
+                        eventRsvp: rsvp // Keep existing values
+                    })
+                });
+                if(res.ok) { window.showCustomToast("Logistics Assigned & Saved."); window.fetchClients(); } 
+                else { window.showCustomToast("Failed to Assign."); }
+            } catch(e) { console.error(e); window.showCustomToast("Network Error."); }
+        };
+
+        // --- 7. DELETING ENTIRE CLIENT ---
+        window.triggerClientDelete = function(id) {
+            window.clientToDelete = id;
+            document.getElementById('deleteConfirmModal').style.display = 'flex';
+        };
+
+        window.confirmClientDelete = async function() {
+            if(!window.clientToDelete) return;
+            const token = localStorage.getItem('adminToken');
+            
+            try {
+                const res = await fetch(`http://localhost:5000/api/clients/${window.clientToDelete}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if(res.ok) {
+                    window.showCustomToast("Client Vault Purged.");
+                    window.closeModal('deleteConfirmModal');
+                    window.fetchClients();
+                }
+            } catch(e) { console.error(e); window.showCustomToast("Failed to delete client."); }
+        };
+
+        // --- 8. THE REAL AUDIT LOG ---
+        window.openAuditModal = function(id) {
+            const client = window.allClients.find(c => c._id === id);
+            if(!client) return;
+            
+            const body = document.getElementById('auditLogBody');
+            
+            if (!client.auditLog || client.auditLog.length === 0) {
+                body.innerHTML = '<p style="text-align:center; color:#888; padding: 20px;">No audit history found for this Vault.</p>';
+            } else {
+                body.innerHTML = client.auditLog.slice().reverse().map(log => `
+                    <div class="audit-item">
+                        <span class="audit-action">${log.action}</span>
+                        <span class="audit-meta">${log.user}<br>${new Date(log.timestamp).toLocaleString()}</span>
+                    </div>
+                `).join('');
+            }
+            document.getElementById('auditModal').style.display = 'flex';
+        };
+
+        // --- 9. EXPORT CSV ---
+        window.exportClientsToCSV = function() {
+            if (window.allClients.length === 0) { window.showCustomToast("No data to export."); return; }
+            let csvContent = "data:text/csv;charset=utf-8,Client Name,Event Name,Email,Phone,Division,Status\n";
+            window.allClients.forEach(c => { csvContent += `"${c.clientName}","${c.eventName}","${c.email}","${c.phone}","${c.division}","${c.status}"\n`; });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Client_Vaults_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link); link.click(); document.body.removeChild(link);
+            window.showCustomToast("CSV Downloaded.");
+        };
+
+        // --- 10. MODAL CLOSERS ---
+        window.closeModal = function(id) { document.getElementById(id).style.display = 'none'; };
+        
+        window.onclick = function(e) {
+            ['projectManagerModal', 'adminChatModal', 'adminGuestModal', 'auditModal', 'deleteConfirmModal', 'deleteVaultItemModal', 'approveClientModal', 'logoutConfirmModal', 'resetKeyConfirmModal'].forEach(id => {
+                if (e.target == document.getElementById(id)) window.closeModal(id);
+            });
+        };
+
+        // --- 11. TOAST ALERTS & LOGOUT ---
+        window.showCustomToast = function(message) {
+            const toast = document.getElementById('syncToast');
+            document.getElementById('syncToastText').innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3500);
+        };
+
+        window.logoutAdmin = function() { document.getElementById('logoutConfirmModal').style.display = 'flex'; };
+        window.executeLogout = function() { localStorage.removeItem('adminToken'); window.location.href = 'index.html'; };
+    </script>
+</body>
+</html>

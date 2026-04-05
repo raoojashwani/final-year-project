@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>The Execution Framework | C&O Group</title>
+    <link rel="icon" type="image/png" href="../images/logo.png">
+    <meta name="description" content="Discover the 7-step architectural framework we use to engineer luxury weddings and global corporate summits.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="../css/style.css">
+
+    <script>
+        if (history.scrollRestoration) { history.scrollRestoration = 'manual'; }
+        window.scrollTo(0, 0);
+    </script>
+
+    <style>
+        /* =========================================
+           PROCESS PAGE SPECIFIC CSS
+        ========================================= */
+        
+        :root {
+            --color-onyx: #111111;
+            --color-onyx-light: #2A2A2A;
+            --color-crimson: #8A1538;
+            --color-blue: #0B192C;
+            --shadow-glow: 0 15px 40px rgba(212,175,55,0.2);
+        }
+
+        /* 1. Editorial Header (Fullscreen 100vh) */
+        .editorial-header { 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 100px 0 80px; 
+            background-color: var(--color-onyx); 
+            position: relative; 
+            overflow: hidden; 
+            border-bottom: 1px solid rgba(212,175,55,0.2); 
+        }
+        .editorial-subtitle { display: block; font-family: var(--font-body); text-transform: uppercase; letter-spacing: 4px; color: var(--color-gold); font-weight: 600; font-size: 0.85rem; margin-bottom: 20px; }
+        .editorial-title { font-size: clamp(3.5rem, 5vw, 6rem); line-height: 1.1; color: var(--color-white); margin-bottom: 30px; letter-spacing: -1px; text-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        .editorial-desc { font-size: 1.1rem; color: var(--color-grey); max-width: 600px; margin: 0 auto; line-height: 1.8; }
+        .blueprint-bg { position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 40px 40px; opacity: 0.3; z-index: 0; }
+
+        /* General Buttons */
+        .btn-solid-onyx { background-color: var(--color-onyx); color: var(--color-gold); border: 1px solid var(--color-onyx); display: inline-flex; align-items: center; justify-content: center; padding: 16px 30px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; border-radius: 30px; cursor: pointer; transition: all 0.4s ease; width: 100%; }
+        .btn-solid-onyx:hover { background-color: var(--color-gold); color: var(--color-onyx); border-color: var(--color-gold); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2); }
+
+        /* Elevated Glow Button (For the final CTA) */
+        .btn-glow-gold { background: var(--color-gold); color: var(--color-onyx); border: 1px solid var(--color-gold); display: inline-flex; align-items: center; justify-content: center; padding: 18px 40px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.95rem; border-radius: 30px; cursor: pointer; transition: all 0.4s ease; box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3); }
+        .btn-glow-gold:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(212, 175, 55, 0.5); background: white; border-color: white; }
+
+        /* 2. Philosophy Split */
+        .process-philosophy { background: var(--color-ivory); }
+        .blueprint-img { border-radius: var(--radius-large); border: 1px solid var(--color-gold); padding: 10px; background: white; box-shadow: var(--shadow-soft); transition: transform 0.4s; }
+        .blueprint-img:hover { transform: translateY(-5px); box-shadow: var(--shadow-glow); }
+        .blueprint-img img { border-radius: calc(var(--radius-large) - 4px); width: 100%; height: auto; }
+
+        /* 3. The Grand Timeline */
+        .grand-timeline-section { background-color: var(--color-white); }
+        .grand-timeline { position: relative; max-width: 1000px; margin: 0 auto; padding: 80px 0; }
+        .timeline-track { position: absolute; top: 0; left: 50%; width: 2px; height: 100%; background-color: var(--color-light-grey); transform: translateX(-50%); z-index: 1; }
+        .timeline-progress { position: absolute; top: 0; left: 50%; width: 4px; height: 0%; background-color: var(--color-gold); transform: translateX(-50%); z-index: 2; box-shadow: 0 0 15px rgba(212,175,55,0.8); }
+        
+        .g-step { display: flex; justify-content: space-between; align-items: center; margin-bottom: 100px; position: relative; z-index: 3; width: 100%; }
+        .g-step:nth-child(odd) { flex-direction: row-reverse; }
+        .g-node { width: 40px; height: 40px; background: var(--color-onyx); border: 2px solid var(--color-gold); border-radius: 50%; position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; color: var(--color-gold); font-weight: 700; font-family: var(--font-heading); font-size: 1.2rem; transition: all 0.4s ease; }
+        .g-step:hover .g-node { background: var(--color-gold); color: var(--color-onyx); box-shadow: 0 0 20px rgba(212,175,55,0.6); transform: translateX(-50%) scale(1.2); }
+        .g-content { width: 42%; padding: 40px; background: var(--color-ivory); border-radius: var(--radius-large); border: 1px solid transparent; transition: all 0.4s; box-shadow: var(--shadow-soft); }
+        .g-step:hover .g-content { border-color: var(--color-gold); transform: translateY(-5px); box-shadow: var(--shadow-glow); }
+
+        /* 4. Division Adaptation */
+        .adaptation-section { background: var(--color-onyx); color: white; padding: 100px 0; }
+        .adapt-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 50px; border-radius: var(--radius-large); transition: all 0.5s ease; position: relative; overflow: hidden; }
+        .adapt-card::before { content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity 0.5s ease; z-index: 0; pointer-events: none; }
+        .adapt-card.tk:hover::before { background: radial-gradient(circle at top right, rgba(138,21,56,0.3), transparent 70%); opacity: 1; }
+        .adapt-card.pp:hover::before { background: radial-gradient(circle at top right, rgba(11,25,44,0.5), transparent 70%); opacity: 1; }
+        .adapt-card.tk:hover { border-color: var(--color-crimson); transform: translateY(-5px); }
+        .adapt-card.pp:hover { border-color: var(--color-blue); transform: translateY(-5px); }
+        .adapt-content { position: relative; z-index: 1; }
+
+        /* 5. Tools & Tech (Bento Grid) */
+        .bento-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; grid-auto-rows: minmax(200px, auto); }
+        .bento-item { background: var(--color-white); border-radius: var(--radius-large); padding: 30px; border: 1px solid var(--color-light-grey); transition: all 0.3s; display: flex; flex-direction: column; justify-content: center; }
+        .bento-item:hover { border-color: var(--color-gold); box-shadow: var(--shadow-soft); transform: translateY(-5px); }
+        .bento-large { grid-column: span 2; }
+        .bento-icon { font-size: 2rem; color: var(--color-gold); margin-bottom: 20px; }
+
+        /* 6. Behind the Scenes Matrix */
+        .bts-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+        .bts-img { aspect-ratio: 1/1; overflow: hidden; border-radius: var(--radius-large); position: relative; box-shadow: var(--shadow-soft); }
+        .bts-img img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.2); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .bts-img:hover img { filter: grayscale(0%) contrast(1); transform: scale(1.08); }
+
+        /* 7. Client Journey Strip */
+        .journey-strip { display: flex; justify-content: space-between; align-items: center; padding: 40px; background: var(--color-ivory); border-radius: 100px; border: 1px solid var(--color-gold); margin-top: 60px; overflow-x: auto; transition: 0.4s; }
+        .journey-strip:hover { box-shadow: var(--shadow-glow); transform: translateY(-3px); }
+        .journey-step { display: flex; align-items: center; gap: 15px; font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; transition: 0.3s; }
+        .journey-step:hover { color: var(--color-gold); }
+        .journey-arrow { color: var(--color-gold); opacity: 0.5; }
+
+        /* 8. Invitation CTA */
+        .invitation-section { padding: 120px 0; background-color: var(--color-white); }
+        .invitation-card { background-color: var(--color-onyx); border-radius: 24px; padding: 80px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 40px 80px rgba(0,0,0,0.2); border: 1px solid rgba(212, 175, 55, 0.3); position: relative; overflow: hidden; }
+        .invitation-card::before { content: ''; position: absolute; top: -50%; right: -10%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(212,175,55,0.15) 0%, rgba(17,17,17,0) 70%); pointer-events: none; }
+        .invitation-content { max-width: 500px; position: relative; z-index: 2; }
+        .invitation-actions { position: relative; z-index: 2; }
+
+        /* Forms, Modals & Toasts */
+        .form-input { width: 100%; padding: 12px 0; font-family: var(--font-body); font-size: 1rem; background: transparent; border: none; border-bottom: 1px solid #ccc; outline: none; transition: border-color 0.3s; }
+        .form-input:focus { border-bottom-color: var(--color-gold); }
+
+        .toast-msg { position: fixed; bottom: 30px; right: 30px; background: var(--color-onyx); color: var(--color-white); padding: 16px 24px; border-left: 4px solid var(--color-gold); border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 10001; font-family: var(--font-body); font-size: 0.9rem; display: flex; align-items: center; gap: 12px; transform: translateY(100px); opacity: 0; transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .toast-msg.show { transform: translateY(0); opacity: 1; }
+
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 15, 15, 0.9); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+        .modal-content { background: var(--color-ivory); padding: 40px; border-radius: var(--radius-large); max-width: 500px; width: 90%; position: relative; border: 1px solid var(--color-gold); }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: var(--color-crimson); background: transparent; border: none; transition: 0.3s; }
+        .close-modal:hover { color: var(--color-gold); transform: rotate(90deg); }
+        
+        .mobile-toggle { display: none; font-size: 24px; cursor: pointer; color: var(--color-charcoal); }
+
+        /* Floating Nav Dropdown */
+        .has-dropdown { position: relative; }
+        .dropdown-menu { position: absolute; top: 100%; left: 0; background: var(--color-white); box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: var(--radius-small); padding: 10px 0; min-width: 250px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; list-style: none; }
+        .has-dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        .dropdown-menu li a { display: block; padding: 10px 20px; color: var(--color-onyx); font-size: 0.9rem; text-transform: none; letter-spacing: 0; }
+        .dropdown-menu li a:hover { background: rgba(212,175,55,0.1); color: var(--color-gold); }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .bento-large { grid-column: span 1; }
+            .bento-grid { grid-template-columns: repeat(2, 1fr); }
+            .bts-grid { grid-template-columns: repeat(2, 1fr); }
+            .invitation-card { flex-direction: column; text-align: center; padding: 60px 40px; gap: 40px; }
+        }
+        @media (max-width: 992px) {
+            .g-step, .g-step:nth-child(odd) { flex-direction: column; text-align: center; margin-bottom: 60px; }
+            .g-node { left: 20px; }
+            .timeline-track, .timeline-progress { left: 20px; }
+            .g-content { width: 100%; margin-left: 60px; text-align: left; }
+            .mobile-toggle { display: block; color: white; } .nav-links, .nav-actions { display: none; }
+            .navbar.scrolled .mobile-toggle { color: var(--color-onyx); }
+        }
+        @media (max-width: 768px) {
+            .editorial-title { font-size: 3rem; }
+            .bento-grid { grid-template-columns: 1fr; }
+            .journey-strip { border-radius: var(--radius-large); flex-direction: column; align-items: flex-start; gap: 20px; }
+            .journey-arrow { transform: rotate(90deg); margin-left: 10px; }
+        }
+    </style>
+</head>
+<body class="bg-ivory text-black">
+
+    <div id="bookingModal" class="modal-overlay">
+        <div class="modal-content shadow-glow">
+            <button class="close-modal" id="closeBooking"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="serif-font text-onyx mb-10">Start Your Journey</h3>
+            <p class="text-sm mb-30 text-grey">Fill in your details and our lead architect will reach out within 24 hours.</p>
+            <form id="popupContactForm" action="/api/book" method="POST">
+                <input type="text" name="name" placeholder="Full Name / Company" class="form-input mb-20 border-bottom-only" required>
+                <input type="email" name="email" placeholder="Email Address" class="form-input mb-20 border-bottom-only" required>
+                <select name="eventType" class="form-input mb-20 border-bottom-only text-grey" required>
+                    <option value="" disabled selected>Select Event Type</option>
+                    <option value="wedding">Thread & Knot (Wedding/Social)</option>
+                    <option value="corporate">Prism Planner (Corporate MICE)</option>
+                </select>
+                <textarea name="message" placeholder="Briefly describe your vision..." class="form-input mb-30 border-bottom-only" rows="2"></textarea>
+                <button type="submit" class="btn-solid-onyx w-100 justify-center">Request Consultation</button>
+            </form>
+        </div>
+    </div>
+
+    <nav class="navbar glass-header" id="navbar">
+        <div class="container nav-container flex-space-between relative-z-content">
+            <a href="../index.html" class="brand-logo text-white serif-font" id="nav-logo">C&O<span class="text-gold">.</span> Group</a>
+            
+            <ul class="nav-links text-white" id="nav-links-color">
+                <li><a href="about.html">Our Story</a></li>
+                <li class="has-dropdown">
+                    <a href="#">Divisions <i class="fa-solid fa-chevron-down text-sm ml-10"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="thread-knot.html" class="text-onyx">Thread & Knot (Weddings)</a></li>
+                        <li><a href="prism-planner.html" class="text-onyx">Prism Planner (Corporate)</a></li>
+                    </ul>
+                </li>
+                <li><a href="process.html" class="font-weight-700 text-gold">Process</a></li>
+                <li><a href="portfolio.html">Masterpieces</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button id="openBookingBtn" class="btn-header-premium text-white" style="border-color: var(--color-white);" onmouseover="this.style.color='var(--color-onyx)'; this.style.backgroundColor='white';" onmouseout="this.style.color='white'; this.style.backgroundColor='transparent';">Plan Your Event</button>
+            </div>
+            
+            <div class="mobile-toggle"><i class="fa-solid fa-bars"></i></div>
+        </div>
+    </nav>
+
+    <header class="editorial-header">
+        <div class="blueprint-bg"></div>
+        <div class="floating-shape shape-gold shape-lg" style="top: -20%; right: -10%;"></div>
+
+        <div class="container text-center fade-up-slow relative-z-content">
+            <span class="editorial-subtitle">The Execution Framework</span>
+            <h1 class="editorial-title serif-font">Where Vision Meets <br><span class="text-gold italic">Precision.</span></h1>
+            <p class="editorial-desc">Every masterpiece we create follows a strict, architectural framework designed to transform abstract ideas into flawlessly engineered, unforgettable experiences.</p>
+        </div>
+    </header>
+
+    <section class="process-philosophy section-padding border-bottom-gold">
+        <div class="container split-layout">
+            <div class="fade-up-slow">
+                <span class="eyebrow text-onyx">The Reality</span>
+                <h2 class="section-title serif-font mt-10 mb-30">Events Are <span class="italic text-crimson">Complex Systems.</span></h2>
+                <div class="gold-line-short mb-30"></div>
+                <p class="text-black mb-20 font-weight-500">Behind every beautiful stage lies months of rigid logistical coordination.</p>
+                <p class="text-grey mb-30">While an event lasts for a few hours or days, its success is determined by the systems running silently in the background. At C&O Group, we treat events like engineering projects. Every detail—from the acoustic bounce of a ballroom to the minute-by-minute flow of 1,000 guests—is calculated, rehearsed, and mastered.</p>
+                
+                <div class="grid-2-cols" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div><i class="fa-solid fa-check text-gold mr-10"></i> <span class="text-sm font-weight-600">Zero Guesswork</span></div>
+                    <div><i class="fa-solid fa-check text-gold mr-10"></i> <span class="text-sm font-weight-600">Military Precision</span></div>
+                    <div><i class="fa-solid fa-check text-gold mr-10"></i> <span class="text-sm font-weight-600">Contingency Plans</span></div>
+                    <div><i class="fa-solid fa-check text-gold mr-10"></i> <span class="text-sm font-weight-600">Flawless Delivery</span></div>
+                </div>
+            </div>
+            
+            <div class="blueprint-img fade-up-slow delay-1">
+                <img src="../images/process/1.jpg" alt="Event Production Control Board">
+            </div>
+        </div>
+    </section>
+
+    <section class="grand-timeline-section section-padding relative overflow-hidden">
+        <div class="floating-shape shape-gold shape-md" style="top: 20%; left: -10%;"></div>
+        <div class="floating-shape shape-crimson shape-lg" style="bottom: 10%; right: -10%;"></div>
+
+        <div class="container relative-z-content">
+            <div class="text-center mb-60">
+                <span class="eyebrow text-onyx">The Anatomy of an Event</span>
+                <h2 class="section-title serif-font mt-10">The 7-Step Architecture</h2>
+            </div>
+
+            <div class="grand-timeline" id="process-trigger">
+                <div class="timeline-track"></div>
+                <div class="timeline-progress" id="progress-line"></div>
+
+                <div class="g-step fade-up-slow">
+                    <div class="g-node">1</div>
+                    <div class="g-content">
+                        <h4 class="serif-font font-size-xl text-onyx mb-10">The First Coffee</h4>
+                        <span class="text-gold text-sm text-uppercase font-weight-600 block mb-10">Discovery Phase</span>
+                        <p class="text-grey text-sm">Initial consultation to discuss vision, family traditions, corporate expectations, budget ranges, and the core event objectives. The relationship begins here.</p>
+                    </div>
+                </div>
+
+                <div class="g-step fade-up-slow">
+                    <div class="g-node">2</div>
+                    <div class="g-content">
+                        <h4 class="serif-font font-size-xl text-onyx mb-10">Concept Blueprint</h4>
+                        <span class="text-gold text-sm text-uppercase font-weight-600 block mb-10">Design Phase</span>
+                        <p class="text-grey text-sm">Our in-house architects prepare detailed moodboards, structural themes, and 3D stage concepts, marrying aesthetic beauty with structural integrity.</p>
+                    </div>
+                </div>
+
+                <div class="g-step fade-up-slow">
+                    <div class="g-node">3</div>
+                    <div class="g-content">
+                        <h4 class="serif-font font-size-xl text-onyx mb-10">Vendor Matrix</h4>
+                        <span class="text-gold text-sm text-uppercase font-weight-600 block mb-10">Procurement</span>
+                        <p class="text-grey text-sm">Strict alignment of premium vendors. Decorators, elite caterers, AV production crews, and artists are contracted under our open-book budgeting system.</p>
+                    </div>
+                </div>
+
+                <div class="g-step fade-up-slow">
+                    <div class="g-node">4</div>
+                    <div class="g-content">
+                        <h4 class="serif-font font-size-xl text-onyx mb-10">Tactical Recce</h4>
+                        <span class="text-gold text-sm text-uppercase font-weight-600 block mb-10">Logistics Planning</span>
+                        <p class="text-grey text-sm">Comprehensive site visits to optimize every variable—from entry gate flow to stage positioning, acoustic mapping, and emergency protocol routing.</p>
+                    </div>
+                </div>
+
+                <div class="g-step fade-up-slow">
+                    <div class="g-node">5</div>
+                    <div class="g-content">
+                        <h4 class="serif-font font-size-xl text-onyx mb-10">Ground Command</h4>
+                        <span class="text-gold text-sm text-uppercase font-weight-600 block mb-10">Event Week Execution</span>
+                        <p class="text-grey text-sm">Our "Shadow Team" deploys. We manage the chaos behind the curtain, coordinating all ceremonies, vendor load-ins, and strict timeline schedules.</p>
+                    </div>
+                </div>
+
+                <div class="g-step fade-up-slow">
+                    <div class="g-node">6</div>
+                    <div class="g-content">
+                        <h4 class="serif-font font-size-xl text-onyx mb-10">The Grand Symphony</h4>
+                        <span class="text-gold text-sm text-uppercase font-weight-600 block mb-10">The Experience</span>
+                        <p class="text-grey text-sm">The event is live. Clients and delegates experience a flawless, immersive celebration while our team ensures every cue hits perfectly on the second.</p>
+                    </div>
+                </div>
+
+                <div class="g-step fade-up-slow">
+                    <div class="g-node">7</div>
+                    <div class="g-content">
+                        <h4 class="serif-font font-size-xl text-onyx mb-10">Intelligence & Wrap</h4>
+                        <span class="text-gold text-sm text-uppercase font-weight-600 block mb-10">Post-Event</span>
+                        <p class="text-grey text-sm">Final transparent vendor settlements, collection of client feedback, and delivery of ROI analytics or cinematic media deliverables.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="adaptation-section relative overflow-hidden">
+        <div class="blueprint-bg" style="opacity: 0.1;"></div>
+        <div class="container relative-z-content">
+            <div class="text-center mb-60">
+                <span class="eyebrow text-gold">One Framework. Two Lenses.</span>
+                <h2 class="section-title serif-font mt-10">How The System Adapts</h2>
+            </div>
+
+            <div class="grid-2-cols" style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+                <div class="adapt-card tk fade-up-slow">
+                    <div class="adapt-content">
+                        <span class="text-crimson text-sm text-uppercase font-weight-600 mb-10 block">Thread & Knot Focus</span>
+                        <h3 class="serif-font font-size-xl text-white mb-20">The Emotional Core</h3>
+                        <ul class="package-list text-grey">
+                            <li><i class="fa-solid fa-heart text-crimson mr-10"></i> Honoring strict cultural traditions</li>
+                            <li><i class="fa-solid fa-people-roof text-crimson mr-10"></i> Multi-generational family experiences</li>
+                            <li><i class="fa-solid fa-champagne-glasses text-crimson mr-10"></i> Multi-day destination logistics</li>
+                            <li><i class="fa-solid fa-palette text-crimson mr-10"></i> Opulent, bespoke stage design</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="adapt-card pp fade-up-slow delay-1">
+                    <div class="adapt-content">
+                        <span class="text-blue text-sm text-uppercase font-weight-600 mb-10 block" style="color: #64B5F6;">Prism Planner Focus</span>
+                        <h3 class="serif-font font-size-xl text-white mb-20">The Strategic Core</h3>
+                        <ul class="package-list text-grey">
+                            <li><i class="fa-solid fa-chart-line text-blue mr-10" style="color: #64B5F6;"></i> Driving business ROI & objectives</li>
+                            <li><i class="fa-solid fa-copyright text-blue mr-10" style="color: #64B5F6;"></i> Rigid brand presentation & media</li>
+                            <li><i class="fa-solid fa-microchip text-blue mr-10" style="color: #64B5F6;"></i> Complex technology integration</li>
+                            <li><i class="fa-solid fa-id-card-clip text-blue mr-10" style="color: #64B5F6;"></i> High-volume delegate management</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding bg-ivory">
+        <div class="container">
+            <div class="text-center mb-60">
+                <span class="eyebrow text-onyx">The Arsenal</span>
+                <h2 class="section-title serif-font mt-10">Tools & Systems We Deploy</h2>
+            </div>
+
+            <div class="bento-grid fade-up-slow">
+                <div class="bento-item bento-large">
+                    <i class="fa-solid fa-cubes bento-icon"></i>
+                    <h4 class="serif-font font-size-lg text-onyx mb-10">3D Spatial Rendering & CAD</h4>
+                    <p class="text-sm text-grey">We don't draw on napkins. Our team builds exact-scale 3D models of your venue, lighting rigs, and mandaps to ensure structural viability before a single piece of wood is cut.</p>
+                </div>
+                <div class="bento-item">
+                    <i class="fa-solid fa-clipboard-check bento-icon text-crimson"></i>
+                    <h4 class="serif-font font-size-lg text-onyx mb-10">Vendor Matrix System</h4>
+                    <p class="text-sm text-grey">Centralized contract tracking, open-book invoicing, and automated payout schedules.</p>
+                </div>
+                <div class="bento-item">
+                    <i class="fa-solid fa-qrcode bento-icon" style="color: var(--color-blue);"></i>
+                    <h4 class="serif-font font-size-lg text-onyx mb-10">Digital Registration</h4>
+                    <p class="text-sm text-grey">Proprietary QR-code scanning, instant badge printing, and live attendance tracking.</p>
+                </div>
+                <div class="bento-item bento-large">
+                    <i class="fa-solid fa-truck-fast bento-icon text-onyx"></i>
+                    <h4 class="serif-font font-size-lg text-onyx mb-10">Fleet & Logistics Tracking</h4>
+                    <p class="text-sm text-grey">Live monitoring of airport transfers, vendor load-in trucks, and VIP escorts, managed via a real-time dashboard accessible by our on-ground command team.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding bg-white border-top-gold border-bottom-grey">
+        <div class="container">
+            <div class="text-center mb-50 fade-up-slow">
+                <span class="eyebrow text-grey">Exclusive Look</span>
+                <h2 class="section-title serif-font text-onyx mt-10">Behind the Curtain</h2>
+            </div>
+            <div class="bts-grid fade-up-slow delay-1">
+                <div class="bts-img"><img src="../images/process/2.jpg" alt="Soundboard"></div>
+                <div class="bts-img"><img src="../images/process/3.jpg" alt="Lighting Rig"></div>
+                <div class="bts-img"><img src="../images/process/4.jpg" alt="Empty Hall Setup"></div>
+                <div class="bts-img"><img src="../images/process/5.jpg" alt="Floral Architecture Prep"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding bg-ivory text-center">
+        <div class="container">
+            <span class="eyebrow text-gold">The Result</span>
+            <h2 class="section-title serif-font mt-10 mb-40">The C&O Advantage</h2>
+            
+            <div class="grid-4-cols mb-60">
+                <div class="p-40 bg-white shadow-soft rounded-corners border-top-gold hover-lift fade-up-slow">
+                    <h4 class="text-onyx serif-font mb-10">Rigid Structure</h4>
+                    <p class="text-grey text-sm">Chaos is mitigated through proven playbooks.</p>
+                </div>
+                <div class="p-40 bg-white shadow-soft rounded-corners border-top-onyx hover-lift fade-up-slow delay-1">
+                    <h4 class="text-onyx serif-font mb-10">Vetted Network</h4>
+                    <p class="text-grey text-sm">Access to India's most elite, reliable vendors.</p>
+                </div>
+                <div class="p-40 bg-white shadow-soft rounded-corners border-top-gold hover-lift fade-up-slow delay-2">
+                    <h4 class="text-onyx serif-font mb-10">Absolute Clarity</h4>
+                    <p class="text-grey text-sm">Open-book pricing with zero hidden margins.</p>
+                </div>
+                <div class="p-40 bg-white shadow-soft rounded-corners border-top-onyx hover-lift fade-up-slow delay-3">
+                    <h4 class="text-onyx serif-font mb-10">Client Serenity</h4>
+                    <p class="text-grey text-sm">You enjoy the event; we handle the mechanics.</p>
+                </div>
+            </div>
+
+            <div class="journey-strip fade-up-slow shadow-soft">
+                <div class="journey-step"><i class="fa-solid fa-mug-hot text-onyx"></i> Consultation</div>
+                <i class="fa-solid fa-arrow-right journey-arrow"></i>
+                <div class="journey-step"><i class="fa-solid fa-file-contract text-onyx"></i> Proposal</div>
+                <i class="fa-solid fa-arrow-right journey-arrow"></i>
+                <div class="journey-step"><i class="fa-solid fa-compass-drafting text-onyx"></i> Blueprint</div>
+                <i class="fa-solid fa-arrow-right journey-arrow"></i>
+                <div class="journey-step"><i class="fa-solid fa-gears text-onyx"></i> Execution</div>
+                <i class="fa-solid fa-arrow-right journey-arrow"></i>
+                <div class="journey-step" style="color: var(--color-gold); font-weight: 700;"><i class="fa-solid fa-glass-cheers"></i> Celebration</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="invitation-section">
+        <div class="container">
+            <div class="invitation-card fade-up-slow">
+                <div class="invitation-content">
+                    <span class="eyebrow text-gold mb-20">Initiate the Process</span>
+                    <h2 class="serif-font text-white mb-20" style="font-size: 3.5rem; line-height: 1.1;">Start Your<br>Journey.</h2>
+                    <p class="text-grey font-size-lg">Schedule your initial consultation and let the architects at C&O Group engineer your celebration.</p>
+                </div>
+                <div class="invitation-actions">
+                    <button class="btn-glow-gold" onclick="document.getElementById('bookingModal').classList.add('active')">
+                        Book "The First Coffee" <i class="fa-solid fa-arrow-right ml-10"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="toastMsg" class="toast-msg">
+        <i class="fa-solid fa-circle-check text-gold"></i> <span id="toastText">Success!</span>
+    </div>
+
+    <footer class="custom-footer relative overflow-hidden">
+        <div class="container relative-z-content">
+            <div class="footer-top-row">
+                
+                <div class="footer-col">
+                    <h4 class="footer-heading">Subscribe to receive exciting gifts!</h4>
+<form class="newsletter-form" id="newsletterForm">
+    <input type="email" placeholder="Your email address" class="nl-input" required>
+    <button type="submit" class="nl-btn"><i class="fa-solid fa-envelope-open-text"></i></button>
+</form>
+<ul class="footer-info-list">
+    <li>
+        <i class="fa-solid fa-location-dot"></i> 
+        <a href="https://www.google.com/maps/search/?api=1&query=Sant+Nagar+East+of+Kailash+New+Delhi+110065" target="_blank">
+            <span>Sant Nagar, East of Kailash, New Delhi, Delhi 110065</span>
+        </a>
+    </li>
+    
+    <li>
+        <i class="fa-solid fa-phone"></i> 
+        <a href="tel:+918882373939"><span>+91 8882373939</span></a>
+    </li>
+    
+    <li>
+        <i class="fa-solid fa-at"></i> 
+        <a href="mailto:info.cogroup@gmail.com"><span>info.cogroup@gmail.com</span></a>
+    </li>
+</ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Our Divisions</h4>
+                    <ul class="footer-links">
+                        <li><a href="thread-knot.html">Thread & Knot</a></li>
+                        <li><a href="prism-planner.html">Prism Planner</a></li>
+                        <li><a href="portfolio.html">Portfolio Showcase</a></li>
+                        <li><a href="case-studies.html">Featured Case Studies</a></li>
+                        <li><a href="client-login.html">Client Portal Login</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Capabilities</h4>
+                    <ul class="footer-links">
+                        <li><a href="thread-knot.html">Luxury Wedding Planning</a></li>
+                        <li><a href="prism-planner.html">Corporate MICE & Summits</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html">About C&O Group</a></li>
+                        <li><a href="process.html">Our Execution Framework</a></li>
+                        <li><a href="vendor-portal.html">Vendor Network Portal</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                        <li><a href="contact.html">Contact Command Center</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="footer-bottom-row border-top-grey">
+                <div class="footer-socials">    
+                    <a href="https://instagram.com/yourhandle" target="_blank" class="text-onyx hover-gold"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://youtube.com/yourchannel" target="_blank" class="text-onyx hover-gold"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+                <div class="footer-copyright">
+                    <p>All Rights Reserved &copy; 2026 C&O Group LLP.</p>
+                </div>
+                <div class="payment-icons">
+                    <i class="fa-brands fa-google-pay fa-2x" style="color: #5f6368; vertical-align: middle;"></i>
+                    <i class="fa-brands fa-cc-visa fa-2x ml-10" style="color: #1434CB; vertical-align: middle;"></i>
+                    <i class="fa-brands fa-cc-mastercard fa-2x ml-10" style="color: #EB001B; vertical-align: middle;"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+<script>
+    (function() {
+        // 1. Check the Global Command Switch
+        if (localStorage.getItem('maintenanceMode') === 'true') {
+            
+            // 2. Wait for the browser to barely start parsing the page
+            document.addEventListener('DOMContentLoaded', () => {
+                
+                // 3. Hijack the entire body and inject the Luxury Standby Screen
+                document.body.innerHTML = `
+                    <div style="position: fixed; inset: 0; background: #0A0A0A; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-family: 'Montserrat', sans-serif; padding: 20px;">
+                        
+                        <div style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: white; letter-spacing: 2px; margin-bottom: 50px; font-weight: 700;">
+                            C&O<span style="color: #D4AF37;">.</span>
+                        </div>
+                        
+                        <div style="width: 80px; height: 80px; border-radius: 50%; border: 1px dashed #D4AF37; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; animation: spin 10s linear infinite;">
+                            <i class="fa-solid fa-compass-drafting" style="font-size: 2rem; color: #D4AF37;"></i>
+                        </div>
+
+                        <style>
+                            @keyframes spin { 100% { transform: rotate(360deg); } }
+                        </style>
+                        
+                        <h1 style="font-family: 'Playfair Display', serif; font-size: 3.5rem; color: #D4AF37; margin-bottom: 20px; line-height: 1.1;">Site Under<br>Architecture</h1>
+                        
+                        <p style="color: #888; font-size: 1rem; max-width: 500px; line-height: 1.8; margin-bottom: 50px;">
+                            Our digital environment is currently undergoing an encrypted upgrade. Our principal architects are refining the mainframe to ensure flawless execution for your future events.
+                        </p>
+                        
+                        <div style="font-size: 0.75rem; color: #444; text-transform: uppercase; letter-spacing: 3px; border-top: 1px solid #222; padding-top: 20px; width: 100%; max-width: 300px;">
+                            <i class="fa-solid fa-lock text-gold mr-5"></i> Secure Protocol Active
+                        </div>
+
+                    </div>
+                `;
+                
+                // 4. Lock scrolling
+                document.body.style.overflow = 'hidden';
+            });
+        }
+    })();
+</script>
+
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // Global Booking Modal Logic
+            const bookingModal = document.getElementById('bookingModal');
+            const openBookingBtn = document.getElementById('openBookingBtn');
+            if(openBookingBtn) {
+                openBookingBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    bookingModal.classList.add('active');
+                });
+            }
+            
+            const closeBookingBtn = document.getElementById('closeBooking');
+            if(closeBookingBtn) {
+                closeBookingBtn.addEventListener('click', () => bookingModal.classList.remove('active'));
+            }
+            
+            window.addEventListener('click', (e) => { 
+                if (e.target === bookingModal) bookingModal.classList.remove('active'); 
+            });
+
+            // Mobile Nav
+            const mobileToggle = document.querySelector('.mobile-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            if (mobileToggle && navLinks) {
+                mobileToggle.addEventListener('click', () => {
+                    if (navLinks.style.display === 'flex') { navLinks.style.display = 'none'; } 
+                    else {
+                        navLinks.style.display = 'flex'; navLinks.style.flexDirection = 'column';
+                        navLinks.style.position = 'absolute'; navLinks.style.top = '100%'; navLinks.style.left = '0';
+                        navLinks.style.width = '100%'; navLinks.style.background = '#FCFBF9'; navLinks.style.padding = '20px';
+                        navLinks.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
+                    }
+                });
+            }
+
+            // Scrolled Navbar Color Inversion
+            const navbar = document.getElementById('navbar');
+            const navLogo = document.getElementById('nav-logo');
+            const navLinksColor = document.getElementById('nav-links-color');
+            const planBtn = document.getElementById('openBookingBtn');
+            
+            if (navbar) {
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 50) {
+                        navbar.classList.add('scrolled');
+                        if(navLogo) { navLogo.classList.remove('text-white'); navLogo.classList.add('text-onyx'); }
+                        if(navLinksColor) { navLinksColor.classList.remove('text-white'); navLinksColor.classList.add('text-onyx'); }
+                        if(planBtn) { planBtn.style.color = 'var(--color-onyx)'; planBtn.style.borderColor = 'var(--color-onyx)'; }
+                    } else {
+                        navbar.classList.remove('scrolled');
+                        if(navLogo) { navLogo.classList.remove('text-onyx'); navLogo.classList.add('text-white'); }
+                        if(navLinksColor) { navLinksColor.classList.remove('text-onyx'); navLinksColor.classList.add('text-white'); }
+                        if(planBtn) { planBtn.style.color = 'white'; planBtn.style.borderColor = 'white'; }
+                    }
+                });
+            }
+
+            // Scroll Animations
+            const revealElements = document.querySelectorAll('.fade-up-slow');
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) { entry.target.classList.add('active'); observer.unobserve(entry.target); }
+                });
+            }, { threshold: 0.15 });
+            revealElements.forEach(el => revealObserver.observe(el));
+
+            // GSAP Dynamic Timeline Drawing
+            if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+                gsap.registerPlugin(ScrollTrigger);
+                const progressLine = document.getElementById('progress-line');
+                if (progressLine) {
+                    gsap.to(progressLine, {
+                        height: "100%",
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: "#process-trigger",
+                            start: "top center",
+                            end: "bottom center",
+                            scrub: 0.5
+                        }
+                    });
+                }
+            }
+
+            // ==========================================
+            // COMMAND CENTER: BACKEND CONNECTIONS
+            // ==========================================
+
+            // Premium Gold Toast Notification Function
+            const showToast = (message) => {
+                const toast = document.getElementById('toastMsg');
+                const toastText = document.getElementById('toastText');
+                
+                if (toast && toastText) {
+                    toastText.innerText = message;
+                    toast.classList.add('show');
+                    setTimeout(() => { toast.classList.remove('show'); }, 4000);
+                } else {
+                    // Fallback just in case
+                    const newToast = document.createElement('div');
+                    newToast.className = 'toast-msg';
+                    newToast.innerHTML = `<i class="fa-solid fa-circle-check text-gold"></i> ${message}`;
+                    document.body.appendChild(newToast);
+                    setTimeout(() => newToast.classList.add('show'), 100);
+                    setTimeout(() => {
+                        newToast.classList.remove('show');
+                        setTimeout(() => newToast.remove(), 500);
+                    }, 4000);
+                }
+            };
+
+            // Smart Translator for Divisions
+            const translateDivision = (val) => {
+                if (val === 'wedding') return 'Thread & Knot';
+                if (val === 'corporate') return 'Prism Planner';
+                return 'General';
+            };
+
+            // REAL SUBMIT 1: Newsletter Subscription -> MongoDB
+            const newsletterForm = document.getElementById('newsletterForm');
+            if (newsletterForm) {
+                newsletterForm.addEventListener('submit', async (e) => {
+                    e.preventDefault(); 
+                    
+                    const submitBtn = newsletterForm.querySelector('button[type="submit"]');
+                    const originalHTML = submitBtn.innerHTML;
+                    
+                    submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-gold"></i>';
+                    submitBtn.disabled = true;
+
+                    const emailInput = newsletterForm.querySelector('input[type="email"]').value;
+
+                    try {
+                        const response = await fetch('http://localhost:5000/api/subscribe', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email: emailInput })
+                        });
+
+                        if (response.ok) {
+                            showToast('Welcome to the inner circle! Your gift is on the way.');
+                            newsletterForm.reset();
+                        } else if (response.status === 400) {
+                            showToast('You are already on our exclusive list!');
+                        } else {
+                            showToast('Transmission failed. Please try again.');
+                        }
+                    } catch (error) {
+                        showToast('Server offline. Please ensure backend is running.');
+                    } finally {
+                        submitBtn.innerHTML = originalHTML;
+                        submitBtn.disabled = false;
+                    }
+                });
+            }
+
+            // REAL SUBMIT 2: Modal Booking Form -> MongoDB
+            const popupForm = document.getElementById('popupContactForm');
+            if (popupForm) {
+                popupForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    const submitBtn = popupForm.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerText;
+                    
+                    submitBtn.innerText = "Securing Connection...";
+                    submitBtn.disabled = true;
+
+                    const formData = new FormData(popupForm);
+                    const inquiryPayload = {
+                        clientName: formData.get('name'),
+                        email: formData.get('email'),
+                        division: translateDivision(formData.get('eventType')),
+                        eventDetails: formData.get('message') || "Inquiry from Process Framework page."
+                    };
+
+                    try {
+                        const response = await fetch('http://localhost:5000/api/enquiries', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(inquiryPayload)
+                        });
+
+                        if (response.ok) {
+                            showToast('Consultation request sent! Our architects will contact you shortly.');
+                            popupForm.reset();
+                            document.getElementById('bookingModal').classList.remove('active');
+                        } else {
+                            showToast('Transmission failed. Please check your details.');
+                        }
+                    } catch (error) {
+                        console.error('API Error:', error);
+                        showToast('Server offline. Please ensure backend is running.');
+                    } finally {
+                        submitBtn.innerText = originalText;
+                        submitBtn.disabled = false;
+                    }
+                });
+            }
+
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,572 @@
+/* =========================================
+   C&O GROUP | ADMIN COMMAND CENTER STYLES
+   Focus: Precision, Security, Luxury UI
+========================================= */
+
+:root {
+    /* Core Branding */
+    --color-onyx: #0A0A0A;
+    --color-onyx-light: #161616;
+    --color-white: #FFFFFF;
+    --color-ivory: #F4F4F2;
+    --color-gold: #D4AF37;
+    --color-gold-hover: #E5C158;
+    --color-gold-dim: rgba(212, 175, 55, 0.1);
+    
+    /* Division & Status Accents */
+    --color-crimson: #8A1538;     /* Weddings (Thread & Knot) */
+    --color-blue: #0B192C;        /* Corporate (Prism Planner) */
+    --color-green: #27ae60;       /* Closed/Success */
+    --color-grey: #888888;
+    --color-light-grey: #E5E5E5;
+    
+    /* Layout Constants */
+    --sidebar-width: 260px;
+    --top-nav-height: 75px;
+    --radius-small: 6px;
+    --radius-large: 12px;
+    --shadow-soft: 0 4px 20px rgba(0,0,0,0.06);
+    --shadow-glow: 0 10px 30px rgba(212, 175, 55, 0.15);
+    
+    /* Transitions */
+    --transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* 1. RESET & BASE
+========================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--color-ivory);
+    color: var(--color-onyx);
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+}
+
+/* Scrollbar Styling for Command Center Look */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--color-ivory); }
+::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-gold); }
+
+/* 2. SIDEBAR NAVIGATION
+========================================= */
+.sidebar {
+    width: var(--sidebar-width);
+    background: var(--color-onyx);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000; /* Elevated for mobile */
+    transition: var(--transition);
+}
+
+.sidebar-header {
+    padding: 40px 30px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.sidebar-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    letter-spacing: 2px;
+}
+
+.sidebar-logo span { color: var(--color-gold); }
+
+.nav-menu {
+    flex: 1;
+    padding: 30px 0;
+}
+
+.nav-item {
+    padding: 16px 30px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: #888;
+    text-decoration: none;
+    cursor: pointer;
+    transition: var(--transition);
+    border-left: 4px solid transparent;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.nav-item i { width: 20px; font-size: 1.1rem; }
+
+.nav-item:hover, .nav-item.active {
+    background: rgba(212, 175, 55, 0.08);
+    color: var(--color-gold);
+    border-left-color: var(--color-gold);
+}
+
+.sidebar-footer {
+    padding: 20px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+/* 3. TOP NAVBAR
+========================================= */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.top-navbar {
+    height: var(--top-nav-height);
+    background: var(--color-white);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    box-shadow: var(--shadow-soft);
+    position: sticky;
+    top: 0;
+    z-index: 90;
+}
+
+.search-bar {
+    background: var(--color-ivory);
+    padding: 12px 25px;
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 400px;
+    border: 1px solid transparent;
+    transition: var(--transition);
+}
+
+.search-bar:focus-within {
+    border-color: var(--color-gold);
+    background: white;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.search-bar input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+.admin-profile {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.notif-btn {
+    position: relative;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #555;
+    transition: 0.3s;
+}
+
+.notif-btn:hover { color: var(--color-gold); }
+
+.notif-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: var(--color-crimson);
+    color: white;
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 50%;
+    font-weight: 700;
+}
+
+/* 4. STATISTICS GRID
+========================================= */
+.content-padding { padding: 40px; }
+
+.page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    margin-bottom: 35px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+    margin-bottom: 45px;
+}
+
+.stat-card {
+    background: white;
+    padding: 30px;
+    border-radius: var(--radius-large);
+    box-shadow: var(--shadow-soft);
+    border-bottom: 4px solid var(--color-gold);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-card:hover { transform: translateY(-5px); }
+
+.stat-card.weddings { border-bottom-color: var(--color-crimson); }
+.stat-card.corporate { border-bottom-color: var(--color-blue); }
+.stat-card.new { border-bottom-color: var(--color-green); }
+
+.stat-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--color-grey);
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.stat-value {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--color-onyx);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat-value i {
+    font-size: 1.6rem;
+    opacity: 0.15;
+}
+
+/* 5. DATA TABLES & CONTAINERS
+========================================= */
+.table-container {
+    background: white;
+    border-radius: var(--radius-large);
+    box-shadow: var(--shadow-soft);
+    overflow-x: auto;
+    margin-bottom: 40px;
+    border: 1px solid #eee;
+}
+
+.table-header {
+    padding: 25px 35px;
+    border-bottom: 1px solid #f1f1f1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+th {
+    background: #FAFAFA;
+    padding: 18px 35px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #999;
+    letter-spacing: 1.2px;
+    font-weight: 700;
+    text-align: left;
+}
+
+td {
+    padding: 22px 35px;
+    border-bottom: 1px solid #f9f9f9;
+    font-size: 0.95rem;
+    vertical-align: middle;
+}
+
+/* Status Chips */
+.status-chip {
+    padding: 6px 15px;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-new, .status-pending { background: rgba(138, 21, 56, 0.1); color: var(--color-crimson); }
+.status-contacted { background: rgba(212, 175, 55, 0.1); color: var(--color-gold); }
+.status-closed, .status-approved { background: rgba(39, 174, 96, 0.1); color: var(--color-green); }
+
+/* 6. BUTTONS & INTERACTIVES
+========================================= */
+.btn-save, .btn-authenticate {
+    background: var(--color-onyx);
+    color: var(--color-gold);
+    border: 1px solid var(--color-onyx);
+    padding: 12px 28px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-save:hover {
+    background: var(--color-gold);
+    color: var(--color-onyx);
+    border-color: var(--color-gold);
+    transform: translateY(-2px);
+}
+
+.btn-export {
+    background: var(--color-ivory);
+    color: var(--color-onyx);
+    border: 1px solid #ddd;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-export:hover { border-color: var(--color-gold); color: var(--color-gold); }
+
+.action-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #aaa;
+    font-size: 1.1rem;
+    padding: 5px;
+    transition: 0.3s;
+}
+
+.action-btn:hover { color: var(--color-gold); }
+
+.view-msg-btn {
+    color: var(--color-gold);
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background: none;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+/* Tab Strip for Tables */
+.tab-strip {
+    display: flex;
+    background: var(--color-white);
+    padding: 5px;
+    border-radius: 8px;
+    border: 1px solid var(--color-light-grey);
+    width: fit-content;
+}
+
+.tab-item {
+    padding: 10px 25px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    color: var(--color-grey);
+    transition: 0.3s;
+}
+
+.tab-item.active {
+    background: var(--color-onyx);
+    color: var(--color-gold);
+}
+
+/* 7. MODALS
+========================================= */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+}
+
+.modal-content {
+    background: var(--color-white);
+    width: 90%;
+    max-width: 650px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+    animation: modalSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalSlide {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+    padding: 30px 45px;
+    background: var(--color-onyx);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-body { padding: 45px; }
+
+.modal-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-gold);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.modal-value {
+    font-size: 1.15rem;
+    color: var(--color-onyx);
+    margin-bottom: 30px;
+    line-height: 1.8;
+}
+
+/* 8. FORM ELEMENTS (ADMIN PAGES)
+========================================= */
+.admin-input {
+    width: 100%;
+    padding: 14px 20px;
+    border: 1px solid var(--color-light-grey);
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: 0.3s;
+}
+
+.admin-input:focus {
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+}
+
+/* Utility Classes */
+.flex-space-between { display: flex; justify-content: space-between; align-items: center; }
+.text-crimson { color: var(--color-crimson); }
+.text-blue { color: var(--color-blue); }
+.text-gold { color: var(--color-gold); }
+.text-grey { color: var(--color-grey); }
+.font-weight-600 { font-weight: 600; }
+.font-weight-700 { font-weight: 700; }
+.mb-30 { margin-bottom: 30px; }
+
+/* 9. RESPONSIVE DESIGN & MOBILE OVERRIDES
+========================================= */
+.mobile-menu-toggle { display: none; font-size: 1.5rem; color: var(--color-onyx); cursor: pointer; }
+.mobile-menu-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 990; backdrop-filter: blur(2px); }
+.mobile-menu-overlay.active { display: block; }
+
+@media (max-width: 1200px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    .manager-grid, .analytics-grid, .settings-grid, .staff-grid { grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 768px) {
+    /* Sidebar Off-Canvas */
+    .sidebar { position: fixed; left: -320px; top: 0; bottom: 0; z-index: 1000; box-shadow: 10px 0 30px rgba(0,0,0,0.3); }
+    .sidebar.active-mobile { left: 0; }
+    
+    /* Top Navbar */
+    .top-navbar { padding: 0 20px; gap: 15px; }
+    .mobile-menu-toggle { display: block; }
+    .search-bar { display: none; } /* Hide on mobile to save space */
+    .admin-profile { margin-left: auto; }
+    #navAdminName { display: none; } /* Keep avatar, hide name */
+    .admin-profile p.text-gold { display: none; }
+    
+    /* Grids & Content */
+    .content-padding { padding: 20px 15px; }
+    .stats-grid, .manager-grid, .analytics-grid, .settings-grid, .staff-grid { grid-template-columns: 1fr !important; }
+    .page-title { font-size: 1.6rem; margin-bottom: 20px; }
+    
+    /* Tables */
+    .table-container { border-radius: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table { min-width: 800px; }
+    .table-header { flex-direction: column; align-items: flex-start; gap: 15px; padding: 20px; }
+    
+    /* Modals */
+    .modal-content { width: 95% !important; padding: 25px !important; margin: 20px auto; max-height: 90vh; overflow-y: auto; }
+    .modal-header { padding: 20px; flex-direction: column; gap: 10px; align-items: flex-start; position: relative; }
+    .modal-header .close-btn { position: absolute; right: 15px; top: 15px; }
+    .modal-body { padding: 20px; }
+    
+    /* Forms */
+    div[style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
+    .flex-space-between { flex-direction: column; align-items: flex-start; gap: 15px; }
+    .flex-space-between > div:last-child { width: 100%; display: flex; justify-content: flex-start; gap: 10px; flex-wrap: wrap; }
+    
+    /* Chat UI */
+    .chat-box { height: 60vh; }
+    .msg-bubble { max-width: 90% !important; }
+    .chat-input-area { flex-direction: column; }
+    .chat-input-area .chat-input { width: 100%; }
+    .chat-input-area .chat-send { align-self: flex-end; }
+}
+
+/* 10. ADMIN TOAST NOTIFICATIONS
+========================================= */
+#adminToastContainer {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.admin-toast {
+    background: var(--color-onyx);
+    color: white;
+    padding: 16px 24px;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    border-left: 4px solid var(--color-gold);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.admin-toast.show {
+    transform: translateY(0);
+    opacity: 1;
+}

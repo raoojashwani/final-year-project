@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Network | Admin Command</title>
+    <link rel="icon" type="image/png" href="../images/logo.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="admin-style.css">
+
+    <style>
+        :root {
+            --color-onyx: #111111;
+            --color-gold: #D4AF37;
+            --color-ivory: #F4F4F2;
+            --color-crimson: #8A1538;
+            --color-grey: #888888;
+            --shadow-soft: 0 10px 30px rgba(0,0,0,0.05);
+            --transition: 0.3s ease;
+        }
+
+        .filter-strip { display: flex; gap: 12px; margin-bottom: 35px; flex-wrap: wrap; }
+        .filter-pill { padding: 10px 22px; background: white; border: 1px solid #E5E5E5; border-radius: 30px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); color: var(--color-grey); text-transform: uppercase; letter-spacing: 1px; }
+        .filter-pill:hover, .filter-pill.active { border-color: var(--color-gold); color: var(--color-gold); background: var(--color-onyx); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        
+        .tab-strip { display: flex; background: var(--color-ivory); padding: 6px; border-radius: 8px; margin-bottom: 25px; width: fit-content; border: 1px solid #E5E5E5; }
+        .tab-item { padding: 10px 25px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.3s; color: var(--color-grey); text-transform: uppercase; letter-spacing: 1px; border: none; background: transparent; }
+        .tab-item.active { background: var(--color-onyx); color: var(--color-gold); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .tab-item:hover:not(.active) { color: var(--color-onyx); }
+
+        .table-container { background: white; border-radius: 12px; box-shadow: var(--shadow-soft); overflow-x: auto; border: 1px solid #eee; }
+        .table-container table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        .table-container th { background: var(--color-onyx); color: var(--color-gold); padding: 15px 20px; text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
+        .table-container td { padding: 15px 20px; border-bottom: 1px solid #eee; font-size: 0.85rem; vertical-align: middle; }
+        .table-container tr:hover { background: #fafafa; }
+
+        .key-badge { font-family: 'Courier New', monospace; background: #f9f9f9; padding: 6px 12px; border-radius: 6px; font-weight: 800; color: var(--color-onyx); border: 1px dashed var(--color-gold); font-size: 0.85rem; letter-spacing: 1px;}
+        
+        .status-chip { padding: 6px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; display: inline-block; }
+        .status-paid { background: rgba(39, 174, 96, 0.1); color: #27ae60; }
+        .status-pending { background: rgba(212, 175, 55, 0.1); color: #b8962e; }
+
+        [data-tooltip] { position: relative; cursor: pointer; }
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%);
+            background: var(--color-onyx); color: var(--color-gold);
+            padding: 6px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 600;
+            white-space: nowrap; opacity: 0; visibility: hidden; transition: 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: 1px solid var(--color-gold); z-index: 100;
+        }
+        [data-tooltip]:hover::after { opacity: 1; visibility: visible; bottom: 135%; }
+
+        .btn-manage { background-color: var(--color-onyx); color: var(--color-gold); border: 1px solid var(--color-gold); padding: 8px 14px; border-radius: 6px; cursor: pointer; transition: 0.3s; font-size: 0.9rem; display: inline-flex; align-items: center; justify-content: center; }
+        .btn-manage:hover { background: var(--color-gold); color: var(--color-onyx); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(212,175,55,0.3); }
+        
+        .btn-authorize { background-color: #27ae60; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; transition: 0.3s; font-size: 0.9rem; display: inline-flex; align-items: center; justify-content: center;}
+        .btn-authorize:hover { background-color: #1e8449; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3); }
+        
+        .btn-purge { background-color: var(--color-crimson); color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; transition: 0.3s; font-size: 0.9rem; display: inline-flex; align-items: center; justify-content: center;}
+        .btn-purge:hover { background-color: #6a0f2a; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(138, 21, 56, 0.3); }
+
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(5px); padding: 40px 0; overflow-y: auto;}
+        .modal-content { background: white; border-radius: 16px; padding: 35px; position: relative; border: 1px solid var(--color-gold); box-shadow: 0 20px 50px rgba(0,0,0,0.3); max-height: max-content; width: 90%; margin: auto;}
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 15px;}
+        
+        .close-btn { background: #f1f1f1; border: none; font-size: 1.2rem; color: #555; cursor: pointer; transition: 0.3s; width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+        .close-btn:hover { background: var(--color-crimson); color: white; transform: rotate(90deg); }
+
+        .manager-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding-right: 10px; margin-bottom: 20px;}
+        .manager-section { background: #f9f9f9; padding: 20px; border-radius: 12px; border: 1px solid #eee; }
+        .manager-section h4 { font-family: 'Playfair Display', serif; font-size: 1rem; margin-bottom: 15px; color: var(--color-onyx); border-bottom: 1px solid #ddd; padding-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .vault-list { background: white; border: 1px solid #eee; border-radius: 8px; margin-top: 10px; max-height: 200px; overflow-y: auto; }
+        .vault-item-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-bottom: 1px solid #f5f5f5; font-size: 0.85rem; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 8px; color: var(--color-onyx); text-transform: uppercase; letter-spacing: 1px; }
+        .form-input { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-size: 0.95rem; transition: 0.3s; }
+        .form-input:focus { border-color: var(--color-gold); outline: none; box-shadow: 0 0 0 3px rgba(212,175,55,0.1); }
+
+        .btn-sync-vault { background: linear-gradient(135deg, #111111 0%, #2a2a2a 100%); color: var(--color-gold); border: 1px solid var(--color-gold); padding: 18px; border-radius: 30px; font-size: 1rem; font-weight: 700; cursor: pointer; width: 100%; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 20px;}
+        .btn-sync-vault:hover { background: var(--color-gold); color: var(--color-onyx); box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4); transform: translateY(-2px); }
+
+        .chat-box { background: #efeae2; border-radius: 12px; height: 400px; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; border: 1px solid #ddd; margin-bottom: 15px; }
+        .chat-date-separator { text-align: center; margin: 10px 0; font-size: 0.7rem; text-transform: uppercase; color: #999; font-weight: 600; letter-spacing: 1px; }
+        .chat-date-separator span { background: #efeae2; padding: 0 12px; }
+
+        .msg-group { display: flex; flex-direction: column; gap: 5px; align-items: flex-start; width: 100%; }
+        .msg-group.admin { align-items: flex-end; }
+
+        .msg-bubble { max-width: 75%; padding: 12px 16px; border-radius: 12px; font-size: 0.9rem; line-height: 1.5; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; align-items: flex-end; gap: 8px; word-wrap: break-word; }
+        .msg-bubble.incoming { background: white; border: 1px solid #eee; border-bottom-left-radius: 2px; }
+        .msg-bubble.outgoing { background: #dcf8c6; border: 1px solid #bbdefb; border-bottom-right-radius: 2px; }
+
+        .msg-sender-tag { font-weight: 700; font-size: 0.7rem; color: var(--color-gold); text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 4px; }
+        .msg-text { color: var(--color-onyx); }
+        .msg-time { font-size: 0.65rem; color: rgba(0,0,0,0.4); margin-left: auto; flex-shrink: 0; white-space: nowrap; }
+
+        .msg-actions { display: flex; gap: 5px; margin-top: 5px; opacity: 0; transition: opacity 0.3s; }
+        .msg-bubble:hover .msg-actions { opacity: 1; }
+        .msg-action-btn { background: transparent; border: none; color: #999; cursor: pointer; font-size: 0.8rem; padding: 3px 6px; border-radius: 4px; transition: 0.3s; }
+        .msg-action-btn:hover { background: rgba(0,0,0,0.05); color: var(--color-gold); }
+
+        .chat-input-area { display: flex; gap: 10px; margin-top: 15px; }
+        .chat-input { flex: 1; padding: 12px 15px; border: 1px solid #ddd; border-radius: 24px; outline: none; font-size: 0.95rem; font-family: 'Montserrat', sans-serif; transition: 0.3s; }
+        .chat-input:focus { border-color: var(--color-gold); box-shadow: 0 0 0 3px rgba(212,175,55,0.1); }
+        .chat-send { background: var(--color-onyx); color: var(--color-gold); border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; transition: 0.3s; font-size: 1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .chat-send:hover { background: var(--color-gold); color: var(--color-onyx); transform: scale(1.05); }
+
+        .file-review-panel { background: #f4f9f4; border: 2px solid #d5e8d4; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .file-review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #d5e8d4; padding-bottom: 10px; }
+        .file-review-header h4 { margin: 0; color: #27ae60; font-family: 'Playfair Display', serif; }
+
+        .file-item { background: white; padding: 15px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .file-item-info { flex: 1; }
+        .file-item-name { font-weight: 700; color: var(--color-onyx); margin-bottom: 4px; }
+        .file-item-meta { font-size: 0.75rem; color: var(--color-grey); }
+
+        .cad-brief-section { background: #fff3f3; border: 2px dashed var(--color-gold); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .cad-brief-section h4 { color: var(--color-crimson); margin-top: 0; }
+        
+        .project-allocation-item { background: white; padding: 15px; border-radius: 8px; border: 1px solid var(--color-gold); margin-bottom: 15px; }
+        .project-allocation-item h5 { margin: 0 0 10px 0; font-size: 0.95rem; color: var(--color-onyx); }
+        .project-allocation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .project-allocation-field { position: relative; }
+        .project-allocation-field label { display: block; font-size: 0.75rem; font-weight: 600; margin-bottom: 6px; color: var(--color-grey); text-transform: uppercase; }
+        .project-allocation-field input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.85rem; }
+        .project-allocation-field input:focus { border-color: var(--color-gold); outline: none; }
+        .delete-cad-brief-btn { position: absolute; top: 24px; right: 8px; background: var(--color-crimson); color: white; border: none; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .delete-cad-brief-btn:hover { background: #6a0f2a; transform: scale(1.1); }
+
+        .insurance-verification-panel { background: linear-gradient(135deg, rgba(212,175,55,0.05), rgba(212,175,55,0.02)); border: 2px solid rgba(212,175,55,0.3); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .insurance-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .insurance-header h4 { margin: 0; color: var(--color-onyx); font-family: 'Playfair Display', serif; }
+        .insurance-status-badge { padding: 8px 16px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; background: rgba(212, 175, 55, 0.1); color: var(--color-gold); }
+
+        .insurance-details { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .insurance-detail-box { background: white; padding: 12px; border-radius: 8px; border: 1px solid #eee; }
+        .insurance-detail-label { font-size: 0.7rem; text-transform: uppercase; font-weight: 600; color: var(--color-grey); margin-bottom: 6px; display: block; }
+        .insurance-detail-value { font-size: 0.95rem; color: var(--color-onyx); font-weight: 600; }
+
+        .status-select { font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; border: 1px solid #ddd; font-weight: 600; font-family: 'Montserrat'; outline: none; }
+        .status-select:focus { border-color: var(--color-gold); }
+
+        .custom-toast { position: fixed; bottom: 40px; right: 40px; background: var(--color-onyx); color: white; padding: 18px 25px; border-radius: 8px; border-left: 4px solid var(--color-gold); box-shadow: 0 15px 40px rgba(0,0,0,0.3); z-index: 10000; display: flex; align-items: center; gap: 15px; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.9rem; transform: translateY(100px); opacity: 0; visibility: hidden; transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .custom-toast.show { transform: translateY(0); opacity: 1; visibility: visible; }
+
+        .admin-input { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-family: 'Montserrat'; font-size: 0.9rem; }
+        .admin-input:focus { border-color: var(--color-gold); outline: none; }
+
+        .fade-in { animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* COMPLIANCE REQUEST PANEL - ADMIN SIDE */
+        .compliance-request-panel { background: linear-gradient(135deg, rgba(138,21,56,0.08), rgba(138,21,56,0.02)); border: 2px solid rgba(138,21,56,0.4); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .compliance-request-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; border-bottom: 2px solid rgba(138,21,56,0.3); padding-bottom: 10px; }
+        .compliance-request-header h4 { margin: 0; color: var(--color-crimson); font-family: 'Playfair Display', serif; font-size: 1.1rem; }
+        .compliance-request-badge { background: var(--color-crimson); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.65rem; font-weight: 700; }
+
+        .compliance-request-item { background: white; padding: 15px; border-radius: 8px; border-left: 4px solid var(--color-crimson); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-start; box-shadow: 0 2px 5px rgba(138,21,56,0.1); }
+        .compliance-request-item:last-child { margin-bottom: 0; }
+        .compliance-request-info { flex: 1; }
+        .compliance-request-info h5 { margin: 0 0 6px 0; font-size: 0.95rem; color: var(--color-onyx); font-weight: 700; }
+        .compliance-request-info p { margin: 4px 0; font-size: 0.75rem; color: #666; }
+        .compliance-request-actions { display: flex; gap: 8px; }
+        .btn-approve-request { background: #27ae60; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px; }
+        .btn-approve-request:hover { background: #1e8449; transform: translateY(-2px); }
+        .btn-deny-request { background: var(--color-crimson); color: white; border: none; padding: 8px 14px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px; }
+        .btn-deny-request:hover { background: #6a0f2a; transform: translateY(-2px); }
+    </style>
+</head>
+<body class="fade-in">
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h1 class="sidebar-logo">C&O<span>.</span></h1>
+        </div>
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+            <a href="enquiries.html" class="nav-item"><i class="fa-solid fa-envelope-open-text"></i> Event Inquiries</a>
+            <a href="vendors.html" class="nav-item active"><i class="fa-solid fa-handshake"></i> Vendor Network</a>
+            <a href="clients.html" class="nav-item"><i class="fa-solid fa-key"></i> Client Access</a>
+            <a href="subscribers.html" class="nav-item"><i class="fa-solid fa-users"></i> Newsletter List</a>
+            <a href="analytics.html" class="nav-item"><i class="fa-solid fa-magnifying-glass-chart"></i> Event Analytics</a>
+            <a href="staff.html" class="nav-item"><i class="fa-solid fa-users-gear"></i> Manage Staff</a>
+            <a href="settings.html" class="nav-item"><i class="fa-solid fa-gear"></i> Settings</a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="nav-item" onclick="window.logoutAdmin()" style="color: var(--color-crimson); cursor: pointer;">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout Session
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-navbar">
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass text-grey"></i>
+                <input type="text" id="vendorSearch" placeholder="Search partners by name, category or region...">
+            </div>
+            <div class="admin-profile">
+                <div style="text-align: right;">
+                    <p class="font-weight-700" id="navAdminName" style="font-size: 0.9rem; color: var(--color-onyx);">Procurement Lead</p>
+                    <p class="text-gold" style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">Network Command</p>
+                </div>
+                <div id="navAvatar" style="width: 40px; height: 40px; background: var(--color-onyx); color: var(--color-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; border: 2px solid var(--color-gold); margin-left: 15px;">AD</div>
+            </div>
+        </header>
+
+        <div class="content-padding">
+            <div class="flex-space-between mb-30">
+                <div>
+                    <h2 class="page-title">Vendor Ecosystem</h2>
+                    <p class="text-grey text-sm" style="margin-top: -30px;">Managing India's elite event supply chain partners.</p>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <button class="btn-save" onclick="window.exportVendorsCSV()"><i class="fa-solid fa-file-csv mr-5"></i> Export Roster</button>
+                    <button class="btn-save" onclick="window.openAddVendorModal()"><i class="fa-solid fa-plus-circle mr-5"></i> Register New Partner</button>
+                </div>
+            </div>
+
+            <div class="tab-strip" id="vendorTabs">
+                <button class="tab-item active" data-filter="all">All Partners</button>
+                <button class="tab-item" data-filter="Pending Review">New Applications 🔴</button>
+                <button class="tab-item" data-filter="Approved">Authorized 🟢</button>
+            </div>
+
+            <div class="filter-strip" id="vendorFilterStrip">
+                <div class="filter-pill active" data-cat="all">All Categories</div>
+                <div class="filter-pill" data-cat="floral">Decor & Floral</div>
+                <div class="filter-pill" data-cat="catering">Catering & F&B</div>
+                <div class="filter-pill" data-cat="photo">Photo & Video</div>
+                <div class="filter-pill" data-cat="artists">Entertainment</div>
+                <div class="filter-pill" data-cat="production">Production/AV</div>
+                <div class="filter-pill" data-cat="hospitality">Hospitality</div>
+            </div>
+
+            <div class="table-container">
+                <table id="vendorTable">
+                    <thead>
+                        <tr>
+                            <th>Company Name</th>
+                            <th>Contact Info</th>
+                            <th>Category & Base</th>
+                            <th>Access Key / Password</th>
+                            <th>Status</th>
+                            <th style="text-align: center;">Command Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vendorTableBody">
+                        <tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--color-gold);"><i class="fa-solid fa-circle-notch fa-spin"></i> Syncing Vendor Network...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL: VENDOR COMMANDER (ENHANCED) -->
+    <div class="modal-overlay" id="vendorManagerModal">
+        <div class="modal-content" style="max-width: 1100px; width: 95%;">
+            <div class="modal-header">
+                <h3 class="serif-font" id="manageVendorName" style="margin: 0;">Vendor Commander</h3>
+                <button class="close-btn" onclick="window.closeModal('vendorManagerModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" style="max-height: 85vh; overflow-y: auto;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+                    
+                    <!-- LEFT: COMPLIANCE & FILE REVIEW -->
+                    <div>
+                        <!-- COMPLIANCE REQUEST PANEL - ADMIN APPROVAL SIDE -->
+                        <div class="compliance-request-panel" id="complianceRequestPanel" style="display: none;">
+                            <div class="compliance-request-header">
+                                <h4><i class="fa-solid fa-exclamation-circle"></i> Pending Compliance Requests</h4>
+                                <span class="compliance-request-badge" id="complianceRequestCount">0</span>
+                            </div>
+                            <div id="complianceRequestsList"></div>
+                        </div>
+
+                        <!-- INSURANCE VERIFICATION PANEL -->
+                        <div class="insurance-verification-panel">
+                            <div class="insurance-header">
+                                <h4><i class="fa-solid fa-shield"></i> Insurance Verification</h4>
+                                <span class="insurance-status-badge" id="insuranceStatusBadge">Pending Review</span>
+                            </div>
+                            <div class="insurance-details">
+                                <div class="insurance-detail-box">
+                                    <span class="insurance-detail-label">Document Link</span>
+                                    <p class="insurance-detail-value" id="insuranceLinkDisplay">--</p>
+                                </div>
+                                <div class="insurance-detail-box">
+                                    <span class="insurance-detail-label">Valid Till</span>
+                                    <p class="insurance-detail-value" id="insuranceDateDisplay">--</p>
+                                </div>
+                                <div class="insurance-detail-box">
+                                    <span class="insurance-detail-label">Verify Status</span>
+                                    <select id="insuranceVerifySelect" class="status-select" style="width: 100%; padding: 8px;">
+                                        <option value="false">Pending / False</option>
+                                        <option value="true">Verified ✓</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div style="margin-top: 15px;">
+                                <label class="form-label">Add Remarks (Optional)</label>
+                                <textarea id="insuranceRemarksInput" class="form-input" placeholder="Enter admin remarks about insurance verification..." style="height: 80px; resize: vertical; margin-bottom: 0;"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- FILE REVIEW PANEL -->
+                        <div class="file-review-panel">
+                            <div class="file-review-header">
+                                <h4><i class="fa-solid fa-folder-open"></i> Compliance Files Review</h4>
+                            </div>
+                            <div id="fileReviewContainer"></div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT: CAD/BRIEF ASSIGNMENT & OTHER CONTROLS -->
+                    <div>
+                        <div class="cad-brief-section">
+                            <h4><i class="fa-solid fa-diagram-project"></i> Project Allocations & Assets</h4>
+                            <p style="font-size: 0.8rem; color: #666; margin-bottom: 15px;">Upload specific CAD and Brief links for each project. Changes are auto-saved.</p>
+                            <div id="projectCadBriefContainer" style="max-height: 400px; overflow-y: auto; padding-right: 5px;"></div>
+                        </div>
+
+                        <div class="manager-section">
+                            <h4><i class="fa-solid fa-check-double"></i> Compliance Status</h4>
+                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: 6px; border: 1px solid #eee;">
+                                    <span>GST Certificate</span>
+                                    <select id="gstVerifySelect" class="status-select">
+                                        <option value="false">Pending</option>
+                                        <option value="true">Verified ✓</option>
+                                    </select>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: 6px; border: 1px solid #eee;">
+                                    <span>Bank Details</span>
+                                    <select id="bankVerifySelect" class="status-select">
+                                        <option value="false">Pending</option>
+                                        <option value="true">Verified ✓</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="manager-section">
+                            <h4><i class="fa-solid fa-file-invoice-dollar"></i> Invoice Management</h4>
+                            <div class="vault-list" id="listVendorInvoices" style="max-height: 200px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 10px; border-top: 2px solid #eee; padding-top: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h4 style="font-family: 'Playfair Display', serif; margin: 0; color: var(--color-onyx);"><i class="fa-solid fa-clock-rotate-left"></i> Log Past Project</h4>
+                        <span style="font-size: 0.75rem; color: var(--color-crimson); font-weight: 700;">*Builds the vendor's total rating</span>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px; background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
+                        <input type="text" id="addPastName" class="admin-input" placeholder="Project Name (e.g. Sharma Wedding)" style="flex: 2;">
+                        <select id="addPastDiv" class="admin-input" style="flex: 1;">
+                            <option value="Thread & Knot">Thread & Knot</option>
+                            <option value="Prism Planner">Prism Planner</option>
+                        </select>
+                        <input type="text" id="addPastRole" class="admin-input" placeholder="Role (e.g. Floral)" style="flex: 1;">
+                        <input type="number" id="addPastRating" class="admin-input" placeholder="Rating (1-5)" min="1" max="5" step="0.1" style="flex: 1;">
+                    </div>
+                </div>
+
+                <div style="background: rgba(212,175,55,0.1); padding: 10px; border-radius: 6px; font-size: 0.75rem; color: var(--color-onyx); text-align: center; margin-bottom: 15px;">
+                    <strong><i class="fa-solid fa-unlock-keyhole"></i> Compliance Requests?</strong> Approve/Deny requests above before hitting Synchronize.
+                </div>
+
+                <button class="btn-sync-vault" id="btnSyncVendor" onclick="window.broadcastToVendor()">SYNCHRONIZE VENDOR <i class="fa-solid fa-satellite-dish"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD VENDOR -->
+    <div class="modal-overlay" id="addVendorModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="serif-font" style="margin:0; font-size: 1.5rem;">Partner Registration</h3>
+                <button class="close-btn" onclick="window.closeModal('addVendorModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="adminVendorApplyForm">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                        <div>
+                            <label class="form-label">Vendor / Company Name *</label>
+                            <input type="text" class="form-input" id="vName" placeholder="e.g. Apex Productions" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Contact Person *</label>
+                            <input type="text" class="form-input" id="vContact" placeholder="e.g. Rahul Sharma" required>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                        <div>
+                            <label class="form-label">Corporate Email *</label>
+                            <input type="email" class="form-input" id="vEmail" placeholder="contact@company.com" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Phone Number *</label>
+                            <input type="tel" class="form-input" id="vPhone" placeholder="+91 98765 43210" required>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                        <div>
+                            <label class="form-label">Base City / Region *</label>
+                            <input type="text" class="form-input" id="vLocation" placeholder="e.g. Mumbai" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Service Category *</label>
+                            <select class="form-input" id="vCategory" required>
+                                <option value="" disabled selected>Select Category...</option>
+                                <option value="floral">Decor & Floral Design</option>
+                                <option value="catering">Catering & F&B</option>
+                                <option value="photo">Photography & Videography</option>
+                                <option value="artists">Entertainment & Artists</option>
+                                <option value="production">Event Production (AV/Tech)</option>
+                                <option value="hospitality">Hospitality & Logistics</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Portfolio / Website Link *</label>
+                        <input type="url" class="form-input" id="vPortfolio" placeholder="https://..." required>
+                    </div>
+                    <button type="submit" class="btn-save w-100" style="justify-content: center; padding: 15px; border-radius: 30px;" id="vendorSubmitBtn">Direct Empanelment <i class="fa-solid fa-check ml-10"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="authorizeVendorModal">
+        <div class="modal-content" style="max-width: 450px;">
+            <div class="modal-header">
+                <h3 class="serif-font" style="margin:0; font-size: 1.5rem;">Authorize Partner</h3>
+                <button class="close-btn" onclick="window.closeModal('authorizeVendorModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <label class="form-label text-center">GENERATE SECURE PASSWORD</label>
+                <div style="display:flex; gap:10px; margin-bottom: 25px;">
+                    <input type="text" id="vendorPasswordOutput" class="form-input" readonly style="margin:0; text-align:center; font-weight:800; font-family:monospace; font-size:1.2rem; background:#f9f9f9; color: var(--color-onyx);">
+                    <button class="btn-manage" onclick="window.generateVendorPassword()"><i class="fa-solid fa-dice"></i></button>
+                </div>
+                <button class="btn-save w-100" style="justify-content:center; border-radius:30px; padding:15px;" id="confirmAuthBtn" onclick="window.confirmVendorAuthorization()">AUTHORIZE & DEPLOY <i class="fa-solid fa-paper-plane ml-10"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="assignProjectModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 class="serif-font" style="margin:0; font-size: 1.5rem;">Assign to Project</h3>
+                <button class="close-btn" onclick="window.closeModal('assignProjectModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-sm text-grey mb-20" style="line-height: 1.5;">Select an active Client Vault to grant this vendor access to its blueprints and timeline.</p>
+                <div class="form-group">
+                    <label class="form-label">Select Active Project</label>
+                    <select id="projectSelect" class="form-input" style="font-weight: 600;"></select>
+                </div>
+                <button class="btn-save w-100" style="justify-content:center; border-radius:30px; padding:15px;" id="confirmAssignBtn" onclick="window.confirmAssignProject()">ASSIGN VENDOR <i class="fa-solid fa-folder-plus ml-10"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="deleteConfirmModal">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <i class="fa-solid fa-shield-virus" style="font-size: 3.5rem; color: var(--color-onyx); margin-bottom: 20px; display: block;"></i>
+            <h3 class="serif-font mb-10" style="font-size: 1.5rem;">Purge Partner?</h3>
+            <p class="text-grey text-sm mb-30" style="line-height: 1.5;">This action is permanent. The vendor profile will be purged from the Network Vault immediately.</p>
+            <div style="display: flex; gap: 15px;">
+                <button class="btn-purge" id="confirmDeleteBtn" style="flex: 1; padding: 12px; border-radius: 30px;">CONFIRM PURGE</button>
+                <button class="btn-save" onclick="window.closeModal('deleteConfirmModal')" style="flex: 1; background: var(--color-ivory); color: var(--color-onyx); border-color: #ddd; border-radius: 30px;">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="resetKeyConfirmModal">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <i class="fa-solid fa-key confirm-icon" style="font-size: 3.5rem; color: var(--color-gold); margin-bottom: 20px; display: block;"></i>
+            <h3 class="serif-font mb-10" style="font-size: 1.5rem;">Deploy New Vault Key?</h3>
+            <p class="text-grey text-sm mb-30" style="line-height: 1.5;">This will generate a new secure passcode and instantly email it to the partner.</p>
+            <div style="display: flex; gap: 15px;">
+                <button class="btn-save" id="confirmResetKeyBtn" style="flex:1; justify-content:center; padding:12px; border-radius:30px;">DEPLOY KEY <i class="fa-solid fa-paper-plane ml-5"></i></button>
+                <button class="btn-manage" onclick="window.closeModal('resetKeyConfirmModal')" style="flex: 1; background: #eee; border: 1px solid #ddd; color: #333; border-radius: 30px;">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="auditModal">
+        <div class="modal-content" style="max-width: 550px;">
+            <div class="modal-header">
+                <h3 class="serif-font">System Audit History</h3>
+                <button class="close-btn" onclick="window.closeModal('auditModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="auditLogBody" style="max-height: 450px; overflow-y: auto; padding: 10px;"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="adminChatModal">
+        <div class="modal-content" style="max-width: 550px;">
+            <div class="modal-header">
+                <h3 class="serif-font" id="chatClientName">Secure Comms</h3>
+                <button class="close-btn" onclick="window.closeModal('adminChatModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div style="display:flex; gap:10px; margin-bottom: 15px; background: #f9f9f9; padding: 10px; border-radius: 8px; border:1px solid #eee;">
+                    <input type="text" id="adminChatPersona" class="admin-input" placeholder="Send as... (e.g. Procurement)" value="Procurement Command" style="flex:1; font-size: 0.8rem;">
+                </div>
+                <div class="chat-box" id="adminChatArea"></div>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <input type="text" id="adminChatInput" class="admin-input" placeholder="Type secure message..." style="flex:1; border-radius: 25px;">
+                    <button class="btn-manage" style="border-radius: 50%; width: 45px; height: 45px; padding:0;" onclick="window.sendAdminMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="logoutConfirmModal">
+        <div class="modal-content" style="max-width: 400px; text-align: center; padding: 40px;">
+            <i class="fa-solid fa-right-from-bracket" style="font-size: 3.5rem; color: var(--color-onyx); margin-bottom: 20px; display: block;"></i>
+            <h3 class="serif-font mb-10" style="font-size: 1.5rem;">Secure Logout?</h3>
+            <p class="text-grey text-sm mb-30" style="line-height: 1.5;">Are you sure you want to securely exit the Admin Terminal?</p>
+            <div style="display: flex; gap: 15px;">
+                <button class="btn-purge" style="flex: 1; padding: 12px; border-radius: 30px;" onclick="window.executeLogout()">Logout</button>
+                <button class="btn-manage" style="flex: 1; background: var(--color-ivory); color: var(--color-onyx); border: 1px solid #ddd; border-radius: 30px;" onclick="window.closeModal('logoutConfirmModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="deleteMessageModal" style="z-index: 1050;">
+        <div class="modal-content" style="max-width: 400px; text-align: center; padding: 0; overflow: hidden;">
+            <div style="background: var(--color-onyx); padding: 30px; color: white;">
+                <i class="fa-solid fa-trash-can" style="font-size: 2.5rem; color: var(--color-crimson);"></i>
+            </div>
+            <div style="padding: 30px;">
+                <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 10px; color: var(--color-onyx);">Delete Message?</h3>
+                <p style="color: #666; font-size: 0.9rem; margin-bottom: 30px;">This action permanently removes the transmission.</p>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-purge" style="flex: 1; padding: 12px; border-radius: 6px;" id="confirmDeleteMsgBtn">DELETE</button>
+                    <button style="flex: 1; padding: 12px; border-radius: 6px; background: #eee; border: 1px solid #ddd; color: #333; cursor: pointer;" onclick="document.getElementById('deleteMessageModal').style.display='none'">CANCEL</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="editMessageModal" style="z-index: 1050;">
+        <div class="modal-content" style="max-width: 500px; padding: 0; overflow: hidden;">
+            <div class="modal-header" style="background: var(--color-onyx); padding: 20px 30px; margin: 0; border-bottom: 2px solid var(--color-gold); display: flex; justify-content: space-between; align-items: center;">
+                <h3 class="serif-font" style="margin: 0; color: white; font-size: 1.5rem;">Edit Transmission</h3>
+                <button style="background: transparent; border: none; color: white; font-size: 1.5rem; cursor: pointer;" onclick="document.getElementById('editMessageModal').style.display='none'"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div style="padding: 30px;">
+                <label class="form-label" style="margin-bottom: 10px;">Update message text:</label>
+                <textarea id="editMessageInput" class="form-input" rows="4" style="resize: vertical;"></textarea>
+                <button class="btn-manage" style="width: 100%; justify-content: center; padding: 15px; margin-top: 15px;" id="confirmEditMsgBtn">Transmit Update</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="vendorToast" class="custom-toast">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="vendorToastText">Action Successful.</span>
+    </div>
+
+    <script src="admin-main.js"></script>
+    
+    <script>
+        // GLOBALS
+        window.allVendors = [];
+        window.allActiveClients = [];
+        window.currentVendorStatus = 'all';
+        window.currentVendorCategory = 'all';
+        window.activeVendorId = null;
+
+        const categoryMapLocal = {
+            'floral': 'Decor & Floral', 'catering': 'Catering & F&B', 'photo': 'Photo & Video',
+            'artists': 'Entertainment & Artists', 'production': 'Production / AV', 'hospitality': 'Hospitality & Logistics', 'other': 'Other'
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                window.showVendorToast("Security Protocol: 1-Hour session limit reached. Securely logging out.");
+                setTimeout(window.executeLogout, 2500);
+            }, 3600000); 
+
+            window.fetchVendorsAndClients();
+
+            document.getElementById('vendorTabs').addEventListener('click', (e) => {
+                if(e.target.classList.contains('tab-item')) {
+                    document.querySelectorAll('#vendorTabs .tab-item').forEach(t => t.classList.remove('active'));
+                    e.target.classList.add('active');
+                    window.currentVendorStatus = e.target.getAttribute('data-filter');
+                    window.applyVendorFilters();
+                }
+            });
+
+            document.getElementById('vendorFilterStrip').addEventListener('click', (e) => {
+                if(e.target.classList.contains('filter-pill')) {
+                    document.querySelectorAll('#vendorFilterStrip .filter-pill').forEach(t => t.classList.remove('active'));
+                    e.target.classList.add('active');
+                    window.currentVendorCategory = e.target.getAttribute('data-cat');
+                    window.applyVendorFilters();
+                }
+            });
+
+            document.getElementById('vendorSearch').addEventListener('input', window.applyVendorFilters);
+            document.getElementById('adminVendorApplyForm').addEventListener('submit', window.submitNewVendor);
+            document.getElementById('confirmDeleteBtn').addEventListener('click', window.confirmDeleteVendor);
+        });
+
+        // --- 1. FETCH DATA ---
+        window.fetchVendorsAndClients = async function() {
+            const token = localStorage.getItem('adminToken');
+            if(!token) { window.location.href = 'index.html'; return; }
+
+            try {
+                const vRes = await fetch('http://localhost:5000/api/vendors', { headers: { 'Authorization': `Bearer ${token}` } });
+                if(vRes.ok) window.allVendors = await vRes.json();
+                
+                const cRes = await fetch('http://localhost:5000/api/clients', { headers: { 'Authorization': `Bearer ${token}` } });
+                if(cRes.ok) {
+                    const clients = await cRes.json();
+                    window.allActiveClients = clients.filter(c => c.status === 'Approved');
+                }
+
+                window.applyVendorFilters();
+            } catch(error) {
+                console.error(error);
+                document.getElementById('vendorTableBody').innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 30px; color: var(--color-crimson);">Connection failed. Check server.</td></tr>`;
+            }
+        };
+
+        // --- 2. FILTERING & RENDERING ---
+        window.applyVendorFilters = function() {
+            const term = document.getElementById('vendorSearch').value.toLowerCase();
+            let filtered = window.allVendors;
+
+            if(window.currentVendorStatus !== 'all') {
+                filtered = filtered.filter(v => (v.status || 'Pending Review') === window.currentVendorStatus);
+            }
+            if(window.currentVendorCategory !== 'all') {
+                filtered = filtered.filter(v => v.serviceCategory === window.currentVendorCategory);
+            }
+            if(term) {
+                filtered = filtered.filter(v => 
+                    (v.companyName && v.companyName.toLowerCase().includes(term)) || 
+                    (v.contactName && v.contactName.toLowerCase().includes(term)) ||
+                    (v.location && v.location.toLowerCase().includes(term))
+                );
+            }
+            window.renderVendorTable(filtered);
+        };
+
+        window.renderVendorTable = function(data) {
+            const tbody = document.getElementById('vendorTableBody');
+            if(data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:40px; color:#888;">No partners found matching criteria.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = data.map(item => {
+                const isApproved = item.status === 'Approved';
+                const keyDisplay = item.plainKey;
+                const resetBadge = item.resetRequested ? `<span style="background:var(--color-crimson); color:white; padding:3px 8px; border-radius:4px; font-size:0.6rem; font-weight:bold; margin-left:5px; animation: pulseRed 2s infinite;">RESET REQUESTED</span>` : '';
+                
+                return `
+                <tr class="fade-in">
+                    <td><strong>${item.companyName}</strong> ${isApproved ? '<span style="color:#27ae60; margin-left:5px;"><i class="fa-solid fa-circle-check"></i></span>' : ''} ${resetBadge}</td>
+                    <td>${item.contactName}<br><span style="font-size:0.7rem; color:#888;"><i class="fa-solid fa-envelope mr-5"></i>${item.email}</span></td>
+                    <td><span style="font-weight:700; font-size:0.75rem; color:var(--color-gold);">${categoryMapLocal[item.serviceCategory] || item.serviceCategory}</span><br><span style="font-size:0.7rem; color:#666;">${item.location}</span></td>
+                    <td>${keyDisplay ? `<span class="key-badge">${keyDisplay}</span>` : `<span class="text-grey italic" style="font-size:0.75rem;">Awaiting Generation...</span>`}</td>
+                    <td><span class="status-chip status-${isApproved ? 'paid' : 'pending'}">${item.status || 'Pending'}</span></td>
+                    <td>
+                        <div style="display:flex; gap:8px; justify-content: center; flex-wrap: wrap;">
+                            ${item.resetRequested ? `
+                                <button class="btn-manage" data-tooltip="Deploy New Key" style="background:var(--color-crimson); border-color:var(--color-crimson); color:white;" onclick="window.deployResetKey('${item._id}')"><i class="fa-solid fa-unlock-keyhole"></i></button>
+                            ` : ''}
+                            ${isApproved ? `
+                                <button class="btn-manage" data-tooltip="Vendor Commander" onclick="window.openVendorManager('${item._id}')"><i class="fa-solid fa-sliders"></i></button>
+                                <button class="btn-manage" data-tooltip="Assign Project" onclick="window.openAssignModal('${item._id}')"><i class="fa-solid fa-folder-plus"></i></button>
+                                <button class="btn-manage" data-tooltip="Secure Chat" style="color:#27ae60; border-color:#27ae60;" onclick="window.openAdminChat('${item._id}')"><i class="fa-solid fa-comments"></i></button>
+                                <button class="btn-manage" data-tooltip="Audit Log" style="color:#8e44ad; border-color:#8e44ad;" onclick="window.openAuditModal('${item._id}')"><i class="fa-solid fa-clock-rotate-left"></i></button>
+                            ` : `
+                                <button class="btn-authorize" data-tooltip="Authorize & Generate Key" onclick="window.openVendorAuthorizeModal('${item._id}')"><i class="fa-solid fa-key"></i></button>
+                            `}
+                            <button class="btn-purge" data-tooltip="Purge Vendor" onclick="window.openDeleteModal('${item._id}')"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            `}).join('');
+        };
+
+        // Reset Key Deployment
+        window.vendorToReset = null;
+        window.deployResetKey = function(id) {
+            window.vendorToReset = id;
+            document.getElementById('resetKeyConfirmModal').style.display = 'flex';
+        };
+
+        document.getElementById('confirmResetKeyBtn').addEventListener('click', async function() {
+            if(!window.vendorToReset) return;
+            const btn = this;
+            const ogText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> DEPLOYING...';
+            btn.disabled = true;
+
+            const token = localStorage.getItem('adminToken');
+            const k = 'VND-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+            
+            try {
+                await fetch(`http://localhost:5000/api/vendors/${window.vendorToReset}`, {
+                    method: 'PATCH', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ resetRequested: false })
+                });
+                
+                const res = await fetch(`http://localhost:5000/api/admin/vendors/${window.vendorToReset}/authorize`, {
+                    method: 'PATCH', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ accessKey: k, password: k })
+                });
+                
+                if(res.ok) { 
+                    window.showVendorToast("New security key generated and dispatched."); 
+                    window.closeModal('resetKeyConfirmModal');
+                    window.fetchVendorsAndClients(); 
+                } 
+                else { window.showVendorToast("Failed to deploy new key."); }
+            } catch(e) { window.showVendorToast("Network Error."); }
+            finally { btn.innerHTML = ogText; btn.disabled = false; }
+        });
+
+        // --- 3. VENDOR COMMANDER ---
+        window.openVendorManager = function(id) {
+            window.activeVendorId = id;
+            const vendor = window.allVendors.find(v => v._id === id);
+            if(!vendor) return;
+
+            document.getElementById('manageVendorName').innerText = `Vendor Commander: ${vendor.companyName}`;
+            
+            // FIX #2: UPDATE INSURANCE STATUS BADGE IMMEDIATELY
+            const insSelect = document.getElementById('insuranceVerifySelect');
+            const insBadge = document.getElementById('insuranceStatusBadge');
+            
+            insSelect.value = vendor.compliance?.insuranceVerified ? "true" : "false";
+            insBadge.innerText = vendor.compliance?.insuranceVerified ? "VERIFIED ✓" : "PENDING REVIEW";
+            insBadge.style.background = vendor.compliance?.insuranceVerified ? "rgba(39, 174, 96, 0.1)" : "rgba(212, 175, 55, 0.1)";
+            insBadge.style.color = vendor.compliance?.insuranceVerified ? "#27ae60" : "var(--color-gold)";
+
+            // Real-time visual update for the badge
+            insSelect.onchange = function() {
+                const isVerified = this.value === "true";
+                insBadge.innerText = isVerified ? "VERIFIED ✓" : "PENDING REVIEW";
+                insBadge.style.background = isVerified ? "rgba(39, 174, 96, 0.1)" : "rgba(212, 175, 55, 0.1)";
+                insBadge.style.color = isVerified ? "#27ae60" : "var(--color-gold)";
+            };
+
+            document.getElementById('gstVerifySelect').value = vendor.compliance?.gstVerified ? "true" : "false";
+            document.getElementById('bankVerifySelect').value = vendor.compliance?.bankVerified ? "true" : "false";
+            
+            // Fixed the Remarks variable mapping
+            document.getElementById('insuranceRemarksInput').value = vendor.compliance?.insuranceAdminRemarks || '';
+
+            // FIX #3: RENDER COMPLIANCE REQUESTS IN ADMIN COMMANDER
+            const compReqPanel = document.getElementById('complianceRequestPanel');
+            const compReqList = document.getElementById('complianceRequestsList');
+            const compReqCount = document.getElementById('complianceRequestCount');
+            
+            if (vendor.complianceRequests && vendor.complianceRequests.length > 0) {
+                compReqPanel.style.display = 'block';
+                compReqCount.innerText = vendor.complianceRequests.length;
+                compReqList.innerHTML = vendor.complianceRequests.map(req => `
+                    <div class="compliance-request-item">
+                        <div class="compliance-request-info">
+                            <h5><i class="fa-solid fa-file-contract"></i> ${req.docType.toUpperCase()} Change Request</h5>
+                            <p><strong>Reason:</strong> ${req.reason}</p>
+                            ${req.newUrl ? `<p><strong>New URL:</strong> <a href="${req.newUrl}" target="_blank" style="color: var(--color-gold);">${req.newUrl.substring(0, 50)}...</a></p>` : ''}
+                            <p style="margin: 8px 0 0 0; font-size: 0.7rem; color: #999;">Requested: ${new Date(req.timestamp).toLocaleString()}</p>
+                        </div>
+                        <div class="compliance-request-actions">
+                            <button class="btn-approve-request" onclick="window.approveComplianceRequest('${id}', '${req.docType}')">
+                                <i class="fa-solid fa-check"></i> APPROVE
+                            </button>
+                            <button class="btn-deny-request" onclick="window.denyComplianceRequest('${id}', '${req.docType}')">
+                                <i class="fa-solid fa-xmark"></i> DENY
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                compReqPanel.style.display = 'none';
+            }
+
+            // FIX #1: CAD & BRIEFS - RENDER FOR ALL PROJECTS WITH SAVE ON INPUT CHANGE
+            const cadContainer = document.getElementById('projectCadBriefContainer');
+            if(vendor.assignedProjects && vendor.assignedProjects.length > 0) {
+                cadContainer.innerHTML = vendor.assignedProjects.map((p) => `
+                    <div class="project-allocation-item">
+                        <h5>${p.projectName} <span style="font-size:0.75rem; color:#888;">(${p.division})</span></h5>
+                        <div class="project-allocation-grid">
+                            <div class="project-allocation-field">
+                                <label>3D CAD Link</label>
+                                <input type="url" 
+                                       id="cad_${p.projectId}" 
+                                       value="${p.cadLink || ''}" 
+                                       placeholder="https://drive..." 
+                                       onchange="window.saveCadBriefChange('${id}', '${p.projectId}', 'cad', this.value)">
+                                ${p.cadLink ? `<a href="${p.cadLink}" target="_blank" style="font-size:0.7rem; color:var(--color-gold); text-decoration:none; margin-top: 4px; display: block;"><i class="fa-solid fa-external-link"></i> Verify</a>` : ''}
+                            </div>
+                            <div class="project-allocation-field">
+                                <label>Brief Link</label>
+                                <input type="url" 
+                                       id="brief_${p.projectId}" 
+                                       value="${p.briefLink || ''}" 
+                                       placeholder="https://drive..." 
+                                       onchange="window.saveCadBriefChange('${id}', '${p.projectId}', 'brief', this.value)">
+                                ${p.briefLink ? `<a href="${p.briefLink}" target="_blank" style="font-size:0.7rem; color:var(--color-gold); text-decoration:none; margin-top: 4px; display: block;"><i class="fa-solid fa-external-link"></i> Verify</a>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                cadContainer.innerHTML = '<p style="font-size:0.8rem; color:#888; text-align:center; padding:20px; border: 1px dashed #ccc; border-radius: 8px;">No active projects assigned yet.</p>';
+            }
+
+            const insUrl = vendor.compliance?.insuranceDocUrl;
+            const insDate = vendor.compliance?.insuranceValidTill;
+            document.getElementById('insuranceLinkDisplay').innerHTML = insUrl ? `<a href="${insUrl}" target="_blank" style="color: var(--color-gold);"><i class="fa-solid fa-external-link"></i> View</a>` : '--';
+            document.getElementById('insuranceDateDisplay').innerText = insDate || '--';
+
+            window.populateFileReview(vendor);
+            window.populateInvoices(vendor);
+            document.getElementById('vendorManagerModal').style.display = 'flex';
+        };
+
+        // FIX #1: SAVE CAD/BRIEF CHANGES IMMEDIATELY
+        window.saveCadBriefChange = async function(vendorId, projectId, fieldType, newValue) {
+            const token = localStorage.getItem('adminToken');
+            const vendor = window.allVendors.find(v => v._id === vendorId);
+            
+            try {
+                // Update local project
+                const projIndex = vendor.assignedProjects.findIndex(p => p.projectId === projectId);
+                if (projIndex !== -1) {
+                    if (fieldType === 'cad') {
+                        vendor.assignedProjects[projIndex].cadLink = newValue;
+                    } else {
+                        vendor.assignedProjects[projIndex].briefLink = newValue;
+                    }
+                }
+
+                // Save to backend
+                await fetch(`http://localhost:5000/api/admin/vendors/${vendorId}/broadcast`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ assignedProjects: vendor.assignedProjects })
+                });
+
+                window.showVendorToast(`${fieldType.toUpperCase()} link saved for ${vendor.assignedProjects[projIndex].projectName}.`);
+            } catch(e) {
+                window.showVendorToast("Error saving. Try again.");
+            }
+        };
+
+        // FIX #3: APPROVE COMPLIANCE REQUEST
+        window.approveComplianceRequest = async function(vendorId, docType) {
+            const token = localStorage.getItem('adminToken');
+            const vendor = window.allVendors.find(v => v._id === vendorId);
+            const field = docType + 'Verified';
+            
+            try {
+                await fetch(`http://localhost:5000/api/admin/vendors/${vendorId}/broadcast`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        compliance: {
+                            ...vendor.compliance,
+                            [field]: false  // Reset to false to allow vendor to re-edit
+                        },
+                        complianceRequests: vendor.complianceRequests.filter(r => r.docType !== docType)
+                    })
+                });
+                
+                window.showVendorToast(`✓ ${docType.toUpperCase()} edit approved. Vendor can now modify.`);
+                window.openVendorManager(vendorId);
+            } catch(e) {
+                window.showVendorToast("Error approving request.");
+            }
+        };
+
+        // FIX #3: DENY COMPLIANCE REQUEST
+        window.denyComplianceRequest = async function(vendorId, docType) {
+            const token = localStorage.getItem('adminToken');
+            const vendor = window.allVendors.find(v => v._id === vendorId);
+            
+            try {
+                await fetch(`http://localhost:5000/api/admin/vendors/${vendorId}/broadcast`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        complianceRequests: vendor.complianceRequests.filter(r => r.docType !== docType)
+                    })
+                });
+                
+                window.showVendorToast(`✗ ${docType.toUpperCase()} edit request denied.`);
+                window.openVendorManager(vendorId);
+            } catch(e) {
+                window.showVendorToast("Error denying request.");
+            }
+        };
+
+        window.populateFileReview = function(vendor) {
+            const container = document.getElementById('fileReviewContainer');
+            let html = '';
+            const makeFileRow = (title, link) => {
+                if (!link) return '';
+                const safeLink = link.startsWith('http') ? link : 'https://' + link;
+                return `<div class="file-item"><div class="file-item-name"><i class="fa-solid fa-file-contract"></i> ${title}</div>
+                        <a href="${safeLink}" target="_blank" class="btn-manage" style="text-decoration: none;"><i class="fa-solid fa-external-link"></i> View</a></div>`;
+            };
+
+            if (vendor.compliance?.gstDocUrl) html += makeFileRow('GST Certificate', vendor.compliance.gstDocUrl);
+            if (vendor.compliance?.insuranceDocUrl) html += makeFileRow('Insurance Document', vendor.compliance.insuranceDocUrl);
+            if (vendor.compliance?.bankDocUrl) html += makeFileRow('Bank Details', vendor.compliance.bankDocUrl);
+            if (vendor.portfolioLink) html += makeFileRow('Portfolio Link', vendor.portfolioLink);
+
+            container.innerHTML = html || '<p style="padding: 15px; text-align: center; color: #ccc;">No files uploaded.</p>';
+        };
+
+        // *** CHANGED: Added "View PDF" link next to invoice number when fileUrl exists ***
+        window.populateInvoices = function(vendor) {
+            const container = document.getElementById('listVendorInvoices');
+            if (!vendor.invoices || vendor.invoices.length === 0) {
+                container.innerHTML = '<p style="padding: 10px; font-size: 0.7rem; color: #ccc;">No invoices submitted.</p>';
+                return;
+            }
+
+            container.innerHTML = vendor.invoices.map(i => `
+                <div class="vault-item-row">
+                    <div>
+                        <strong>${i.invoiceNumber}</strong>
+                        ${i.fileUrl ? `<a href="${i.fileUrl}" target="_blank" style="margin-left:8px; font-size:0.7rem; color:var(--color-gold); text-decoration:none;"><i class="fa-solid fa-external-link"></i> View PDF</a>` : ''}<br>
+                        <span style="font-size: 0.7rem; color: #666;">&#8377;${i.amount ? i.amount.toLocaleString() : '0'} - ${i.projectName}</span>
+                    </div>
+                    <select class="status-select" onchange="window.updateInvoiceStatus('${i._id}', this.value)" style="border-color: ${i.status === 'Paid' ? '#27ae60' : '#b8962e'}; color: ${i.status === 'Paid' ? '#27ae60' : '#b8962e'};">
+                        <option value="Processing" ${i.status === 'Processing' ? 'selected' : ''}>Processing</option>
+                        <option value="Approved" ${i.status === 'Approved' ? 'selected' : ''}>Approved</option>
+                        <option value="Paid" ${i.status === 'Paid' ? 'selected' : ''}>Paid</option>
+                    </select>
+                </div>
+            `).join('');
+        };
+
+        window.updateInvoiceStatus = async function(invoiceId, newStatus) {
+            const token = localStorage.getItem('adminToken');
+            try {
+                const res = await fetch(`http://localhost:5000/api/admin/vendors/${window.activeVendorId}/invoice-status`, {
+                    method: 'PATCH', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ invoiceId, newStatus })
+                });
+                if(res.ok) { window.showVendorToast("Invoice status updated."); window.fetchVendorsAndClients(); }
+            } catch(e) { window.showVendorToast("Error."); }
+        };
+
+        // --- 4. SECURE COMMS ---
+        window.openAdminChat = function(id) {
+            window.activeVendorId = id;
+            const vendor = window.allVendors.find(v => v._id === id);
+            document.getElementById('chatClientName').innerText = `${vendor.companyName || 'Partner'} | Secure Comms`;
+            
+            const savedPersona = localStorage.getItem('adminVendorPersona');
+            if (savedPersona) document.getElementById('adminChatPersona').value = savedPersona;
+
+            document.getElementById('adminChatModal').style.display = 'flex';
+            window.renderChatMessages(vendor.messages || []);
+        };
+
+        window.renderChatMessages = function(messages) {
+            const area = document.getElementById('adminChatArea');
+            const adminPersona = document.getElementById('adminChatPersona').value || 'Procurement Command';
+            let lastDate = ''; let html = '';
+
+            messages.forEach(msg => {
+                const msgDate = new Date(msg.timestamp).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+                const msgTime = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                if (msgDate !== lastDate) { html += `<div class="chat-date-separator"><span>${msgDate}</span></div>`; lastDate = msgDate; }
+
+                const isAdmin = msg.sender === adminPersona || msg.sender === 'Admin' || msg.sender === 'Procurement Command' || msg.sender === 'Network Command';
+                const groupClass = isAdmin ? 'msg-group admin' : 'msg-group';
+                const bubbleClass = isAdmin ? 'msg-bubble outgoing' : 'msg-bubble incoming';
+
+                html += `<div class="${groupClass}">
+                            <div class="${bubbleClass}" ${isAdmin ? `onmouseover="this.querySelector('.msg-actions').style.opacity='1'" onmouseout="this.querySelector('.msg-actions').style.opacity='0'"` : ''}>
+                                ${!isAdmin ? `<span class="msg-sender-tag">${msg.sender}</span>` : ''}
+                                <span class="msg-text">${msg.text}</span>
+                                <span class="msg-time">${msgTime}</span>
+                                ${isAdmin ? `
+                                <div class="msg-actions" style="opacity: 0;">
+                                    <button class="msg-action-btn" onclick="window.editMessage('${msg._id}', '${msg.text.replace(/'/g, "\\'")}')" title="Edit"><i class="fa-solid fa-edit"></i></button>
+                                    <button class="msg-action-btn" onclick="window.deleteMessage('${msg._id}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                                </div>` : ''}
+                            </div>
+                        </div>`;
+            });
+            area.innerHTML = html || '<p style="text-align:center; color:#aaa; font-size:0.8rem; margin-top:20px;">No messages in secure channel.</p>';
+            area.scrollTop = area.scrollHeight;
+        };
+
+        window.sendAdminMessage = async function() {
+            const input = document.getElementById('adminChatInput');
+            const text = input.value.trim();
+            if(!text || !window.activeVendorId) return;
+            const token = localStorage.getItem('adminToken');
+            const persona = document.getElementById('adminChatPersona').value || 'Procurement Command';
+            localStorage.setItem('adminVendorPersona', persona);
+            
+            try {
+                const res = await fetch(`http://localhost:5000/api/admin/vendors/${window.activeVendorId}/broadcast`, {
+                    method: 'PATCH', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: { sender: persona, text: text, timestamp: new Date() } })
+                });
+                if(res.ok) { 
+                    input.value = ''; 
+                    const dataRes = await fetch('http://localhost:5000/api/vendors', { headers: { 'Authorization': `Bearer ${token}` } });
+                    if(dataRes.ok) {
+                        window.allVendors = await dataRes.json();
+                        const vendor = window.allVendors.find(v => v._id === window.activeVendorId);
+                        window.renderChatMessages(vendor.messages || []);
+                    }
+                }
+            } catch(e) { window.showVendorToast("Failed to send."); }
+        };
+
+        window.msgToDelete = null;
+        window.deleteMessage = function(msgId) {
+            window.msgToDelete = msgId;
+            document.getElementById('deleteMessageModal').style.display = 'flex';
+        };
+
+        document.getElementById('confirmDeleteMsgBtn').onclick = async function() {
+            if(!window.msgToDelete) return;
+            const btn = this; btn.innerText = "DELETING...";
+            const token = localStorage.getItem('adminToken');
+            try {
+                const res = await fetch(`http://localhost:5000/api/admin/vendors/${window.activeVendorId}/message/${window.msgToDelete}`, {
+                    method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if(res.ok) { 
+                    window.showVendorToast("Message Purged."); 
+                    document.getElementById('deleteMessageModal').style.display = 'none';
+                    
+                    const dataRes = await fetch('http://localhost:5000/api/vendors', { headers: { 'Authorization': `Bearer ${token}` } });
+                    if(dataRes.ok) {
+                        window.allVendors = await dataRes.json();
+                        const vendor = window.allVendors.find(v => v._id === window.activeVendorId);
+                        window.renderChatMessages(vendor.messages || []);
+                    }
+                }
+            } catch(e) { window.showVendorToast("Delete failed."); }
+            finally { btn.innerText = "DELETE"; }
+        };
+
+        window.msgToEdit = null;
+        window.editMessage = function(msgId, text) {
+            window.msgToEdit = msgId;
+            document.getElementById('editMessageInput').value = text;
+            document.getElementById('editMessageModal').style.display = 'flex';
+        };
+
+        document.getElementById('confirmEditMsgBtn').onclick = async function() {
+            if(!window.msgToEdit) return;
+            const newText = document.getElementById('editMessageInput').value.trim();
+            if(!newText) return;
+
+            const btn = this; 
+            const ogText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> UPDATING...';
+            const token = localStorage.getItem('adminToken');
+            const persona = document.getElementById('adminChatPersona').value || 'Procurement Command';
+            
+            try {
+                const delRes = await fetch(`http://localhost:5000/api/admin/vendors/${window.activeVendorId}/message/${window.msgToEdit}`, {
+                    method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if(!delRes.ok) throw new Error("Could not modify original message");
+
+                const postRes = await fetch(`http://localhost:5000/api/admin/vendors/${window.activeVendorId}/broadcast`, {
+                    method: 'PATCH', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: { sender: persona, text: newText, timestamp: new Date() } })
+                });
+                
+                if (postRes.ok) {
+                    window.showVendorToast('Transmission Updated.');
+                    document.getElementById('editMessageModal').style.display = 'none';
+                    
+                    const dataRes = await fetch('http://localhost:5000/api/vendors', { headers: { 'Authorization': `Bearer ${token}` } });
+                    if(dataRes.ok) {
+                        window.allVendors = await dataRes.json();
+                        const vendor = window.allVendors.find(v => v._id === window.activeVendorId);
+                        window.renderChatMessages(vendor.messages || []);
+                    }
+                } else { window.showVendorToast('Failed to post updated message.'); }
+            } catch(e) { window.showVendorToast('Edit failed: Network Error.'); }
+            finally { btn.innerHTML = ogText; }
+        };
+
+        // --- 5. BROADCAST/SYNC & PAST PROJECTS ---
+        window.broadcastToVendor = async function() {
+            const token = localStorage.getItem('adminToken');
+            const btn = document.getElementById('btnSyncVendor');
+            btn.innerHTML = 'SYNCHRONIZING... <i class="fa-solid fa-circle-notch fa-spin ml-10"></i>';
+            btn.disabled = true;
+
+            const vendor = window.allVendors.find(v => v._id === window.activeVendorId);
+            
+            // 1. Log Past Projects
+            let currentPast = vendor.pastProjects || [];
+            const newPastName = document.getElementById('addPastName')?.value.trim();
+            if (newPastName) {
+                currentPast.push({
+                    projectName: newPastName,
+                    division: document.getElementById('addPastDiv').value,
+                    role: document.getElementById('addPastRole').value || 'Vendor',
+                    rating: parseFloat(document.getElementById('addPastRating').value) || 5.0,
+                    date: new Date().getFullYear().toString()
+                });
+            }
+
+            // Scrape CAD and Brief fields directly from the DOM to ensure 100% save reliability
+            if (vendor.assignedProjects && vendor.assignedProjects.length > 0) {
+                vendor.assignedProjects.forEach(p => {
+                    const cadInput = document.getElementById('cad_' + p.projectId);
+                    const briefInput = document.getElementById('brief_' + p.projectId);
+                    if (cadInput) p.cadLink = cadInput.value;
+                    if (briefInput) p.briefLink = briefInput.value;
+                });
+            }
+
+            // 2. Preserve Existing Compliance
+            const existingCompliance = vendor.compliance || {};
+
+            const payload = {
+                compliance: {
+                    ...existingCompliance,
+                    gstVerified: document.getElementById('gstVerifySelect').value === "true",
+                    bankVerified: document.getElementById('bankVerifySelect').value === "true",
+                    insuranceVerified: document.getElementById('insuranceVerifySelect').value === "true",
+                    insuranceAdminRemarks: document.getElementById('insuranceRemarksInput').value // Fixed variable
+                },
+                assignedProjects: vendor.assignedProjects,
+                pastProjects: currentPast
+            };
+
+            try {
+                const res = await fetch(`http://localhost:5000/api/admin/vendors/${window.activeVendorId}/broadcast`, {
+                    method: 'PATCH', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if(res.ok) {
+                    window.showVendorToast("Vendor Vault Synchronized. All changes saved.");
+                    document.getElementById('addPastName').value = '';
+                    document.getElementById('addPastRole').value = '';
+                    document.getElementById('addPastRating').value = '';
+                    window.closeModal('vendorManagerModal');
+                    window.fetchVendorsAndClients();
+                } else {
+                    window.showVendorToast("Sync failed.");
+                }
+            } catch(e) { window.showVendorToast("Network error. Sync aborted."); } 
+            finally { btn.innerHTML = 'SYNCHRONIZE VENDOR <i class="fa-solid fa-satellite-dish"></i>'; btn.disabled = false; }
+        };
+
+        // --- 6. VENDOR OPERATIONS ---
+        window.openAddVendorModal = function() { document.getElementById('addVendorModal').style.display = 'flex'; };
+        
+        window.submitNewVendor = async function(e) {
+            e.preventDefault();
+            const token = localStorage.getItem('adminToken');
+            const btn = document.getElementById('vendorSubmitBtn');
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
+            
+            const payload = {
+                companyName: document.getElementById('vName').value, contactName: document.getElementById('vContact').value,
+                email: document.getElementById('vEmail').value, phone: document.getElementById('vPhone').value,
+                location: document.getElementById('vLocation').value, serviceCategory: document.getElementById('vCategory').value,
+                portfolioLink: document.getElementById('vPortfolio').value, status: 'Pending Review'
+            };
+
+            try {
+                const res = await fetch('http://localhost:5000/api/vendors', {
+                    method: 'POST', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if(res.ok) {
+                    window.showVendorToast("Vendor registered successfully.");
+                    window.closeModal('addVendorModal'); document.getElementById('adminVendorApplyForm').reset();
+                    window.fetchVendorsAndClients();
+                }
+            } catch(e) { window.showVendorToast("Network error."); }
+            finally { btn.innerHTML = 'Direct Empanelment <i class="fa-solid fa-check ml-10"></i>'; }
+        };
+
+        window.openVendorAuthorizeModal = function(id) {
+            window.activeVendorId = id;
+            window.generateVendorPassword();
+            document.getElementById('authorizeVendorModal').style.display = 'flex';
+        };
+
+        window.generateVendorPassword = function() {
+            const k = 'VND-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+            document.getElementById('vendorPasswordOutput').value = k;
+        };
+
+        window.confirmVendorAuthorization = async function() {
+            if(!window.activeVendorId) return;
+            const token = localStorage.getItem('adminToken');
+            const key = document.getElementById('vendorPasswordOutput').value;
+            const btn = document.getElementById('confirmAuthBtn');
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> DEPLOYING...';
+            
+            try {
+                const res = await fetch(`http://localhost:5000/api/admin/vendors/${window.activeVendorId}/authorize`, {
+                    method: 'PATCH', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ accessKey: key, password: key })
+                });
+                if(res.ok) {
+                    window.showVendorToast("Partner authorized. Credentials sent.");
+                    window.closeModal('authorizeVendorModal');
+                    window.fetchVendorsAndClients();
+                }
+            } catch(e) { window.showVendorToast("Network error."); }
+            finally { btn.innerHTML = 'AUTHORIZE & DEPLOY <i class="fa-solid fa-paper-plane ml-10"></i>'; }
+        };
+
+        // --- 7. PROJECT ASSIGNMENT ---
+        window.openAssignModal = function(id) {
+            window.activeVendorId = id;
+            const vendor = window.allVendors.find(v => v._id === id);
+            const select = document.getElementById('projectSelect');
+            
+            const assignedIds = vendor.assignedProjects ? vendor.assignedProjects.map(p => p.projectId) : [];
+            const availableProjects = window.allActiveClients.filter(c => !assignedIds.includes(c._id));
+
+            if(availableProjects.length > 0) {
+                select.innerHTML = availableProjects.map(c => `<option value="${c._id}" data-name="${c.eventName}" data-div="${c.division}" data-date="${c.eventDate}">${c.eventName} (${c.clientName})</option>`).join('');
+            } else {
+                select.innerHTML = `<option disabled selected>No new projects available to assign</option>`;
+            }
+            document.getElementById('assignProjectModal').style.display = 'flex';
+        };
+
+        window.confirmAssignProject = async function() {
+            if(!window.activeVendorId) return;
+            const token = localStorage.getItem('adminToken');
+            const select = document.getElementById('projectSelect');
+            const selectedOption = select.options[select.selectedIndex];
+            if(!selectedOption || selectedOption.disabled) return;
+
+            const btn = document.getElementById('confirmAssignBtn');
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> ASSIGNING...';
+
+            const payload = {
+                projectId: selectedOption.value, projectName: selectedOption.getAttribute('data-name'),
+                division: selectedOption.getAttribute('data-div'), eventDate: selectedOption.getAttribute('data-date'),
+                location: 'TBD', leadArchitect: 'C&O Command'
+            };
+
+            try {
+                const res = await fetch(`http://localhost:5000/api/admin/vendors/${window.activeVendorId}/assign`, {
+                    method: 'PATCH', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if(res.ok) {
+                    window.showVendorToast("Vendor assigned to project.");
+                    window.closeModal('assignProjectModal');
+                    window.fetchVendorsAndClients();
+                }
+            } catch(e) { window.showVendorToast("Network error."); }
+            finally { btn.innerHTML = 'ASSIGN VENDOR <i class="fa-solid fa-folder-plus ml-10"></i>'; }
+        };
+
+        // --- 8. DELETE VENDOR ---
+        window.openDeleteModal = function(id) {
+            window.activeVendorId = id;
+            document.getElementById('deleteConfirmModal').style.display = 'flex';
+        };
+
+        window.confirmDeleteVendor = async function() {
+            if(!window.activeVendorId) return;
+            const token = localStorage.getItem('adminToken');
+            const btn = document.getElementById('confirmDeleteBtn');
+            btn.innerText = "PURGING...";
+
+            try {
+                const res = await fetch(`http://localhost:5000/api/vendors/${window.activeVendorId}`, {
+                    method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if(res.ok) {
+                    window.showVendorToast("Vendor purged successfully.");
+                    window.closeModal('deleteConfirmModal');
+                    window.fetchVendorsAndClients();
+                }
+            } catch(e) { window.showVendorToast("Network error."); }
+            finally { btn.innerText = "CONFIRM PURGE"; }
+        };
+
+        // --- 9. AUDIT LOG ---
+        window.openAuditModal = function(id) {
+            const vendor = window.allVendors.find(v => v._id === id);
+            if(!vendor) return;
+            
+            const body = document.getElementById('auditLogBody');
+            if (!vendor.auditLog || vendor.auditLog.length === 0) {
+                body.innerHTML = '<p style="text-align:center; color:#888; padding: 20px;">No audit history found for this Vendor.</p>';
+            } else {
+                body.innerHTML = vendor.auditLog.slice().reverse().map(log => `
+                    <div style="padding: 12px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem;">
+                        <span style="font-weight: 600; color: var(--color-onyx);">${log.action}</span>
+                        <span style="color: #888; font-size: 0.7rem; text-align: right; line-height: 1.4;">${log.user}<br>${new Date(log.timestamp).toLocaleString()}</span>
+                    </div>
+                `).join('');
+            }
+            document.getElementById('auditModal').style.display = 'flex';
+        };
+
+        // --- 10. EXPORT CSV ---
+        window.exportVendorsCSV = function() {
+            if (window.allVendors.length === 0) return;
+            let csv = "Company,Contact,Email,Phone,Location,Category,Status,Access Key\n";
+            window.allVendors.forEach(v => {
+                const key = v.plainKey || v.accessKey || v.password || 'None';
+                csv += `"${v.companyName}","${v.contactName}","${v.email}","${v.phone}","${v.location}","${categoryMapLocal[v.serviceCategory] || ''}","${v.status}","${key}"\n`;
+            });
+            const link = document.createElement("a");
+            link.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
+            link.download = `CO_Vendor_Roster_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+            window.showVendorToast("CSV exported.");
+        };
+
+        // --- 11. UTILITIES ---
+        window.closeModal = function(id) { document.getElementById(id).style.display = 'none'; };
+        
+        window.showVendorToast = function(message) {
+            const toast = document.getElementById('vendorToast');
+            document.getElementById('vendorToastText').innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3500);
+        };
+
+        window.onclick = function(event) {
+            ['addVendorModal', 'deleteConfirmModal', 'authorizeVendorModal', 'assignProjectModal', 'logoutConfirmModal', 'vendorManagerModal', 'resetKeyConfirmModal', 'auditModal', 'adminChatModal'].forEach(id => {
+                if (event.target == document.getElementById(id)) window.closeModal(id);
+            });
+        };
+
+        window.logoutAdmin = function() { document.getElementById('logoutConfirmModal').style.display = 'flex'; };
+        window.executeLogout = function() { localStorage.removeItem('adminToken'); window.location.href = 'index.html'; };
+    </script>
+</body>
+</html>

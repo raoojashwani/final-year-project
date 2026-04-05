@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Enquiries | Admin Command</title>
+    <link rel="icon" type="image/png" href="../images/logo.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="admin-style.css">
+
+    <style>
+        /* Specific Styles for Enquiries Management */
+        .header-actions { display: flex; gap: 15px; align-items: center; }
+        
+        .tab-strip { display: flex; background: var(--color-ivory); padding: 6px; border-radius: 8px; margin-bottom: 30px; width: fit-content; border: 1px solid var(--color-light-grey); }
+        .tab-item { padding: 10px 25px; border-radius: 6px; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: 0.3s; color: var(--color-grey); text-transform: uppercase; letter-spacing: 1px; border: none; background: transparent; }
+        .tab-item.active { background: var(--color-onyx); color: var(--color-gold); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .tab-item:hover:not(.active) { color: var(--color-onyx); }
+
+        .table-container { background: white; border-radius: 12px; box-shadow: var(--shadow-soft); overflow-x: auto; border: 1px solid #eee; }
+        table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        th { background: var(--color-onyx); color: var(--color-gold); padding: 15px 20px; text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
+        td { padding: 15px 20px; border-bottom: 1px solid #eee; font-size: 0.85rem; vertical-align: middle; color: var(--color-onyx); }
+        tr:hover { background: #fafafa; }
+
+        .status-pill { padding: 6px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; display: inline-block; }
+        .status-new { background: rgba(212, 175, 55, 0.1); color: var(--color-gold); }
+        .status-converted { background: rgba(39, 174, 96, 0.1); color: #27ae60; }
+        
+        .div-badge { font-size: 0.7rem; padding: 4px 10px; border-radius: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .bg-crimson-light { background: rgba(138,21,56,0.1); color: var(--color-crimson); }
+        .bg-blue-light { background: rgba(11,25,44,0.1); color: var(--color-blue); }
+
+        /* Command Buttons & Tooltips */
+        [data-tooltip] { position: relative; cursor: pointer; }
+        [data-tooltip]::after {
+            content: attr(data-tooltip); position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%);
+            background: var(--color-onyx); color: var(--color-gold); padding: 6px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 600;
+            white-space: nowrap; opacity: 0; visibility: hidden; transition: 0.2s ease; z-index: 100; border: 1px solid var(--color-gold);
+        }
+        [data-tooltip]:hover::after { opacity: 1; visibility: visible; bottom: 135%; }
+
+        .btn-manage { background-color: var(--color-onyx); color: var(--color-gold); border: 1px solid var(--color-gold); padding: 8px 14px; border-radius: 6px; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; }
+        .btn-manage:hover { background: var(--color-gold); color: var(--color-onyx); transform: translateY(-2px); }
+        .btn-authorize { background-color: #27ae60; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center;}
+        .btn-authorize:hover { background-color: #1e8449; transform: translateY(-2px); }
+        .btn-purge { background-color: var(--color-crimson); color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center;}
+        .btn-purge:hover { background-color: #6a0f2a; transform: translateY(-2px); }
+
+        /* Modals & Forms */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-content { background: white; border-radius: 12px; padding: 35px; width: 90%; max-width: 600px; position: relative; border: 1px solid var(--color-gold); box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 15px;}
+        .close-btn { background: #f1f1f1; border: none; font-size: 1.2rem; color: #555; cursor: pointer; transition: 0.3s; width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+        .close-btn:hover { background: var(--color-crimson); color: white; transform: rotate(90deg); }
+
+        .form-label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 8px; color: var(--color-onyx); text-transform: uppercase; letter-spacing: 1px; }
+        .form-input { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-size: 0.95rem; margin-bottom: 20px; outline: none; transition: 0.3s; }
+        .form-input:focus { border-color: var(--color-gold); box-shadow: 0 0 0 3px rgba(212,175,55,0.1); }
+
+        /* Toast */
+        .custom-toast { position: fixed; bottom: 40px; right: 40px; background: var(--color-onyx); color: white; padding: 18px 25px; border-radius: 8px; border-left: 4px solid var(--color-gold); box-shadow: 0 15px 40px rgba(0,0,0,0.3); z-index: 10000; display: flex; align-items: center; gap: 15px; font-weight: 600; font-size: 0.9rem; transform: translateY(100px); opacity: 0; visibility: hidden; transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .custom-toast.show { transform: translateY(0); opacity: 1; visibility: visible; }
+
+        /* =========================================
+           MOBILE RESPONSIVENESS (ENQUIRIES SPECIFIC)
+        ========================================= */
+        .mobile-menu-toggle { display: none; font-size: 1.5rem; color: var(--color-onyx); cursor: pointer; margin-right: 15px; }
+
+        @media (max-width: 768px) {
+            /* Fix the Top Header / Page Title Area */
+            .flex-space-between { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .header-actions { flex-direction: column; width: 100%; align-items: stretch; }
+            .header-actions button { width: 100%; justify-content: center; }
+            
+            /* Make the Tab Strip Scrollable */
+            .tab-strip { width: 100%; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; padding-bottom: 5px; }
+            .tab-item { flex-shrink: 0; text-align: center; flex: 1; }
+            
+            /* Ensure Modal Forms Stack Vertically */
+            div[style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; gap: 15px !important; }
+            .modal-content { width: 95% !important; padding: 20px !important; margin: 20px auto; max-height: 90vh; overflow-y: auto; }
+            
+            /* Fix the Table so it swipes left/right */
+            .table-container { overflow-x: auto; border-radius: 8px; }
+            table { min-width: 800px; }
+        }
+
+        
+    </style>
+</head>
+<body class="fade-in">
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h1 class="sidebar-logo">C&O<span>.</span></h1>
+        </div>
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+            <a href="enquiries.html" class="nav-item active"><i class="fa-solid fa-envelope-open-text"></i> Event Inquiries</a>
+            <a href="vendors.html" class="nav-item"><i class="fa-solid fa-handshake"></i> Vendor Network</a>
+            <a href="clients.html" class="nav-item"><i class="fa-solid fa-key"></i> Client Access</a>
+            <a href="subscribers.html" class="nav-item"><i class="fa-solid fa-users"></i> Newsletter List</a>
+            <a href="analytics.html" class="nav-item"><i class="fa-solid fa-magnifying-glass-chart"></i> Event Analytics</a>
+            <a href="staff.html" class="nav-item"><i class="fa-solid fa-users-gear"></i> Manage Staff</a>
+            <a href="settings.html" class="nav-item"><i class="fa-solid fa-gear"></i> Settings</a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="nav-item" onclick="logoutAdmin()" style="color: var(--color-crimson); cursor: pointer;">
+                <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-navbar">
+            <div class="mobile-menu-toggle" onclick="window.toggleMobileSidebar()"><i class="fa-solid fa-bars"></i></div>
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass text-grey"></i>
+                <input type="text" id="inquirySearch" placeholder="Search by client name, email, or details...">
+            </div>
+            <div class="admin-profile">
+                <div style="text-align: right;">
+                    <p class="font-weight-700" id="navAdminName" style="font-size: 0.9rem; color: var(--color-onyx);">Principal Architect</p>
+                    <p class="text-gold" style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">Lead Command</p>
+                </div>
+                <div id="navAvatar" style="width: 40px; height: 40px; background: var(--color-onyx); color: var(--color-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; border: 2px solid var(--color-gold); margin-left: 15px;">AD</div>
+            </div>
+        </header>
+
+        <div class="content-padding">
+            <div class="flex-space-between mb-30">
+                <div>
+                    <h2 class="page-title">Lead Funnel</h2>
+                    <p class="text-grey text-sm" style="margin-top: -30px;">Evaluate requests and convert them into active Client Vaults.</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-save" onclick="exportEnquiriesCSV()"><i class="fa-solid fa-file-csv mr-5"></i> Export Pipeline</button>
+                </div>
+            </div>
+
+            <div class="tab-strip" id="divisionTabs">
+                <button class="tab-item active" data-filter="all">All Channels</button>
+                <button class="tab-item" data-filter="Thread & Knot">Thread & Knot</button>
+                <button class="tab-item" data-filter="Prism Planner">Prism Planner</button>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Client Profile</th>
+                            <th>Contact Node</th>
+                            <th>Division</th>
+                            <th>Date Received</th>
+                            <th>Status</th>
+                            <th style="text-align: center;">Pipeline Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="enquiryTableBody">
+                        <tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--color-gold);"><i class="fa-solid fa-circle-notch fa-spin"></i> Syncing Vault Data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="viewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="serif-font" style="margin:0; font-size: 1.5rem;">Architectural Vision</h3>
+                <button class="close-btn" onclick="closeModal('viewModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div style="margin-bottom: 15px;">
+                    <span class="form-label">Client / Personnel</span>
+                    <p id="viewName" style="font-size: 1.1rem; color: var(--color-onyx); font-weight: 600;">---</p>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <span class="form-label">Contact Email</span>
+                    <p id="viewEmail" style="font-size: 1rem; color: var(--color-blue); font-weight: 600;">---</p>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <span class="form-label">Division</span>
+                    <span id="viewDiv" class="div-badge bg-blue-light" style="font-size: 0.8rem;">---</span>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <span class="form-label">Strategic Brief</span>
+                    <p id="viewDetails" style="font-style: italic; color: #444; background: #f9f9f9; padding: 15px; border-left: 3px solid var(--color-gold); border-radius: 4px; line-height: 1.6;">---</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="convertModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="serif-font" style="margin:0; font-size: 1.5rem; color: #27ae60;">Convert to Active Client</h3>
+                <button class="close-btn" onclick="closeModal('convertModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-sm text-grey mb-20" style="line-height: 1.5;">This will initialize a secure Client Vault. Fill in the missing logistical details to finalize the profile.</p>
+                
+                <form id="convertForm">
+                    <input type="hidden" id="convId">
+                    <input type="hidden" id="convName">
+                    <input type="hidden" id="convEmail">
+                    <input type="hidden" id="convDiv">
+                    
+                    <div class="form-group">
+                        <label class="form-label">Formal Event Name</label>
+                        <input type="text" id="convEventName" class="form-input" placeholder="e.g., The Sharma Royal Wedding" required>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <label class="form-label">Client Phone Number</label>
+                            <input type="tel" id="convPhone" class="form-input" placeholder="+91 98765..." required>
+                        </div>
+                        <div>
+                            <label class="form-label">Event Date</label>
+                            <input type="text" id="convDate" class="form-input" placeholder="e.g., Oct 12, 2026" required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-authorize w-100" style="justify-content: center; padding: 15px; font-size: 1rem; border-radius: 30px; margin-top: 10px;">
+                        Initialize Client Vault <i class="fa-solid fa-bolt ml-10"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="deleteConfirmModal">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <i class="fa-solid fa-circle-exclamation text-crimson" style="font-size: 3.5rem; margin-bottom: 20px; display: block;"></i>
+            <h3 class="serif-font mb-10" style="font-size: 1.5rem;">Purge Record?</h3>
+            <p class="text-grey text-sm mb-30" style="line-height: 1.5;">This action is permanent. The lead will be purged from the Database immediately.</p>
+            
+            <div style="display: flex; gap: 15px;">
+                <button class="btn-purge" id="confirmDeleteBtn" style="flex: 1; padding: 12px; border-radius: 30px;">Purge Record</button>
+                <button class="btn-manage" onclick="closeModal('deleteConfirmModal')" style="flex: 1; background: var(--color-ivory); color: var(--color-onyx); border-color: #ddd; border-radius: 30px;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="logoutConfirmModal">
+        <div class="modal-content" style="max-width: 400px; text-align: center; padding: 40px;">
+            <i class="fa-solid fa-right-from-bracket" style="font-size: 3.5rem; color: var(--color-onyx); margin-bottom: 20px; display: block;"></i>
+            <h3 class="serif-font mb-10" style="font-size: 1.5rem;">Secure Logout?</h3>
+            <p class="text-grey text-sm mb-30" style="line-height: 1.5;">Are you sure you want to securely exit the Admin Terminal?</p>
+            <div style="display: flex; gap: 15px;">
+                <button class="btn-purge" style="flex: 1; padding: 12px; border-radius: 30px;" onclick="executeLogout()">Logout</button>
+                <button class="btn-manage" style="flex: 1; background: var(--color-ivory); color: var(--color-onyx); border-color: #ddd; border-radius: 30px;" onclick="closeModal('logoutConfirmModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminToast" class="custom-toast">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toastText">Action Successful.</span>
+    </div>
+
+    <script>
+        let allInquiries = [];
+        let currentFilter = 'all';
+        let itemToDelete = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchInquiries();
+
+            // Tab Filtering
+            document.getElementById('divisionTabs').addEventListener('click', (e) => {
+                if (e.target.classList.contains('tab-item')) {
+                    document.querySelectorAll('#divisionTabs .tab-item').forEach(tab => tab.classList.remove('active'));
+                    e.target.classList.add('active');
+                    currentFilter = e.target.getAttribute('data-filter');
+                    applyFilters();
+                }
+            });
+
+            // Live Search
+            document.getElementById('inquirySearch').addEventListener('input', applyFilters);
+
+            // Convert Form Submit
+            document.getElementById('convertForm').addEventListener('submit', handleConversion);
+        });
+
+        // --- 1. FETCH DATA ---
+        async function fetchInquiries() {
+            const token = localStorage.getItem('adminToken');
+            if (!token) { window.location.href = 'index.html'; return; }
+
+            try {
+                const response = await fetch('http://localhost:5000/api/enquiries', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (response.ok) {
+                    allInquiries = await response.json();
+                    applyFilters();
+                } else {
+                    showToast('Authentication error. Please log in again.');
+                }
+            } catch (error) {
+                document.getElementById('enquiryTableBody').innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 30px; color: var(--color-crimson);">Failed to sync with Vault. Ensure backend is running.</td></tr>`;
+            }
+        }
+
+        // --- 2. RENDER & FILTER ---
+        function applyFilters() {
+            const searchTerm = document.getElementById('inquirySearch').value.toLowerCase();
+            
+            let filtered = allInquiries;
+            
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(i => (i.division || '').includes(currentFilter));
+            }
+            
+            if (searchTerm) {
+                filtered = filtered.filter(i => 
+                    (i.clientName && i.clientName.toLowerCase().includes(searchTerm)) ||
+                    (i.email && i.email.toLowerCase().includes(searchTerm)) ||
+                    (i.eventDetails && i.eventDetails.toLowerCase().includes(searchTerm))
+                );
+            }
+
+            renderTable(filtered);
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('enquiryTableBody');
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 40px; color: #888;">No inquiries matching criteria.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = data.map(item => {
+                const dateStr = new Date(item.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+                const divClass = (item.division || '').includes('Thread') ? 'bg-crimson-light' : 'bg-blue-light';
+                
+                // Truncate details for table view
+                const shortDetails = item.eventDetails.length > 40 ? item.eventDetails.substring(0, 40) + "..." : item.eventDetails;
+
+                return `
+                <tr class="fade-in">
+                    <td><strong>${item.clientName}</strong></td>
+                    <td><a href="mailto:${item.email}" style="color: var(--color-gold); text-decoration: none; font-weight: 600;"><i class="fa-solid fa-envelope mr-5"></i> ${item.email}</a></td>
+                    <td><span class="div-badge ${divClass}">${item.division}</span></td>
+                    <td>${dateStr}</td>
+                    <td style="color: #666; font-size: 0.8rem; max-width: 200px;">${shortDetails}</td>
+                    <td>
+                        <div style="display:flex; gap:8px; justify-content: center;">
+                            <button class="btn-manage" data-tooltip="Read Brief" onclick="openViewModal('${escapeHtml(item.clientName)}', '${escapeHtml(item.email)}', '${escapeHtml(item.division)}', '${escapeHtml(item.eventDetails)}')">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                            <button class="btn-authorize" data-tooltip="Convert to Client" onclick="openConvertModal('${item._id}', '${escapeHtml(item.clientName)}', '${escapeHtml(item.email)}', '${escapeHtml(item.division)}')">
+                                <i class="fa-solid fa-bolt"></i>
+                            </button>
+                            <button class="btn-purge" data-tooltip="Delete Lead" onclick="openDeleteModal('${item._id}')">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        // --- 3. THE CONVERSION ENGINE (Inquiry -> Client) ---
+        function openConvertModal(id, name, email, division) {
+            document.getElementById('convId').value = id;
+            document.getElementById('convName').value = name;
+            document.getElementById('convEmail').value = email;
+            document.getElementById('convDiv').value = division;
+            document.getElementById('convertModal').style.display = 'flex';
+        }
+
+        async function handleConversion(e) {
+            e.preventDefault();
+            const token = localStorage.getItem('adminToken');
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Initializing...';
+            submitBtn.disabled = true;
+
+            const idToConvert = document.getElementById('convId').value;
+            
+            // 1. Create the new Client Payload
+            const clientPayload = {
+                clientName: document.getElementById('convName').value,
+                email: document.getElementById('convEmail').value,
+                division: document.getElementById('convDiv').value,
+                eventName: document.getElementById('convEventName').value,
+                phone: document.getElementById('convPhone').value,
+                eventDate: document.getElementById('convDate').value,
+                status: 'Pending' // Sets to pending so Admin can manually generate the key later
+            };
+
+            try {
+                // 2. Push to Clients Database
+                const clientRes = await fetch('http://localhost:5000/api/clients', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(clientPayload)
+                });
+
+                if (clientRes.ok) {
+                    // 3. Delete the original Inquiry
+                    await fetch(`http://localhost:5000/api/enquiries/${idToConvert}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+
+                    showToast("Lead successfully converted to Active Client!");
+                    closeModal('convertModal');
+                    document.getElementById('convertForm').reset();
+                    fetchInquiries(); // Refresh the table
+                } else {
+                    showToast("Failed to initialize client vault.");
+                }
+            } catch (err) {
+                showToast("Network Error during conversion.");
+            } finally {
+                submitBtn.innerHTML = 'Initialize Client Vault <i class="fa-solid fa-bolt ml-10"></i>';
+                submitBtn.disabled = false;
+            }
+        }
+
+        // --- 4. DELETE ENGINE ---
+        function openDeleteModal(id) {
+            itemToDelete = id;
+            document.getElementById('deleteConfirmModal').style.display = 'flex';
+        }
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+            if (!itemToDelete) return;
+            const token = localStorage.getItem('adminToken');
+            
+            try {
+                const res = await fetch(`http://localhost:5000/api/enquiries/${itemToDelete}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if(res.ok) {
+                    showToast("Lead Purged Successfully.");
+                    closeModal('deleteConfirmModal');
+                    fetchInquiries();
+                }
+            } catch(err) { showToast("Failed to delete record."); }
+        });
+
+        // --- 5. MODALS & UTILS ---
+        function openViewModal(name, email, div, details) {
+            document.getElementById('viewName').innerText = name;
+            document.getElementById('viewEmail').innerText = email;
+            document.getElementById('viewDiv').innerText = div;
+            document.getElementById('viewDiv').className = `div-badge ${div.includes('Thread') ? 'bg-crimson-light' : 'bg-blue-light'}`;
+            document.getElementById('viewDetails').innerText = details;
+            document.getElementById('viewModal').style.display = 'flex';
+        }
+
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function showToast(message) {
+            const toast = document.getElementById('adminToast');
+            document.getElementById('toastText').innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3500);
+        }
+
+        function exportEnquiriesCSV() {
+            if (allInquiries.length === 0) {
+                showToast("No data to export."); return;
+            }
+            let csvContent = "data:text/csv;charset=utf-8,Name,Email,Division,Date,Brief\n";
+            allInquiries.forEach(i => {
+                let row = `"${i.clientName}","${i.email}","${i.division}","${new Date(i.createdAt).toLocaleDateString()}","${i.eventDetails.replace(/"/g, '""')}"`;
+                csvContent += row + "\n";
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Leads_Pipeline_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("CSV Downloaded.");
+        }
+
+        function escapeHtml(unsafe) {
+            if(!unsafe) return "";
+            return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        // --- 6. LOGOUT SECURE TERMINAL ---
+        function logoutAdmin() {
+            document.getElementById('logoutConfirmModal').style.display = 'flex';
+        }
+
+        function executeLogout() {
+            localStorage.removeItem('adminToken');
+            window.location.href = 'index.html';
+        }
+
+        // --- GLOBAL ADMIN NAME & AVATAR SYNC ---
+        function syncAdminProfile() {
+            const adminName = localStorage.getItem('adminDisplayName') || 'Principal Architect';
+            const nameEl = document.getElementById('navAdminName');
+            const avatarEl = document.getElementById('navAvatar');
+            
+            if (nameEl) nameEl.innerText = adminName;
+            
+            if (avatarEl) {
+                const words = adminName.trim().split(' ');
+                let initials = "AD"; // Fallback
+                if (words.length > 1) {
+                    initials = (words[0][0] + words[1][0]).toUpperCase();
+                } else if (words.length === 1 && words[0].length > 0) {
+                    initials = words[0].substring(0, 2).toUpperCase();
+                }
+                avatarEl.innerText = initials;
+            }
+        }
+        // Run immediately on page load
+        syncAdminProfile();
+
+        
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Thread & Knot | Luxury Bespoke Weddings by C&O Group</title>
+    <link rel="icon" type="image/png" href="../images/thread& knot_logo.png">
+    <meta name="description" content="Thread & Knot curates culturally rich, luxury destination weddings engineered with flawless logistics.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    
+    <link rel="stylesheet" href="../css/style.css">
+
+    <script>
+        if (history.scrollRestoration) { history.scrollRestoration = 'manual'; }
+        window.scrollTo(0, 0);
+    </script>
+
+    <style>
+        /* =========================================
+           THREAD & KNOT SPECIFIC CSS (Leveled Up)
+        ========================================= */
+        
+        /* =========================================
+           1. CINEMATIC HERO (True Fullscreen 100vh)
+        ========================================= */
+        .tk-hero { 
+            height: 100vh; /* Forces exact full screen */
+            width: 100%;
+            position: relative; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden; 
+            background-color: var(--color-onyx); 
+        }
+        .hero-bg-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6) contrast(1.1); animation: subtleZoom 20s infinite alternate ease-in-out; }
+        
+        /* Sleek vignette overlay so text ALWAYS pops regardless of the image */
+        .hero-overlay { 
+            position: absolute; 
+            inset: 0; 
+            background: linear-gradient(to bottom, rgba(10,10,10,0.8) 0%, rgba(10,10,10,0.2) 40%, rgba(10,10,10,0.8) 100%); 
+            z-index: 1; 
+        }
+        @keyframes subtleZoom { from { transform: scale(1); } to { transform: scale(1.05); } }
+
+        .massive-title { text-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+
+        /* =========================================
+           NAVBAR READABILITY & DROPDOWN FIX
+        ========================================= */
+        /* Adds a protective dark gradient exactly behind the navbar so white text is always readable */
+        .navbar:not(.scrolled) {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0) 100%);
+        }
+        .navbar:not(.scrolled) .nav-links li a,
+        .navbar:not(.scrolled) .brand-logo {
+            text-shadow: 0 2px 10px rgba(0,0,0,1); /* Maximum readability */
+        }
+
+        .has-dropdown { position: relative; }
+        .dropdown-menu { position: absolute; top: 100%; left: 0; background: var(--color-white) !important; box-shadow: 0 10px 40px rgba(0,0,0,0.3); border-radius: 4px; padding: 10px 0; min-width: 260px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; list-style: none; z-index: 1000; }
+        .has-dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        
+        /* OVERRIDE ALL WHITE TEXT IN DROPDOWN WITH !important */
+        #navbar .dropdown-menu li a { 
+            display: block; 
+            padding: 12px 20px; 
+            color: #111111 !important; /* Forced Onyx */
+            font-size: 0.9rem; 
+            font-weight: 600;
+            text-transform: none; 
+            letter-spacing: 0; 
+            text-shadow: none !important; /* Removes shadow */
+            background: transparent !important;
+        }
+        #navbar .dropdown-menu li a:hover { 
+            background: rgba(138,21,56,0.1) !important; 
+            color: #8A1538 !important; /* Forced Crimson on hover */
+        }        
+        @keyframes subtleZoom { from { transform: scale(1); } to { transform: scale(1.05); } }
+
+        /* 2. Philosophy Collage */
+        .collage-wrapper { position: relative; height: 600px; width: 100%; }
+        .img-main { position: absolute; top: 0; left: 10%; width: 60%; height: 70%; border-radius: var(--radius-large); overflow: hidden; z-index: 1; box-shadow: var(--shadow-soft); }
+        .img-overlap-1 { position: absolute; bottom: 5%; right: 5%; width: 50%; height: 50%; border-radius: var(--radius-large); border: 10px solid var(--color-ivory); z-index: 2; box-shadow: var(--shadow-gold); }
+        .img-overlap-2 { position: absolute; top: 20%; left: -5%; width: 35%; height: 40%; border-radius: 300px 300px 0 0; border: 8px solid var(--color-white); z-index: 3; box-shadow: var(--shadow-soft); }
+        .collage-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
+        .collage-wrapper:hover .collage-img { transform: scale(1.05); }
+
+        /* 3. Experiences Cards */
+        .experience-card { position: relative; height: 450px; overflow: hidden; border-radius: var(--radius-large); display: flex; align-items: flex-end; padding: 40px; cursor: pointer; }
+        .experience-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1s ease; z-index: 0; }
+        .exp-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,15,15,0.9), transparent); z-index: 1; transition: opacity 0.3s; }
+        .exp-content { position: relative; z-index: 2; color: white; transform: translateY(20px); transition: transform 0.4s ease; }
+        .experience-card:hover img { transform: scale(1.1); }
+        .experience-card:hover .exp-overlay { background: linear-gradient(to top, rgba(138,21,56,0.9), rgba(15,15,15,0.2)); }
+        .experience-card:hover .exp-content { transform: translateY(0); }
+
+        /* 4. Real Stories Split */
+        .story-container { background: var(--color-white); border-radius: var(--radius-large); overflow: hidden; border: 1px solid var(--color-gold); }
+        .story-img { height: 100%; min-height: 500px; object-fit: cover; width: 100%; }
+        .story-stats { display: flex; gap: 30px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--color-light-grey); }
+        .stat-item h4 { color: var(--color-gold); font-size: 1.5rem; }
+
+        /* 5. Advanced FAQ Accordion */
+        .faq-item { border-bottom: 1px solid var(--color-light-grey); padding: 20px 0; }
+        .faq-question { display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 1.1rem; font-weight: 600; color: var(--color-black); transition: color 0.3s; }
+        .faq-question:hover { color: var(--color-crimson); }
+        .faq-icon { font-size: 1.2rem; color: var(--color-gold); transition: transform 0.4s ease; }
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; color: var(--color-grey); padding-right: 40px; }
+        .faq-answer p { padding-top: 15px; }
+        .faq-item.active .faq-answer { max-height: 200px; }
+        .faq-item.active .faq-icon { transform: rotate(45deg); color: var(--color-crimson); }
+
+        /* Forms, Buttons, Nav, Modals & Toasts */
+        .form-input { width: 100%; padding: 12px 0; font-family: var(--font-body); font-size: 1rem; background: transparent; border: none; border-bottom: 1px solid #ccc; outline: none; transition: border-color 0.3s; }
+        .form-input:focus { border-bottom-color: var(--color-gold); }
+        
+        .btn-solid-crimson { background-color: var(--color-crimson); color: white; border: 1px solid var(--color-crimson); display: inline-flex; align-items: center; padding: 14px 30px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem; border-radius: 30px; cursor: pointer; transition: all 0.4s ease; }
+        .btn-solid-crimson:hover { background-color: var(--color-gold); border-color: var(--color-gold); color: var(--color-onyx); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2); }
+        .btn-outline-white { background-color: transparent; color: white; border: 1px solid white; display: inline-flex; align-items: center; padding: 14px 30px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem; border-radius: 30px; cursor: pointer; transition: all 0.4s ease; }
+        .btn-outline-white:hover { background-color: white; color: var(--color-onyx); transform: translateY(-3px); }
+
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(17, 17, 17, 0.95); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+        .modal-content { background: var(--color-ivory); padding: 50px; border-radius: var(--radius-large); max-width: 500px; width: 90%; position: relative; border: 1px solid var(--color-gold); box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: var(--color-onyx); background: var(--color-white); border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: 0.3s; z-index: 10; }
+        .close-modal:hover { background: var(--color-crimson); color: white; transform: rotate(90deg); }
+/* --- Updated Thread & Knot Toast CSS --- */
+.toast-msg { 
+    position: fixed; 
+    bottom: 30px; 
+    right: 30px; 
+    background: var(--color-crimson); /* Wedding Crimson */
+    color: white; 
+    padding: 18px 28px; 
+    border-left: 5px solid var(--color-gold); 
+    border-radius: 8px; 
+    box-shadow: 0 15px 40px rgba(138, 21, 56, 0.3); 
+    z-index: 10001; 
+    font-family: 'Montserrat', sans-serif; 
+    font-size: 0.95rem; 
+    font-weight: 600;
+    display: flex; 
+    align-items: center; 
+    gap: 15px; 
+    transform: translateY(100px); 
+    opacity: 0; 
+    visibility: hidden;
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
+}
+.toast-msg.show { transform: translateY(0); opacity: 1; visibility: visible; }
+
+
+        .mobile-toggle { display: none; font-size: 24px; cursor: pointer; color: var(--color-white); }
+        .navbar.scrolled .mobile-toggle { color: var(--color-onyx); }
+
+        .floating-shape { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.2; z-index: 0; pointer-events: none; animation: float 6s ease-in-out infinite; }
+        .shape-gold { background: var(--color-gold); }
+        .shape-onyx { background: var(--color-onyx); }
+        .shape-crimson { background: var(--color-crimson); }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-30px); } 100% { transform: translateY(0px); } }
+
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .collage-wrapper { height: 400px; margin-top: 40px; }
+            .img-overlap-2 { display: none; }
+            .story-container { flex-direction: column; display: flex; }
+            .mobile-toggle { display: block; color: white; } .nav-links, .nav-actions { display: none; }
+        }
+        @media (max-width: 768px) {
+            .tk-hero { height: 75vh; }
+            .editorial-title { font-size: 3rem !important; }
+        }
+    </style>
+</head>
+<body class="bg-ivory text-black">
+
+    <nav class="navbar glass-header" id="navbar">
+        <div class="container nav-container flex-space-between relative-z-content">
+            <a href="../index.html" class="brand-logo text-white serif-font" id="nav-logo">C&O<span class="text-gold">.</span> Group</a>
+            
+            <ul class="nav-links text-white" id="nav-links-color">
+                <li><a href="about.html">Our Story</a></li>
+                <li class="has-dropdown">
+                    <a href="#">Divisions <i class="fa-solid fa-chevron-down text-sm ml-10"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="thread-knot.html" class="text-crimson">Thread & Knot (Weddings)</a></li>
+                        <li><a href="prism-planner.html" class="text-onyx">Prism Planner (Corporate)</a></li>
+                    </ul>
+                </li>
+                <li><a href="process.html">Process</a></li>
+                <li><a href="portfolio.html">Masterpieces</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button class="btn-header-premium text-white trigger-booking" style="border-color: var(--color-white);" onmouseover="this.style.color='var(--color-onyx)'; this.style.backgroundColor='white';" onmouseout="this.style.color='white'; this.style.backgroundColor='transparent';">Plan Your Wedding</button>
+            </div>
+            
+            <div class="mobile-toggle"><i class="fa-solid fa-bars"></i></div>
+        </div>
+    </nav>
+
+    <div id="bookingModal" class="modal-overlay">
+        <div class="modal-content shadow-glow">
+            <button class="close-modal" id="closeBooking"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="serif-font text-crimson mb-10">Start Your Journey</h3>
+            <p class="text-sm mb-30 text-grey">Fill in your details and our lead architect will reach out within 24 hours.</p>
+            <form id="popupContactForm" action="/api/book" method="POST">
+                <input type="text" name="name" placeholder="Full Name" class="form-input mb-20 border-bottom-only" required>
+                <input type="email" name="email" placeholder="Email Address" class="form-input mb-20 border-bottom-only" required>
+                <select name="eventType" class="form-input mb-20 border-bottom-only text-grey" required>
+                    <option value="wedding" selected>Thread & Knot (Wedding/Social)</option>
+                </select>
+                <textarea name="message" placeholder="Briefly describe your vision (e.g., location, guest count)..." class="form-input mb-30 border-bottom-only" rows="2"></textarea>
+                <button type="submit" class="btn-solid-crimson w-100 justify-center">Request Consultation</button>
+            </form>
+        </div>
+    </div>
+
+    <header class="tk-hero">
+        <img src="../images/t&K/1.jpg" alt="Luxury Indian Wedding" class="hero-bg-img">
+        <div class="hero-overlay"></div>
+        <div class="floating-shape shape-gold shape-lg" style="top: -10%; right: -10%;"></div>
+        
+        <div class="container text-center relative-z-content fade-up-slow" style="margin-top: 50px;">
+            <span class="eyebrow text-gold mb-20">Thread & Knot Division</span>
+            <h1 class="massive-title text-white serif-font mb-20" style="font-size: 5rem;">Curators of Your <br><span class="text-gold italic">Royal Legacy.</span></h1>
+            <p class="text-white font-weight-300 font-size-lg mb-40 max-w-600 mx-auto opacity-80">From historic palaces in Rajasthan to pristine beaches in Goa, we design culturally rich celebrations engineered with flawless precision.</p>
+            
+            <div class="flex-center flex-gap">
+                <button class="btn-solid-crimson trigger-booking" style="background: var(--color-gold); border-color: var(--color-gold); color: var(--color-onyx);">Plan My Wedding</button>
+                <button class="btn-outline-white" onclick="document.getElementById('tk-portfolio').scrollIntoView({behavior: 'smooth'})">View Masterpieces</button>
+            </div>
+        </div>
+    </header>
+
+    <section id="tk-philosophy" class="section-padding bg-white relative overflow-hidden">
+        <div class="floating-shape shape-crimson shape-lg" style="bottom: -20%; left: -10%;"></div>
+        
+        <div class="container split-layout relative-z-content">
+            <div class="collage-wrapper fade-up-slow">
+                <div class="img-main">
+                    <img src="../images/t&K/2.jpg" class="collage-img" alt="Mandap Detail">
+                </div>
+                <div class="img-overlap-1">
+                    <img src="../images/t&K/3.jpg" class="collage-img" alt="Sangeet Lights">
+                </div>
+                <div class="img-overlap-2">
+                    <img src="../images/t&K/4.jpg" class="collage-img" alt="Bridal Detail">
+                </div>
+            </div>
+            
+            <div class="about-content fade-up-slow delay-1">
+                <span class="eyebrow text-gold">Our Philosophy</span>
+                <h2 class="section-title serif-font mt-10">The Architecture <br>of <span class="text-crimson italic">Emotion.</span></h2>
+                <div class="gold-line-short mt-20 mb-30"></div>
+                <p class="section-para mb-20 text-black font-weight-500">We do not just plan weddings; we build cultural milestones from the ground up.</p>
+                <p class="section-para text-grey">At Thread & Knot, we recognize that a wedding is a deeply personal intersection of family, tradition, and personal style. Every celebration is designed through a rigorous framework combining breathtaking aesthetic design, premium hospitality, and invisible, flawless logistics.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="tk-experiences" class="section-padding bg-ivory text-center relative overflow-hidden border-top-gold">
+        <div class="container relative-z-content">
+            <span class="eyebrow text-crimson">Curated Canvases</span>
+            <h2 class="section-title serif-font mt-10 mb-60">Bespoke Wedding Experiences</h2>
+            
+            <div class="grid-4-cols">
+                <div class="experience-card fade-up-slow">
+                    <img src="../images/t&K/5.jpg" alt="Royal Palace Weddings">
+                    <div class="exp-overlay"></div>
+                    <div class="exp-content text-left">
+                        <h3 class="serif-font font-size-xl text-gold mb-10">Royal Palace</h3>
+                        <p class="text-sm opacity-70">Timeless grandeur inside India’s historic palaces in Udaipur, Jaipur, and Jodhpur.</p>
+                    </div>
+                </div>
+                <div class="experience-card fade-up-slow delay-1">
+                    <img src="../images/t&K/6.jpg" alt="Destination Beach Weddings">
+                    <div class="exp-overlay"></div>
+                    <div class="exp-content text-left">
+                        <h3 class="serif-font font-size-xl text-gold mb-10">Coastal Retreat</h3>
+                        <p class="text-sm opacity-70">Celebrate your union with oceanfront ceremonies in Goa and tropical destinations.</p>
+                    </div>
+                </div>
+                <div class="experience-card fade-up-slow delay-2">
+                    <img src="../images/t&K/7.jpg" alt="Luxury City Weddings">
+                    <div class="exp-overlay"></div>
+                    <div class="exp-content text-left">
+                        <h3 class="serif-font font-size-xl text-gold mb-10">Urban Ballroom</h3>
+                        <p class="text-sm opacity-70">Five-star city celebrations engineered with contemporary precision and elegance.</p>
+                    </div>
+                </div>
+                <div class="experience-card fade-up-slow delay-3">
+                    <img src="../images/t&K/8.jpg" alt="Cultural Immersions">
+                    <div class="exp-overlay"></div>
+                    <div class="exp-content text-left">
+                        <h3 class="serif-font font-size-xl text-gold mb-10">Cultural Heritage</h3>
+                        <p class="text-sm opacity-70">Multi-day rituals from Mehendi to Reception, curated with absolute authenticity.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tk-services" class="service-matrix section-padding bg-white text-center">
+        <div class="container">
+            <span class="eyebrow text-gold">Capabilities</span>
+            <h2 class="section-title serif-font mt-10 mb-60">The Architecture of Celebration</h2>
+            
+            <div class="matrix-grid">
+                <div class="matrix-box shadow-soft bg-ivory border-hover-crimson fade-up-slow">
+                    <i class="fa-solid fa-map-location-dot text-crimson massive-icon"></i>
+                    <h4 class="mt-20 text-black serif-font">Venue Sourcing</h4>
+                    <p class="mt-10 text-grey text-sm">Global property buyouts and spatial planning.</p>
+                </div>
+                <div class="matrix-box shadow-soft bg-ivory border-hover-gold fade-up-slow delay-1">
+                    <i class="fa-solid fa-wand-magic-sparkles text-gold massive-icon"></i>
+                    <h4 class="mt-20 text-black serif-font">3D Thematic Decor</h4>
+                    <p class="mt-10 text-grey text-sm">Bespoke mandaps and atmospheric floral artistry.</p>
+                </div>
+                <div class="matrix-box shadow-soft bg-ivory border-hover-crimson fade-up-slow delay-2">
+                    <i class="fa-solid fa-microphone-lines text-crimson massive-icon"></i>
+                    <h4 class="mt-20 text-black serif-font">Celebrity Artists</h4>
+                    <p class="mt-10 text-grey text-sm">Sangeet show-running and entertainment booking.</p>
+                </div>
+                <div class="matrix-box shadow-soft bg-ivory border-hover-gold fade-up-slow delay-3">
+                    <i class="fa-solid fa-concierge-bell text-gold massive-icon"></i>
+                    <h4 class="mt-20 text-black serif-font">Guest Hospitality</h4>
+                    <p class="mt-10 text-grey text-sm">24/7 shadow teams, shadow concierges, and RSVPs.</p>
+                </div>
+                <div class="matrix-box shadow-soft bg-ivory border-hover-gold fade-up-slow">
+                    <i class="fa-solid fa-plane-departure text-gold massive-icon"></i>
+                    <h4 class="mt-20 text-black serif-font">Logistics & Transport</h4>
+                    <p class="mt-10 text-grey text-sm">Flight mapping and luxury fleet management.</p>
+                </div>
+                <div class="matrix-box shadow-soft bg-ivory border-hover-crimson fade-up-slow delay-1">
+                    <i class="fa-solid fa-utensils text-crimson massive-icon"></i>
+                    <h4 class="mt-20 text-black serif-font">Luxury Catering</h4>
+                    <p class="mt-10 text-grey text-sm">Curating global menus with elite culinary partners.</p>
+                </div>
+                <div class="matrix-box shadow-soft bg-ivory border-hover-gold fade-up-slow delay-2">
+                    <i class="fa-solid fa-video text-gold massive-icon"></i>
+                    <h4 class="mt-20 text-black serif-font">Cinematic Storytelling</h4>
+                    <p class="mt-10 text-grey text-sm">Partnering with award-winning photographers.</p>
+                </div>
+                <div class="matrix-box shadow-soft bg-ivory border-hover-crimson fade-up-slow delay-3">
+                    <i class="fa-solid fa-shield-halved text-crimson massive-icon"></i>
+                    <h4 class="mt-20 text-black serif-font">On-Ground Command</h4>
+                    <p class="mt-10 text-grey text-sm">Invisible execution so you remain a guest.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tk-framework" class="process-section section-padding bg-crimson border-top-gold relative overflow-hidden">
+        <div class="floating-shape shape-gold shape-lg" style="top: 30%; right: -15%;"></div>
+
+        <div class="container text-center relative-z-content">
+            <span class="eyebrow text-gold">The Blueprint to 'I Do'</span>
+            <h2 class="section-title serif-font text-white mt-10 mb-60">Our Execution Framework</h2>
+            
+            <div class="vertical-timeline">
+                <div class="timeline-line-gold" id="gsap-line"></div>
+                
+                <div class="timeline-step fade-up-slow">
+                    <div class="step-dot bg-white"></div>
+                    <div class="step-content bg-white shadow-soft border-gold text-left hover-lift">
+                        <h4 class="text-crimson serif-font font-size-xl mb-10">01. The First Coffee</h4>
+                        <p class="text-black font-weight-600">Vision & Alignment</p>
+                        <p class="text-grey text-sm mt-10">Understanding your love story, family traditions, and exact wedding vision to build a tailored financial and logistical roadmap.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-step fade-up-slow">
+                    <div class="step-dot bg-gold"></div>
+                    <div class="step-content bg-white shadow-soft border-gold text-right hover-lift">
+                        <h4 class="text-gold serif-font font-size-xl mb-10">02. Visual Architecture</h4>
+                        <p class="text-black font-weight-600">Design Blueprint</p>
+                        <p class="text-grey text-sm mt-10">Our designers craft exquisite moodboards, 3D stage concepts, and thematic planning for every single event.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-step fade-up-slow">
+                    <div class="step-dot bg-white"></div>
+                    <div class="step-content bg-white shadow-soft border-gold text-left hover-lift">
+                        <h4 class="text-crimson serif-font font-size-xl mb-10">03. The Rehearsal</h4>
+                        <p class="text-black font-weight-600">Vendor Synchronization</p>
+                        <p class="text-grey text-sm mt-10">Decor, catering, artists, and logistics partners are finalized. Food tastings and venue recces are rigorously conducted.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-step fade-up-slow">
+                    <div class="step-dot bg-gold"></div>
+                    <div class="step-content bg-white shadow-soft border-gold text-right hover-lift">
+                        <h4 class="text-gold serif-font font-size-xl mb-10">04. The Symphony</h4>
+                        <p class="text-black font-weight-600">The Wedding Week</p>
+                        <p class="text-grey text-sm mt-10">Multi-day celebrations executed flawlessly by our on-ground command team. We manage the chaos; you make the memories.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tk-portfolio" class="portfolio-section section-padding bg-white text-center border-top-gold relative overflow-hidden">
+        <div class="container relative-z-content">
+            <span class="eyebrow text-gold">Visual Proof</span>
+            <h2 class="section-title serif-font mt-10 mb-50">The Gallery</h2>
+            
+            <div class="filter-group mb-50">
+                <button class="filter-btn active text-black" data-filter="all">All</button>
+                <button class="filter-btn text-black" data-filter="mandap">Mandap</button>
+                <button class="filter-btn text-black" data-filter="sangeet">Sangeet</button>
+                <button class="filter-btn text-black" data-filter="haldi">Haldi & Details</button>
+            </div>
+
+            <div class="masonry-grid">
+                <div class="gallery-item mandap shadow-soft overflow-hidden rounded-corners">
+                    <img src="../images/t&K/10.jpg" alt="Mandap">
+                    <div class="gallery-overlay"><div class="overlay-text text-left"><h4 class="text-white serif-font font-size-lg">The Floral Canopy</h4></div></div>
+                </div>
+                <div class="gallery-item sangeet shadow-soft overflow-hidden rounded-corners">
+                    <img src="../images/t&K/11.jpg" alt="Sangeet">
+                    <div class="gallery-overlay"><div class="overlay-text text-left"><h4 class="text-white serif-font font-size-lg">Sangeet Night</h4></div></div>
+                </div>
+                <div class="gallery-item haldi shadow-soft overflow-hidden rounded-corners">
+                    <img src="../images/t&K/12.jpg" alt="Details">
+                    <div class="gallery-overlay"><div class="overlay-text text-left"><h4 class="text-white serif-font font-size-lg">The Bridal Details</h4></div></div>
+                </div>
+                <div class="gallery-item mandap shadow-soft overflow-hidden rounded-corners">
+                    <img src="../images/t&K/13.jpg" alt="Mandap">
+                    <div class="gallery-overlay"><div class="overlay-text text-left"><h4 class="text-white serif-font font-size-lg">Lakefront Pheras</h4></div></div>
+                </div>
+                <div class="gallery-item haldi shadow-soft overflow-hidden rounded-corners">
+                    <img src="../images/t&K/14.jpg" alt="Haldi">
+                    <div class="gallery-overlay"><div class="overlay-text text-left"><h4 class="text-white serif-font font-size-lg">Haldi by the Sea</h4></div></div>
+                </div>
+                <div class="gallery-item sangeet shadow-soft overflow-hidden rounded-corners">
+                    <img src="../images/t&K/15.jpg" alt="Sangeet">
+                    <div class="gallery-overlay"><div class="overlay-text text-left"><h4 class="text-white serif-font font-size-lg">The Grand Reception</h4></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tk-stories" class="section-padding bg-ivory">
+        <div class="container">
+            <span class="eyebrow text-crimson text-center block">Case Study</span>
+            <h2 class="section-title serif-font text-center mt-10 mb-50">Ananya & Rohan</h2>
+
+            <div class="story-container shadow-glow fade-up-slow">
+                <div class="split-layout" style="gap: 0;">
+                    <div class="w-100">
+                        <img src="../images/t&K/9.jpg" alt="Jaipur Palace Wedding" class="story-img">
+                    </div>
+                    <div class="p-50 bg-white flex-column justify-center h-100">
+                        <h3 class="serif-font text-gold font-size-xl mb-20">The Jaipur Royal Palace Wedding</h3>
+                        <p class="text-black mb-20">A vibrant Sangeet featuring a celebrity performer, followed by a majestic palace ceremony and a fireworks reception overlooking the Aravalli hills.</p>
+                        <p class="text-grey text-sm mb-30">Thread & Knot managed the complete buyout of a historic heritage property, seamlessly coordinating flights and luxury transport for guests arriving from 12 different countries, all while executing three distinct 3D thematic stage builds in under 48 hours.</p>
+                        
+                        <div class="story-stats">
+                            <div class="stat-item">
+                                <h4>4</h4>
+                                <span class="text-uppercase text-sm letter-spacing-2 text-black font-weight-600">Days</span>
+                            </div>
+                            <div class="stat-item">
+                                <h4>650</h4>
+                                <span class="text-uppercase text-sm letter-spacing-2 text-black font-weight-600">Guests</span>
+                            </div>
+                            <div class="stat-item">
+                                <h4>3</h4>
+                                <span class="text-uppercase text-sm letter-spacing-2 text-black font-weight-600">Venues</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tk-packages" class="packages-section section-padding bg-white text-center border-top-gold">
+        <div class="container">
+            <span class="eyebrow text-gold">Investment</span>
+            <h2 class="section-title serif-font mt-10 mb-60">Signature Wedding Tiers</h2>
+            
+            <div class="grid-3-cols">
+                <div class="package-card bg-ivory shadow-soft hover-lift border-crimson">
+                    <div class="package-header bg-white pt-40 pb-20 border-bottom-grey">
+                        <h3 class="text-crimson serif-font">Classic Intimacy</h3>
+                        <p class="text-black text-sm mt-10">Intimate City Weddings</p>
+                    </div>
+                    <div class="package-body p-40 text-left flex-column" style="height: 100%;">
+                        <ul class="package-list flex-grow-1">
+                            <li><i class="fa-solid fa-check text-gold mr-10"></i> Venue Sourcing & Booking</li>
+                            <li><i class="fa-solid fa-check text-gold mr-10"></i> Essential Decor & Floral Architecture</li>
+                            <li><i class="fa-solid fa-check text-gold mr-10"></i> Day-of Logistics Coordination</li>
+                        </ul>
+                        <button class="btn-solid-crimson w-100 mt-30 justify-center trigger-booking" style="background:transparent; border-color:var(--color-crimson); color:var(--color-crimson);">Inquire Pricing</button>
+                    </div>
+                </div>
+
+                <div class="package-card bg-white shadow-glow hover-lift border-gold transform-scale">
+                    <div class="package-header bg-ivory pt-40 pb-20 border-bottom-gold">
+                        <h3 class="text-gold serif-font">The Grand Canvas</h3>
+                        <p class="text-black text-sm mt-10">Comprehensive Destination Planning</p>
+                    </div>
+                    <div class="package-body p-40 text-left flex-column" style="height: 100%;">
+                        <ul class="package-list flex-grow-1">
+                            <li><i class="fa-solid fa-crown text-crimson mr-10"></i> End-to-End Turnkey Planning</li>
+                            <li><i class="fa-solid fa-crown text-crimson mr-10"></i> 3D Thematic Stage & Mandap Builds</li>
+                            <li><i class="fa-solid fa-crown text-crimson mr-10"></i> Complete Vendor & Catering Sync</li>
+                            <li><i class="fa-solid fa-crown text-crimson mr-10"></i> Hospitality & RSVP Management</li>
+                        </ul>
+                        <button class="btn-solid-crimson w-100 mt-30 justify-center trigger-booking" style="background:var(--color-gold); border-color:var(--color-gold); color:var(--color-onyx);">Inquire Pricing</button>
+                    </div>
+                </div>
+
+                <div class="package-card bg-ivory shadow-soft hover-lift border-black">
+                    <div class="package-header bg-white pt-40 pb-20 border-bottom-grey">
+                        <h3 class="text-black serif-font">The Royal Legacy</h3>
+                        <p class="text-black text-sm mt-10">Ultra-Luxury & Celebrity Grade</p>
+                    </div>
+                    <div class="package-body p-40 text-left flex-column" style="height: 100%;">
+                        <ul class="package-list flex-grow-1">
+                            <li><i class="fa-solid fa-check text-gold mr-10"></i> Everything in Grand Canvas</li>
+                            <li><i class="fa-solid fa-check text-gold mr-10"></i> Celebrity Artist & Show Booking</li>
+                            <li><i class="fa-solid fa-check text-gold mr-10"></i> Private Charter & VIP Fleet Mgmt</li>
+                            <li><i class="fa-solid fa-check text-gold mr-10"></i> Dedicated 24/7 Shadow Teams</li>
+                        </ul>
+                        <button class="btn-solid-crimson w-100 mt-30 justify-center trigger-booking" style="background:transparent; border-color:var(--color-onyx); color:var(--color-onyx);">Inquire Pricing</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tk-faq" class="section-padding bg-ivory border-top-gold">
+        <div class="container small-container">
+            <div class="text-center mb-50">
+                <span class="eyebrow text-crimson">Knowledge Base</span>
+                <h2 class="section-title serif-font mt-10">Frequently Asked Questions</h2>
+            </div>
+            
+            <div class="faq-accordion fade-up-slow">
+                <div class="faq-item">
+                    <div class="faq-question">How far in advance should we book Thread & Knot? <i class="fa-solid fa-plus faq-icon"></i></div>
+                    <div class="faq-answer"><p>For destination weddings, we recommend reaching out 8 to 12 months in advance to secure premium heritage venues and top-tier celebrity artists. For city weddings, 6 months is standard.</p></div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Do you manage international destination weddings? <i class="fa-solid fa-plus faq-icon"></i></div>
+                    <div class="faq-answer"><p>Yes. While our stronghold is India (Rajasthan, Goa, Kerala), we frequently engineer luxury weddings in Dubai, Thailand, and select European destinations using our global vendor network.</p></div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Can you handle large-scale guest logistics (flights & hotels)? <i class="fa-solid fa-plus faq-icon"></i></div>
+                    <div class="faq-answer"><p>Absolutely. Our dedicated hospitality desk manages end-to-end guest RSVPs, airport transfers, hotel check-ins, and bespoke welcome hampers, ensuring your guests experience seamless luxury.</p></div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">How does the design and decor process work? <i class="fa-solid fa-plus faq-icon"></i></div>
+                    <div class="faq-answer"><p>We don't use templates. Our in-house design architects build 3D stage renders and detailed mood boards based on your cultural background and personal aesthetic before construction begins.</p></div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">How do you handle vendor payments and budgeting? <i class="fa-solid fa-plus faq-icon"></i></div>
+                    <div class="faq-answer"><p>We pride ourselves on transparent, open-book budgeting. You pay vendors directly based on our negotiated, vetted rates, ensuring you get the absolute best value with zero hidden markups.</p></div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Is there an on-site command team during the wedding week? <i class="fa-solid fa-plus faq-icon"></i></div>
+                    <div class="faq-answer"><p>Yes. A dedicated 'Shadow Team' is deployed on the ground. We handle the timelines, artist cues, and caterer synchronization so the bride, groom, and families can simply be guests.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tk-cta" class="section-padding bg-crimson text-center relative overflow-hidden">
+        <div class="floating-shape shape-gold shape-md" style="top: 10%; right: 10%;"></div>
+        <div class="floating-shape shape-ivory shape-sm" style="bottom: 10%; left: 10%; background: white;"></div>
+
+        <div class="container relative-z-content fade-up-slow">
+            <h2 class="massive-title serif-font text-white mb-20">Start Planning Your <span class="text-gold italic">Wedding.</span></h2>
+            <p class="text-white font-size-lg mb-40 max-w-500 mx-auto opacity-70">Schedule your "First Coffee" consultation and begin designing the celebration of a lifetime.</p>
+            <button class="btn-solid-crimson trigger-booking" style="background: var(--color-gold); border-color: var(--color-gold); color: var(--color-onyx); padding: 20px 50px; font-size: 1rem;">Request Your Consultation</button>
+        </div>
+    </section>
+
+    <footer class="custom-footer relative overflow-hidden bg-ivory">
+        <div class="container relative-z-content">
+            <div class="footer-top-row">
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Subscribe to receive exciting gifts!</h4>
+                    <form class="newsletter-form" id="newsletterForm">
+                        <input type="email" placeholder="Your email address" class="nl-input" required>
+                        <button type="submit" class="nl-btn bg-onyx"><i class="fa-solid fa-envelope-open-text text-gold"></i></button>
+                    </form>
+                    <ul class="footer-info-list">
+                        <li><i class="fa-solid fa-location-dot text-gold"></i> <a href="https://www.google.com/maps/search/?api=1&query=Sant+Nagar+East+of+Kailash+New+Delhi+110065" target="_blank"><span>Sant Nagar, East of Kailash, New Delhi, Delhi 110065</span></a></li>
+                        <li><i class="fa-solid fa-phone text-gold"></i> <a href="tel:+918882373939"><span>+91 8882373939</span></a></li>
+                        <li><i class="fa-solid fa-at text-gold"></i> <a href="mailto:info.cogroup@gmail.com"><span>info.cogroup@gmail.com</span></a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Our Divisions</h4>
+                    <ul class="footer-links">
+                        <li><a href="thread-knot.html" class="text-gold font-weight-600">Thread & Knot</a></li>
+                        <li><a href="prism-planner.html">Prism Planner</a></li>
+                        <li><a href="portfolio.html">Portfolio Showcase</a></li>
+                        <li><a href="case-studies.html">Featured Case Studies</a></li>
+                        <li><a href="client-login.html">Client Portal Login</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Capabilities</h4>
+                    <ul class="footer-links">
+                        <li><a href="thread-knot.html">Luxury Wedding Planning</a></li>
+                        <li><a href="prism-planner.html">Corporate MICE & Summits</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html">About C&O Group</a></li>
+                        <li><a href="process.html">Our Execution Framework</a></li>
+                        <li><a href="vendor-portal.html">Vendor Network Portal</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                        <li><a href="contact.html">Contact Command Center</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom-row border-top-grey">
+                <div class="footer-socials">    
+                    <a href="https://instagram.com/yourhandle" target="_blank" class="text-onyx hover-gold"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://youtube.com/yourchannel" target="_blank" class="text-onyx hover-gold"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+                <div class="footer-copyright text-grey"><p>All Rights Reserved © 2026 C&O Group LLP.</p></div>
+                <div class="payment-icons">
+                    <i class="fa-brands fa-google-pay fa-2x" style="color: #5f6368; vertical-align: middle;"></i>
+                    <i class="fa-brands fa-cc-visa fa-2x ml-10" style="color: #1434CB; vertical-align: middle;"></i>
+                    <i class="fa-brands fa-cc-mastercard fa-2x ml-10" style="color: #EB001B; vertical-align: middle;"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <script>
+    (function() {
+        // 1. Check the Global Command Switch
+        if (localStorage.getItem('maintenanceMode') === 'true') {
+            
+            // 2. Wait for the browser to barely start parsing the page
+            document.addEventListener('DOMContentLoaded', () => {
+                
+                // 3. Hijack the entire body and inject the Luxury Standby Screen
+                document.body.innerHTML = `
+                    <div style="position: fixed; inset: 0; background: #0A0A0A; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-family: 'Montserrat', sans-serif; padding: 20px;">
+                        
+                        <div style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: white; letter-spacing: 2px; margin-bottom: 50px; font-weight: 700;">
+                            C&O<span style="color: #D4AF37;">.</span>
+                        </div>
+                        
+                        <div style="width: 80px; height: 80px; border-radius: 50%; border: 1px dashed #D4AF37; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; animation: spin 10s linear infinite;">
+                            <i class="fa-solid fa-compass-drafting" style="font-size: 2rem; color: #D4AF37;"></i>
+                        </div>
+
+                        <style>
+                            @keyframes spin { 100% { transform: rotate(360deg); } }
+                        </style>
+                        
+                        <h1 style="font-family: 'Playfair Display', serif; font-size: 3.5rem; color: #D4AF37; margin-bottom: 20px; line-height: 1.1;">Site Under<br>Architecture</h1>
+                        
+                        <p style="color: #888; font-size: 1rem; max-width: 500px; line-height: 1.8; margin-bottom: 50px;">
+                            Our digital environment is currently undergoing an encrypted upgrade. Our principal architects are refining the mainframe to ensure flawless execution for your future events.
+                        </p>
+                        
+                        <div style="font-size: 0.75rem; color: #444; text-transform: uppercase; letter-spacing: 3px; border-top: 1px solid #222; padding-top: 20px; width: 100%; max-width: 300px;">
+                            <i class="fa-solid fa-lock text-gold mr-5"></i> Secure Protocol Active
+                        </div>
+
+                    </div>
+                `;
+                
+                // 4. Lock scrolling
+                document.body.style.overflow = 'hidden';
+            });
+        }
+    })();
+</script>
+
+ <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // ==========================================
+            //  1. UI & ANIMATION LOGIC
+            // ==========================================
+
+            // Global Booking Modal Logic
+            const bookingModal = document.getElementById('bookingModal');
+            const openBookingBtns = document.querySelectorAll('.trigger-booking');
+            openBookingBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    bookingModal.classList.add('active');
+                });
+            });
+            
+            const closeBookingBtn = document.getElementById('closeBooking');
+            if(closeBookingBtn) {
+                closeBookingBtn.addEventListener('click', () => bookingModal.classList.remove('active'));
+            }
+            
+            window.addEventListener('click', (e) => { 
+                if (e.target === bookingModal) bookingModal.classList.remove('active'); 
+            });
+
+            // Mobile Nav
+            const mobileToggle = document.querySelector('.mobile-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            if (mobileToggle && navLinks) {
+                mobileToggle.addEventListener('click', () => {
+                    if (navLinks.style.display === 'flex') { navLinks.style.display = 'none'; } 
+                    else {
+                        navLinks.style.display = 'flex'; navLinks.style.flexDirection = 'column';
+                        navLinks.style.position = 'absolute'; navLinks.style.top = '100%'; navLinks.style.left = '0';
+                        navLinks.style.width = '100%'; navLinks.style.background = '#FCFBF9'; navLinks.style.padding = '20px';
+                        navLinks.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
+                    }
+                });
+            }
+
+            // Scrolled Navbar Color Inversion (Thread & Knot Crimson Colors)
+            const navbar = document.getElementById('navbar');
+            const navLogo = document.getElementById('nav-logo');
+            const navLinksColor = document.getElementById('nav-links-color');
+            const planBtn = document.getElementById('openBookingBtn') || document.querySelector('.trigger-booking');
+            const mobIcon = document.querySelector('.mobile-toggle i');
+            
+            if (navbar) {
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 50) {
+                        navbar.classList.add('scrolled');
+                        if(navLogo) { navLogo.classList.remove('text-white'); navLogo.classList.add('text-crimson'); }
+                        if(navLinksColor) { navLinksColor.classList.remove('text-white'); navLinksColor.classList.add('text-crimson'); }
+                        if(planBtn) { planBtn.style.color = 'var(--color-white)'; planBtn.style.backgroundColor = 'var(--color-crimson)'; planBtn.style.borderColor = 'var(--color-crimson)'; }
+                        if(mobIcon) { mobIcon.style.color = 'var(--color-crimson)'; }
+                    } else {
+                        navbar.classList.remove('scrolled');
+                        if(navLogo) { navLogo.classList.remove('text-crimson'); navLogo.classList.add('text-white'); }
+                        if(navLinksColor) { navLinksColor.classList.remove('text-crimson'); navLinksColor.classList.add('text-white'); }
+                        if(planBtn) { planBtn.style.color = 'var(--color-white)'; planBtn.style.backgroundColor = 'transparent'; planBtn.style.borderColor = 'var(--color-white)'; }
+                        if(mobIcon) { mobIcon.style.color = 'white'; }
+                    }
+                });
+            }
+
+            // FAQ Accordion Logic
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', () => {
+                    const parent = question.parentElement;
+                    const isActive = parent.classList.contains('active');
+                    
+                    // Close all FAQs first for a clean accordion effect
+                    document.querySelectorAll('.faq-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+
+                    // If the clicked one wasn't active, open it
+                    if (!isActive) {
+                        parent.classList.add('active');
+                    }
+                });
+            });
+
+            // Scroll Animations
+            const revealElements = document.querySelectorAll('.fade-up-slow');
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) { entry.target.classList.add('active'); observer.unobserve(entry.target); }
+                });
+            }, { threshold: 0.15 });
+            revealElements.forEach(el => revealObserver.observe(el));
+
+            // GSAP Dynamic Timeline Drawing
+            if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+                gsap.registerPlugin(ScrollTrigger);
+                const timelineLine = document.getElementById('gsap-line');
+                if (timelineLine) {
+                    gsap.fromTo(timelineLine, { height: "0%" }, {
+                        height: "100%", ease: "none",
+                        scrollTrigger: { trigger: ".vertical-timeline", start: "top center", end: "bottom center", scrub: 1 }
+                    });
+                }
+            }
+
+            // Portfolio Filter Logic
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Reset styling
+                    filterBtns.forEach(b => {
+                        b.classList.remove('active');
+                        b.classList.remove('bg-crimson');
+                        b.classList.remove('text-white');
+                    });
+                    
+                    // Add active styling
+                    btn.classList.add('active');
+                    btn.style.backgroundColor = 'var(--color-crimson)';
+                    btn.style.color = 'var(--color-white)';
+                    
+                    const filterValue = btn.getAttribute('data-filter');
+                    
+                    galleryItems.forEach(item => {
+                        if (filterValue === 'all' || item.classList.contains(filterValue)) {
+                            item.style.display = 'block';
+                            setTimeout(() => { item.style.opacity = '1'; item.style.transform = 'scale(1)'; }, 50);
+                        } else {
+                            item.style.opacity = '0'; item.style.transform = 'scale(0.9)';
+                            setTimeout(() => { item.style.display = 'none'; }, 300);
+                        }
+                    });
+                });
+            });
+
+            // ==========================================
+            //  2. COMMAND CENTER: BACKEND CONNECTIONS
+            // ==========================================
+
+            // Premium Gold Toast Notification Function
+const showToast = (message) => {
+    let toast = document.getElementById('toastMsg');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toastMsg';
+        toast.className = 'toast-msg';
+        document.body.appendChild(toast);
+    }
+    toast.innerHTML = `<i class="fa-solid fa-crown text-gold" style="font-size: 1.2rem;"></i> <span>${message}</span>`;
+    
+    toast.classList.add('show');
+    setTimeout(() => { toast.classList.remove('show'); }, 4000);
+};
+
+            // Smart Translator for Divisions
+            const translateDivision = (val) => {
+                if (val === 'wedding') return 'Thread & Knot';
+                if (val === 'corporate') return 'Prism Planner';
+                return 'General';
+            };
+
+            // REAL SUBMIT 1: Newsletter Subscription -> MongoDB
+            const newsletterForm = document.getElementById('newsletterForm');
+            if (newsletterForm) {
+                newsletterForm.addEventListener('submit', async (e) => {
+                    e.preventDefault(); 
+                    
+                    const submitBtn = newsletterForm.querySelector('button[type="submit"]');
+                    const originalHTML = submitBtn.innerHTML;
+                    
+                    submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-gold"></i>';
+                    submitBtn.disabled = true;
+
+                    const emailInput = newsletterForm.querySelector('input[type="email"]').value;
+
+                    try {
+                        const response = await fetch('http://localhost:5000/api/subscribe', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email: emailInput })
+                        });
+
+                        if (response.ok) {
+                            showToast('Welcome to the inner circle! Luxury wedding inspiration is on the way.');
+                            newsletterForm.reset();
+                        } else if (response.status === 400) {
+                            showToast('You are already on our exclusive list!');
+                        } else {
+                            showToast('Transmission failed. Please try again.');
+                        }
+                    } catch (error) {
+                        showToast('Server offline. Please ensure backend is running.');
+                    } finally {
+                        submitBtn.innerHTML = originalHTML;
+                        submitBtn.disabled = false;
+                    }
+                });
+            }
+
+            // REAL SUBMIT 2: Modal Wedding Booking Form -> MongoDB
+            const popupForm = document.getElementById('popupContactForm');
+            if (popupForm) {
+                popupForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    const submitBtn = popupForm.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerText;
+                    
+                    submitBtn.innerText = "Securing Connection...";
+                    submitBtn.disabled = true;
+
+                    const formData = new FormData(popupForm);
+                    const inquiryPayload = {
+                        clientName: formData.get('name'),
+                        email: formData.get('email'),
+                        division: translateDivision(formData.get('eventType')),
+                        eventDetails: formData.get('message') || "Thread & Knot wedding consultation request."
+                    };
+
+                    try {
+                        const response = await fetch('http://localhost:5000/api/enquiries', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(inquiryPayload)
+                        });
+
+                        if (response.ok) {
+                            showToast('Consultation requested! Our wedding architect will contact you shortly.');
+                            popupForm.reset();
+                            document.getElementById('bookingModal').classList.remove('active');
+                        } else {
+                            showToast('Transmission failed. Please check your details.');
+                        }
+                    } catch (error) {
+                        console.error('API Error:', error);
+                        showToast('Server offline. Please ensure backend is running.');
+                    } finally {
+                        submitBtn.innerText = originalText;
+                        submitBtn.disabled = false;
+                    }
+                });
+            }
+
+        });
+    </script>
+</body>
+</html>

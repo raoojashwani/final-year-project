@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Vendor Network Portal | C&O Group</title>
+    <link rel="icon" type="image/png" href="../images/logo.png">
+    <meta name="description" content="The elite supply chain behind India's premier events. Apply for vendor empanelment or access the partner command center.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    
+    <link rel="stylesheet" href="../css/style.css">
+
+    <script>
+        if (history.scrollRestoration) { history.scrollRestoration = 'manual'; }
+        window.scrollTo(0, 0);
+    </script>
+
+    <style>
+        /* =========================================
+           VENDOR PORTAL SPECIFIC CSS
+        ========================================= */
+        
+        :root {
+            --color-onyx: #111111;
+            --color-crimson: #8A1538;
+            --color-blue: #0B192C;
+        }
+
+        /* 1. Editorial Hero (Fullscreen 100vh) */
+        .portal-hero { min-height: 100vh; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; background-color: var(--color-onyx); }
+        .hero-bg-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(50%) brightness(0.6); }
+        .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(17,17,17,1) 0%, rgba(17,17,17,0.4) 100%); z-index: 1; }
+        .grid-bg-overlay { position: absolute; inset: 0; background-image: linear-gradient(rgba(212,175,55,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(212,175,55,0.05) 1px, transparent 1px); background-size: 50px 50px; z-index: 2; pointer-events: none; }
+
+        /* 2. Intro Split Layout */
+        .intro-image-wrap { position: relative; height: 500px; border-radius: var(--radius-large); overflow: hidden; box-shadow: var(--shadow-gold); border: 1px solid var(--color-gold); }
+        .intro-image-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s ease; }
+        .intro-image-wrap:hover img { transform: scale(1.05); }
+
+        /* 3. Dual Access Hub */
+        .hub-section { padding: 100px 0; background: var(--color-white); border-top: 1px solid var(--color-light-grey); }
+        .hub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .hub-card { border-radius: var(--radius-large); padding: 60px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; min-height: 450px; transition: transform 0.4s ease; cursor: pointer; }
+        .hub-card:hover { transform: translateY(-10px); }
+        .hub-card.apply { background: var(--color-onyx); color: white; border: 1px solid rgba(212,175,55,0.3); box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+        .hub-card.apply::before { content: ''; position: absolute; top: -50%; right: -20%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(212,175,55,0.15) 0%, transparent 70%); pointer-events: none; }
+        .hub-card.login { background: var(--color-ivory); color: var(--color-onyx); border: 1px solid var(--color-light-grey); box-shadow: var(--shadow-soft); }
+        .hub-card.login::before { content: ''; position: absolute; bottom: -50%; left: -20%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(212,175,55,0.1) 0%, transparent 70%); pointer-events: none; }
+
+        /* 4. Procurement Categories */
+        .procurement-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        .proc-item { background: var(--color-white); padding: 40px 30px; text-align: left; border-radius: var(--radius-large); border: 1px solid var(--color-light-grey); transition: all 0.3s; display: flex; flex-direction: column; }
+        .proc-item:hover { border-color: var(--color-gold); box-shadow: var(--shadow-soft); transform: translateY(-5px); }
+        .proc-icon { font-size: 2.5rem; color: var(--color-gold); margin-bottom: 20px; }
+
+        /* 5. Process Timeline */
+        .hiring-track { display: flex; justify-content: space-between; align-items: flex-start; position: relative; margin-top: 60px; }
+        .hiring-track::before { content: ''; position: absolute; top: 30px; left: 5%; right: 5%; height: 2px; background: var(--color-gold); opacity: 0.3; z-index: 0; }
+        .hiring-step { position: relative; z-index: 1; text-align: center; flex: 1; padding: 0 15px; }
+        .hiring-num { width: 60px; height: 60px; background: var(--color-ivory); border: 2px solid var(--color-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-size: 1.5rem; color: var(--color-onyx); font-weight: bold; margin: 0 auto 20px; transition: all 0.4s; box-shadow: 0 0 0 10px var(--color-ivory); }
+        .hiring-step:hover .hiring-num { background: var(--color-gold); color: white; transform: scale(1.1); }
+
+        /* 6. Vendor Gallery */
+        .vendor-gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+        .v-img { border-radius: var(--radius-small); overflow: hidden; aspect-ratio: 1/1; position: relative; }
+        .v-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; filter: grayscale(50%); }
+        .v-img:hover img { transform: scale(1.1); filter: grayscale(0%); }
+
+        /* Testimonials */
+        .testimonial-card { max-width: 800px; margin: 0 auto; padding-bottom: 40px; }
+        .swiper-pagination { position: absolute !important; bottom: 0 !important; }
+
+        /* Buttons & Forms */
+        .btn-solid-onyx { background-color: var(--color-onyx); color: var(--color-gold); border: 1px solid var(--color-onyx); display: inline-flex; align-items: center; justify-content: center; padding: 14px 30px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem; border-radius: 30px; cursor: pointer; transition: all 0.4s ease; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .btn-solid-onyx:hover { background-color: var(--color-gold); color: var(--color-onyx); border-color: var(--color-gold); transform: translateY(-3px); box-shadow: 0 15px 30px rgba(212, 175, 55, 0.2); }
+        .btn-outline-gold { background-color: transparent; color: var(--color-gold); border: 1px solid var(--color-gold); display: inline-flex; align-items: center; justify-content: center; padding: 14px 30px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem; border-radius: 30px; cursor: pointer; transition: all 0.4s ease; }
+        .btn-outline-gold:hover { background-color: var(--color-gold); color: var(--color-onyx); transform: translateY(-3px); }
+        
+        /* IMPORTANT Z-INDEX FIX FOR FORMS */
+        .form-input { 
+            width: 100%; 
+            padding: 12px 0; 
+            font-family: var(--font-body); 
+            font-size: 1rem; 
+            background: transparent; 
+            border: none; 
+            border-bottom: 1px solid #ccc; 
+            outline: none; 
+            transition: border-color 0.3s;
+            position: relative;
+            z-index: 100;
+        }
+        .form-input:focus { border-bottom-color: var(--color-gold); }
+
+        /* Custom Success Message (Toast) */
+        .toast-msg {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--color-onyx);
+            color: var(--color-white);
+            padding: 16px 24px;
+            border-left: 4px solid var(--color-gold);
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 10001;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        .toast-msg.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Modals */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(17, 17, 17, 0.95); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(10px); overflow-y: auto; padding: 40px 0; }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+        .modal-content { background: var(--color-ivory); padding: 50px; border-radius: var(--radius-large); max-width: 700px; width: 90%; position: relative; border: 1px solid var(--color-gold); box-shadow: 0 20px 60px rgba(0,0,0,0.3); margin: auto; }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: var(--color-onyx); background: var(--color-white); border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: 0.3s; z-index: 10; }
+        .close-modal:hover { background: var(--color-crimson); color: white; transform: rotate(90deg); }
+
+        /* Floating Bubbles */
+        .floating-shape { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.15; z-index: 0; pointer-events: none; animation: float 6s ease-in-out infinite; }
+        .shape-gold { background: var(--color-gold); }
+        .shape-onyx { background: var(--color-onyx); }
+        .shape-crimson { background: var(--color-crimson); }
+        .shape-lg { width: 400px; height: 400px; }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-30px); } 100% { transform: translateY(0px); } }
+
+        /* Navbar Custom */
+        .has-dropdown { position: relative; }
+        .dropdown-menu { position: absolute; top: 100%; left: 0; background: var(--color-white); box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: var(--radius-small); padding: 10px 0; min-width: 250px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; list-style: none; z-index: 1000; }
+        .has-dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        .dropdown-menu li a { display: block; padding: 10px 20px; color: var(--color-onyx); font-size: 0.9rem; text-transform: none; letter-spacing: 0; }
+        .dropdown-menu li a:hover { background: rgba(212,175,55,0.1); color: var(--color-gold); }
+        .mobile-toggle { display: none; font-size: 24px; cursor: pointer; color: var(--color-white); }
+        .navbar.scrolled .mobile-toggle { color: var(--color-onyx); }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .hub-grid { grid-template-columns: 1fr; }
+            .hub-card { min-height: 350px; padding: 40px; }
+            .procurement-grid { grid-template-columns: repeat(2, 1fr); }
+            .hiring-track { flex-direction: column; align-items: center; gap: 40px; }
+            .hiring-track::before { top: 0; bottom: 0; left: 50%; right: auto; width: 2px; height: 100%; transform: translateX(-50%); }
+            .vendor-gallery { grid-template-columns: repeat(2, 1fr); }
+            .mobile-toggle { display: block; } .nav-links, .nav-actions { display: none; }
+        }
+        @media (max-width: 768px) {
+            .procurement-grid { grid-template-columns: 1fr; }
+            .intro-image-wrap { height: 350px; }
+        }
+    </style>
+</head>
+<body class="bg-ivory text-black">
+
+    <div id="applyModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal" id="closeApply"><i class="fa-solid fa-xmark"></i></button>
+            <span class="eyebrow text-gold mb-10">Empanelment</span>
+            <h3 class="serif-font text-onyx mb-10" style="font-size: 2rem;">Apply for Network</h3>
+            <p class="text-sm mb-30 text-grey">Submit your company profile. Our procurement team rigorously reviews all new partners.</p>
+            
+            <form id="vendorApplyForm">
+                <div class="grid-2-cols" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div>
+                        <label class="text-onyx font-weight-600 text-sm mb-5 block">Vendor / Company Name *</label>
+                        <input type="text" class="form-input border-bottom-only" placeholder="e.g. Apex Productions" required>
+                    </div>
+                    <div>
+                        <label class="text-onyx font-weight-600 text-sm mb-5 block">Contact Person *</label>
+                        <input type="text" class="form-input border-bottom-only" placeholder="e.g. Rahul Sharma" required>
+                    </div>
+                </div>
+                
+                <div class="grid-2-cols" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div>
+                        <label class="text-onyx font-weight-600 text-sm mb-5 block">Corporate Email *</label>
+                        <input type="email" class="form-input border-bottom-only" placeholder="contact@company.com" required>
+                    </div>
+                    <div>
+                        <label class="text-onyx font-weight-600 text-sm mb-5 block">Phone Number *</label>
+                        <input type="tel" class="form-input border-bottom-only" placeholder="+91 98765 43210" required>
+                    </div>
+                </div>
+
+                <div class="grid-2-cols" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div>
+                        <label class="text-onyx font-weight-600 text-sm mb-5 block">Base City / Region *</label>
+                        <input type="text" class="form-input border-bottom-only" placeholder="e.g. Mumbai, Maharashtra" required>
+                    </div>
+                    <div>
+                        <label class="text-onyx font-weight-600 text-sm mb-5 block">Service Category *</label>
+                        <select class="form-input border-bottom-only text-grey" required>
+                            <option value="" disabled selected>Select Category...</option>
+                            <option value="floral">Decor & Floral Design</option>
+                            <option value="catering">Catering & F&B</option>
+                            <option value="photo">Photography & Videography</option>
+                            <option value="artists">Entertainment & Artists</option>
+                            <option value="production">Event Production (AV/Tech)</option>
+                            <option value="hospitality">Hospitality & Logistics</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid-2-cols" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+                    <div>
+                        <label class="text-onyx font-weight-600 text-sm mb-5 block">Portfolio / Website Link *</label>
+                        <input type="url" class="form-input border-bottom-only" placeholder="https://..." required>
+                    </div>
+                    <div>
+                        <label class="text-onyx font-weight-600 text-sm mb-5 block">Years of Experience</label>
+                        <input type="number" class="form-input border-bottom-only" placeholder="e.g. 5">
+                    </div>
+                </div>
+
+                <div class="mb-40">
+                    <label class="text-onyx font-weight-600 text-sm mb-5 block">Why partner with C&O Group? (Optional Message)</label>
+                    <textarea class="form-input border-bottom-only" rows="2" placeholder="Tell us about your operational scale and capabilities..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-solid-onyx w-100 justify-center" id="submitApplyBtn">Submit Application to Procurement</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 450px;">
+            <button class="close-modal" id="closeLogin"><i class="fa-solid fa-xmark"></i></button>
+            <div class="text-center mb-30">
+                <i class="fa-solid fa-shield-halved text-gold massive-icon mb-10"></i>
+                <h3 class="serif-font text-onyx" style="font-size: 2rem;">Partner Login</h3>
+                <p class="text-sm text-grey">Access your active briefs, schedules, and billing dashboard.</p>
+            </div>
+            
+            <form id="vendorLoginForm">
+                <div class="mb-20">
+                    <label class="text-onyx font-weight-600 text-sm mb-5 block">Vendor ID / Corporate Email</label>
+                    <input type="email" id="vendorEmail" class="form-input border-bottom-only" placeholder="partner@company.com" required>
+                </div>
+                <div class="mb-30" style="position: relative;">
+                    <label class="text-onyx font-weight-600 text-sm mb-5 block">Password</label>
+                    <input type="password" id="vendorPass" class="form-input border-bottom-only" placeholder="••••••••" required>
+                    <button type="button" id="toggleVendorPass" style="position: absolute; right: 0; bottom: 15px; background: none; border: none; cursor: pointer; color: var(--color-grey); font-size: 1.1rem; outline: none; z-index: 101;">
+                        <i class="fa-regular fa-eye" id="vendorEyeIcon"></i>
+                    </button>
+                </div>
+                <div class="flex-space-between mb-30">
+                    <label class="text-sm text-grey flex-align-center cursor-pointer"><input type="checkbox" class="mr-10" style="accent-color: var(--color-gold);"> Remember Me</label>
+                    <a href="#" class="text-sm text-gold hover-underline" onclick="window.triggerForgotPassword(event)">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn-solid-onyx w-100 justify-center" id="submitLoginBtn">Authenticate <i class="fa-solid fa-lock ml-10"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <div id="forgotPasswordModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 450px;">
+            <button class="close-modal" id="closeForgot"><i class="fa-solid fa-xmark"></i></button>
+            <div class="text-center mb-30">
+                <i class="fa-solid fa-key text-gold massive-icon mb-10"></i>
+                <h3 class="serif-font text-onyx" style="font-size: 2rem;">Secure Recovery</h3>
+                <p class="text-sm text-grey">Enter your registered corporate email to request a new cryptographic key.</p>
+            </div>
+            
+            <form id="forgotPasswordForm">
+                <div class="mb-30">
+                    <label class="text-onyx font-weight-600 text-sm mb-5 block">Registered Email Address</label>
+                    <input type="email" id="forgotEmail" class="form-input border-bottom-only" placeholder="partner@company.com" required>
+                </div>
+                <button type="submit" class="btn-solid-onyx w-100 justify-center" id="submitForgotBtn">Initiate Protocol <i class="fa-solid fa-paper-plane ml-10"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <div id="toastMsg" class="toast-msg">
+        <i class="fa-solid fa-circle-check text-gold"></i> <span id="toastText">Success!</span>
+    </div>
+
+    <div id="bookingModal" class="modal-overlay">
+        <div class="modal-content shadow-glow" style="max-width: 500px;">
+            <button class="close-modal" id="closeBooking"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="serif-font text-onyx mb-10">Start Your Journey</h3>
+            <p class="text-sm mb-30 text-grey">Fill in your details and our lead architect will reach out within 24 hours.</p>
+            <form id="popupContactForm">
+                <input type="text" name="name" placeholder="Full Name / Company" class="form-input mb-20 border-bottom-only" required>
+                <input type="email" name="email" placeholder="Email Address" class="form-input mb-20 border-bottom-only" required>
+                <select name="eventType" class="form-input mb-20 border-bottom-only text-grey" required>
+                    <option value="" disabled selected>Select Event Type</option>
+                    <option value="wedding">Thread & Knot (Wedding/Social)</option>
+                    <option value="corporate">Prism Planner (Corporate MICE)</option>
+                </select>
+                <textarea name="message" placeholder="Briefly describe your vision..." class="form-input mb-30 border-bottom-only" rows="2"></textarea>
+                <button type="submit" class="btn-solid-onyx">Request Consultation</button>
+            </form>
+        </div>
+    </div>
+
+    <nav class="navbar glass-header" id="navbar">
+        <div class="container nav-container flex-space-between relative-z-content">
+            <a href="../index.html" class="brand-logo text-white serif-font" id="nav-logo">C&O<span class="text-gold">.</span> Group</a>
+            
+            <ul class="nav-links text-white" id="nav-links-color">
+                <li><a href="about.html">Our Story</a></li>
+                <li class="has-dropdown">
+                    <a href="#">Divisions <i class="fa-solid fa-chevron-down text-sm ml-10"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="thread-knot.html" class="text-onyx">Thread & Knot (Weddings)</a></li>
+                        <li><a href="prism-planner.html" class="text-onyx">Prism Planner (Corporate)</a></li>
+                    </ul>
+                </li>
+                <li><a href="process.html">Process</a></li>
+                <li><a href="portfolio.html">Masterpieces</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button class="btn-header-premium text-white trigger-apply" style="border-color: var(--color-white);" onmouseover="this.style.color='var(--color-onyx)'; this.style.backgroundColor='white';" onmouseout="this.style.color='white'; this.style.backgroundColor='transparent';">Join Network</button>
+            </div>
+            
+            <div class="mobile-toggle"><i class="fa-solid fa-bars" id="mob-icon" style="color: white;"></i></div>
+        </div>
+    </nav>
+
+    <header class="portal-hero">
+        <img src="../images/vendor/1.jpg" alt="Event Production Crew" class="hero-bg-img">
+        <div class="hero-overlay"></div>
+        <div class="grid-bg-overlay"></div>
+
+        <div class="container text-center fade-up-slow relative-z-content pt-40">
+            <span class="eyebrow text-gold mb-20">B2B Network Platform</span>
+            <h1 class="massive-title text-white serif-font mb-20" style="font-size: 4.5rem;">The Elite <br><span class="text-gold italic">Supply Chain.</span></h1>
+            <p class="text-grey font-size-lg mb-40 max-w-800 mx-auto">We collaborate with India's highest-tier vendors across decor, hospitality, production, and entertainment to execute flawless, unforgettable experiences.</p>
+            
+            <div class="flex-center flex-gap">
+                <button class="btn-solid-onyx trigger-apply" style="background: var(--color-gold); color: var(--color-onyx);">Apply as Vendor</button>
+                <button class="btn-outline-gold trigger-login">Vendor Login</button>
+            </div>
+        </div>
+    </header>
+
+    <section class="section-padding bg-ivory relative overflow-hidden border-bottom-gold">
+        <div class="floating-shape shape-onyx shape-md" style="top: 10%; left: -5%;"></div>
+
+        <div class="container split-layout relative-z-content">
+            <div class="fade-up-slow">
+                <span class="eyebrow text-gold mb-10">Ecosystem</span>
+                <h2 class="section-title serif-font text-onyx mb-30">Our Trusted <span class="italic text-crimson">Network.</span></h2>
+                <div class="gold-line-short mb-30"></div>
+                <p class="text-black mb-20 font-weight-500 font-size-lg">C&O Group partners with leading vendors across India to deliver seamless event architecture.</p>
+                <p class="text-grey mb-30">From master floral decorators and Michelin-grade caterers to enterprise AV production crews, our curated ecosystem ensures that every event is executed with uncompromising precision and quality.</p>
+                <p class="text-grey">We do not micromanage our partners; we empower them with pristine structural blueprints, clear timelines, and flawless on-ground coordination.</p>
+            </div>
+            
+            <div class="intro-image-wrap fade-up-slow delay-1">
+                <img src="../images/vendor/2.jpg" alt="Vendor Collaboration">
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding bg-white text-center border-bottom-grey">
+        <div class="container">
+            <span class="eyebrow text-onyx">Specializations</span>
+            <h2 class="section-title serif-font mt-10 mb-60">Categories We Source</h2>
+            
+            <div class="procurement-grid fade-up-slow">
+                <div class="proc-item">
+                    <i class="fa-solid fa-palette proc-icon"></i>
+                    <h4 class="serif-font font-size-xl text-onyx mb-10">Decor & Floral</h4>
+                    <p class="text-sm text-grey">Mandap design, stage fabrication, and large-scale floral installations.</p>
+                </div>
+                <div class="proc-item delay-1">
+                    <i class="fa-solid fa-utensils proc-icon"></i>
+                    <h4 class="serif-font font-size-xl text-onyx mb-10">Luxury Catering</h4>
+                    <p class="text-sm text-grey">Premium catering, regional cuisine specialists, and international menus.</p>
+                </div>
+                <div class="proc-item delay-2">
+                    <i class="fa-solid fa-camera proc-icon"></i>
+                    <h4 class="serif-font font-size-xl text-onyx mb-10">Photography & Video</h4>
+                    <p class="text-sm text-grey">Wedding photographers, event filmmakers, and drone videography.</p>
+                </div>
+                <div class="proc-item">
+                    <i class="fa-solid fa-microphone-lines proc-icon"></i>
+                    <h4 class="serif-font font-size-xl text-onyx mb-10">Entertainment & Artists</h4>
+                    <p class="text-sm text-grey">Live bands, celebrity performers, DJs, and stage entertainment acts.</p>
+                </div>
+                <div class="proc-item delay-1">
+                    <i class="fa-solid fa-sliders proc-icon"></i>
+                    <h4 class="serif-font font-size-xl text-onyx mb-10">Event Production</h4>
+                    <p class="text-sm text-grey">Acoustic engineering, dynamic lighting design, and massive LED setups.</p>
+                </div>
+                <div class="proc-item delay-2">
+                    <i class="fa-solid fa-concierge-bell proc-icon"></i>
+                    <h4 class="serif-font font-size-xl text-onyx mb-10">Hospitality & Logistics</h4>
+                    <p class="text-sm text-grey">Guest management, luxury transport fleets, and accommodation partners.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding bg-ivory relative overflow-hidden border-top-gold">
+        <div class="floating-shape shape-gold shape-md" style="top: 10%; right: -5%;"></div>
+
+        <div class="container text-center relative-z-content">
+            <span class="eyebrow text-gold mb-10">The Advantage</span>
+            <h2 class="section-title serif-font text-onyx mb-60">Why Partner With C&O Group</h2>
+
+            <div class="grid-4-cols text-left">
+                <div class="bg-white p-40 rounded-corners border-top-gold shadow-soft fade-up-slow hover-lift">
+                    <i class="fa-solid fa-crown text-gold massive-icon mb-20"></i>
+                    <h4 class="serif-font font-size-lg text-onyx mb-10">Premium Clientele</h4>
+                    <p class="text-sm text-grey">Execute your craft on high-budget luxury weddings and Fortune 500 corporate summits.</p>
+                </div>
+                <div class="bg-white p-40 rounded-corners border-top-onyx shadow-soft fade-up-slow delay-1 hover-lift">
+                    <i class="fa-solid fa-calendar-check text-gold massive-icon mb-20"></i>
+                    <h4 class="serif-font font-size-lg text-onyx mb-10">Consistent Projects</h4>
+                    <p class="text-sm text-grey">Empaneled vendors receive priority access to multiple high-tier event opportunities annually.</p>
+                </div>
+                <div class="bg-white p-40 rounded-corners border-top-gold shadow-soft fade-up-slow delay-2 hover-lift">
+                    <i class="fa-solid fa-compass-drafting text-gold massive-icon mb-20"></i>
+                    <h4 class="serif-font font-size-lg text-onyx mb-10">Professional Coordination</h4>
+                    <p class="text-sm text-grey">Work from exact 3D blueprints and strict timelines. We manage the chaos; you focus on quality.</p>
+                </div>
+                <div class="bg-white p-40 rounded-corners border-top-onyx shadow-soft fade-up-slow delay-3 hover-lift">
+                    <i class="fa-solid fa-handshake text-gold massive-icon mb-20"></i>
+                    <h4 class="serif-font font-size-lg text-onyx mb-10">Long-Term Trust</h4>
+                    <p class="text-sm text-grey">We build deeply trusted relationships fueled by transparent, rigid, and on-time payment schedules.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="hub-section relative overflow-hidden border-top-grey">
+        <div class="floating-shape shape-crimson shape-lg" style="bottom: 10%; right: -10%;"></div>
+
+        <div class="container relative-z-content">
+            <div class="text-center mb-60 fade-up-slow">
+                <span class="eyebrow text-gold">Gateway</span>
+                <h2 class="section-title serif-font text-onyx mt-10">Access The Network</h2>
+            </div>
+
+            <div class="hub-grid">
+                <div class="hub-card apply fade-up-slow trigger-apply">
+                    <span class="eyebrow text-gold mb-20">For Prospective Partners</span>
+                    <h3 class="serif-font font-size-xl mb-20" style="font-size: 2.5rem;">Vendor Application</h3>
+                    <p class="text-grey mb-40">Submit your portfolio for empanelment. We review applications strictly on merit, scale capability, and aesthetic quality.</p>
+                    <div><button class="btn-solid-onyx" style="background: var(--color-gold); border-color: var(--color-gold); color: var(--color-onyx); pointer-events: none;">Apply as Vendor</button></div>
+                </div>
+
+                <div class="hub-card login fade-up-slow delay-1 trigger-login">
+                    <span class="eyebrow text-onyx mb-20">For Existing Partners</span>
+                    <h3 class="serif-font font-size-xl text-onyx mb-20" style="font-size: 2.5rem;">Command Center</h3>
+                    <p class="text-grey mb-40">Log in to the secure vendor matrix. Access your approved 3D briefs, load-in schedules, and digital payment dashboards.</p>
+                    <div><button class="btn-solid-onyx" style="pointer-events: none;">Vendor Login <i class="fa-solid fa-arrow-right ml-10"></i></button></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding bg-ivory text-center border-top-gold">
+        <div class="container">
+            <span class="eyebrow text-onyx">The Criteria</span>
+            <h2 class="section-title serif-font mt-10 mb-40">Vendor Selection Process</h2>
+            
+            <div class="hiring-track fade-up-slow delay-1">
+                <div class="hiring-step">
+                    <div class="hiring-num">1</div>
+                    <h4 class="serif-font font-size-lg text-onyx mb-10">Application Submission</h4>
+                    <p class="text-sm text-grey">Submit your profile, capabilities, and past portfolio via the portal.</p>
+                </div>
+                <div class="hiring-step">
+                    <div class="hiring-num">2</div>
+                    <h4 class="serif-font font-size-lg text-onyx mb-10">Portfolio Review</h4>
+                    <p class="text-sm text-grey">Our procurement team evaluates your aesthetic quality and scale capacity.</p>
+                </div>
+                <div class="hiring-step">
+                    <div class="hiring-num">3</div>
+                    <h4 class="serif-font font-size-lg text-onyx mb-10">Verification Interview</h4>
+                    <p class="text-sm text-grey">A discussion regarding your operational framework and compliance standards.</p>
+                </div>
+                <div class="hiring-step">
+                    <div class="hiring-num">4</div>
+                    <h4 class="serif-font font-size-lg text-onyx mb-10">Network Approval</h4>
+                    <p class="text-sm text-grey">You are officially empaneled into the C&O exclusive vendor matrix.</p>
+                </div>
+                <div class="hiring-step">
+                    <div class="hiring-num">5</div>
+                    <h4 class="serif-font font-size-lg text-gold mb-10">Project Allocation</h4>
+                    <p class="text-sm text-grey">Receive briefs and CAD renders for upcoming luxury events.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials-section section-padding bg-onyx text-center relative overflow-hidden border-top-grey">
+        <div class="floating-shape shape-gold shape-lg" style="top: -10%; left: -5%;"></div>
+
+        <div class="container small-container relative z-index-2">
+            <div class="bg-white p-50 rounded-corners shadow-glow relative">
+                <i class="fa-solid fa-quote-right text-gold massive-icon mb-20 block text-center"></i>
+                
+                <div class="swiper testimonialSwiper fade-up-slow testimonial-card" style="padding-bottom: 40px;">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <h3 class="quote-text serif-font text-onyx">"Working with C&O Group is a breath of fresh air. We receive exact 3D stage renders and rigid timelines, allowing us to build without chaos."</h3>
+                            <div class="gold-line-short mt-30 mx-auto"></div>
+                            <p class="mt-20 text-crimson font-weight-600 text-uppercase letter-spacing-2">Elite Decorators</p>
+                            <span class="text-grey text-sm">Empaneled Wedding Partner</span>
+                        </div>
+                        <div class="swiper-slide">
+                            <h3 class="quote-text serif-font text-onyx">"We have collaborated on multiple corporate summits. Their on-ground command team is professional, decisive, and payments are always on time."</h3>
+                            <div class="gold-line-short mt-30 mx-auto"></div>
+                            <p class="mt-20 text-blue font-weight-600 text-uppercase letter-spacing-2">Aura AV Productions</p>
+                            <span class="text-grey text-sm">Empaneled Tech Partner</span>
+                        </div>
+                    </div>
+                    <div class="swiper-pagination custom-pagination" style="bottom: 0;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding bg-ivory text-center relative overflow-hidden">
+        <div class="floating-shape shape-gold shape-md" style="top: 10%; right: 10%;"></div>
+
+        <div class="container relative-z-content fade-up-slow">
+            <h2 class="massive-title serif-font text-onyx mb-20">Become a C&O <span class="text-gold italic">Partner.</span></h2>
+            <p class="text-grey font-size-lg mb-40 max-w-600 mx-auto">Join our growing ecosystem of trusted vendors and collaborate on some of the most exciting, high-stakes events in the country.</p>
+            <div class="flex-center flex-gap">
+                <button class="btn-solid-onyx trigger-apply" style="padding: 20px 40px; font-size: 1rem;">Apply as Vendor</button>
+                <a href="contact.html" class="btn-outline-gold" style="padding: 20px 40px; font-size: 1rem;">Contact Vendor Team</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="custom-footer relative overflow-hidden bg-ivory border-top-grey">
+        <div class="container relative-z-content">
+            <div class="footer-top-row">
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Subscribe to receive exciting gifts!</h4>
+                    <form class="newsletter-form" id="newsletterForm">
+                        <input type="email" placeholder="Your email address" class="nl-input" required>
+                        <button type="submit" class="nl-btn bg-onyx"><i class="fa-solid fa-envelope-open-text text-gold"></i></button>
+                    </form>
+                    <ul class="footer-info-list">
+                        <li><i class="fa-solid fa-location-dot text-gold"></i> <a href="https://www.google.com/maps/search/?api=1&query=Sant+Nagar+East+of+Kailash+New+Delhi+110065" target="_blank"><span>Sant Nagar, East of Kailash, New Delhi, Delhi 110065</span></a></li>
+                        <li><i class="fa-solid fa-phone text-gold"></i> <a href="tel:+918882373939"><span>+91 8882373939</span></a></li>
+                        <li><i class="fa-solid fa-at text-gold"></i> <a href="mailto:info.cogroup@gmail.com"><span>info.cogroup@gmail.com</span></a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Our Divisions</h4>
+                    <ul class="footer-links">
+                        <li><a href="thread-knot.html">Thread & Knot</a></li>
+                        <li><a href="prism-planner.html">Prism Planner</a></li>
+                        <li><a href="portfolio.html">Portfolio Showcase</a></li>
+                        <li><a href="case-studies.html">Featured Case Studies</a></li>
+                        <li><a href="client-login.html">Client Portal Login</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Capabilities</h4>
+                    <ul class="footer-links">
+                        <li><a href="thread-knot.html">Luxury Wedding Planning</a></li>
+                        <li><a href="prism-planner.html">Corporate MICE & Summits</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html">About C&O Group</a></li>
+                        <li><a href="process.html">Our Execution Framework</a></li>
+                        <li><a href="vendor-portal.html" class="text-gold font-weight-600">Vendor Network Portal</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                        <li><a href="contact.html">Contact Command Center</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom-row border-top-grey">
+                <div class="footer-socials">
+                    <a href="https://instagram.com/yourhandle" target="_blank" class="text-onyx hover-gold"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://youtube.com/yourchannel" target="_blank" class="text-onyx hover-gold"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+                <div class="footer-copyright text-grey"><p>All Rights Reserved © 2026 C&O Group LLP.</p></div>
+                <div class="payment-icons">
+                    <i class="fa-brands fa-google-pay fa-2x" style="color: #5f6368; vertical-align: middle;"></i>
+                    <i class="fa-brands fa-cc-visa fa-2x ml-10" style="color: #1434CB; vertical-align: middle;"></i>
+                    <i class="fa-brands fa-cc-mastercard fa-2x ml-10" style="color: #EB001B; vertical-align: middle;"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <script>
+    (function() {
+        // 1. Check the Global Command Switch
+        if (localStorage.getItem('maintenanceMode') === 'true') {
+            
+            // 2. Wait for the browser to barely start parsing the page
+            document.addEventListener('DOMContentLoaded', () => {
+                
+                // 3. Hijack the entire body and inject the Luxury Standby Screen
+                document.body.innerHTML = `
+                    <div style="position: fixed; inset: 0; background: #0A0A0A; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-family: 'Montserrat', sans-serif; padding: 20px;">
+                        
+                        <div style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: white; letter-spacing: 2px; margin-bottom: 50px; font-weight: 700;">
+                            C&O<span style="color: #D4AF37;">.</span>
+                        </div>
+                        
+                        <div style="width: 80px; height: 80px; border-radius: 50%; border: 1px dashed #D4AF37; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; animation: spin 10s linear infinite;">
+                            <i class="fa-solid fa-compass-drafting" style="font-size: 2rem; color: #D4AF37;"></i>
+                        </div>
+
+                        <style>
+                            @keyframes spin { 100% { transform: rotate(360deg); } }
+                        </style>
+                        
+                        <h1 style="font-family: 'Playfair Display', serif; font-size: 3.5rem; color: #D4AF37; margin-bottom: 20px; line-height: 1.1;">Site Under<br>Architecture</h1>
+                        
+                        <p style="color: #888; font-size: 1rem; max-width: 500px; line-height: 1.8; margin-bottom: 50px;">
+                            Our digital environment is currently undergoing an encrypted upgrade. Our principal architects are refining the mainframe to ensure flawless execution for your future events.
+                        </p>
+                        
+                        <div style="font-size: 0.75rem; color: #444; text-transform: uppercase; letter-spacing: 3px; border-top: 1px solid #222; padding-top: 20px; width: 100%; max-width: 300px;">
+                            <i class="fa-solid fa-lock text-gold mr-5"></i> Secure Protocol Active
+                        </div>
+
+                    </div>
+                `;
+                
+                // 4. Lock scrolling
+                document.body.style.overflow = 'hidden';
+            });
+        }
+    })();
+</script>
+
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // ==========================================
+            //  1. UI & ANIMATION LOGIC
+            // ==========================================
+
+            // Modals Logic (Apply & Login)
+            const applyModal = document.getElementById('applyModal');
+            const loginModal = document.getElementById('loginModal');
+            
+            const applyBtns = document.querySelectorAll('.trigger-apply');
+            const loginBtns = document.querySelectorAll('.trigger-login');
+            
+            applyBtns.forEach(btn => { btn.addEventListener('click', (e) => { e.preventDefault(); applyModal.classList.add('active'); }); });
+            loginBtns.forEach(btn => { btn.addEventListener('click', (e) => { e.preventDefault(); loginModal.classList.add('active'); }); });
+            
+            document.getElementById('closeApply').addEventListener('click', () => applyModal.classList.remove('active'));
+            document.getElementById('closeLogin').addEventListener('click', () => loginModal.classList.remove('active'));
+            
+            window.addEventListener('click', (e) => { 
+                if (e.target === applyModal) applyModal.classList.remove('active'); 
+                if (e.target === loginModal) loginModal.classList.remove('active'); 
+            });
+
+            // Password Toggle for Vendor Login
+            const toggleVendorPass = document.getElementById('toggleVendorPass');
+            const vendorPassInput = document.getElementById('vendorPass');
+            const vendorEyeIcon = document.getElementById('vendorEyeIcon');
+            if(toggleVendorPass) {
+                toggleVendorPass.addEventListener('click', () => {
+                    if (vendorPassInput.type === 'password') {
+                        vendorPassInput.type = 'text';
+                        vendorEyeIcon.classList.remove('fa-eye');
+                        vendorEyeIcon.classList.add('fa-eye-slash');
+                    } else {
+                        vendorPassInput.type = 'password';
+                        vendorEyeIcon.classList.remove('fa-eye-slash');
+                        vendorEyeIcon.classList.add('fa-eye');
+                    }
+                });
+            }
+
+            // Mobile Nav
+            const mobileToggle = document.querySelector('.mobile-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            if (mobileToggle && navLinks) {
+                mobileToggle.addEventListener('click', () => {
+                    if (navLinks.style.display === 'flex') { navLinks.style.display = 'none'; } 
+                    else {
+                        navLinks.style.display = 'flex'; navLinks.style.flexDirection = 'column';
+                        navLinks.style.position = 'absolute'; navLinks.style.top = '100%'; navLinks.style.left = '0';
+                        navLinks.style.width = '100%'; navLinks.style.background = '#FCFBF9'; navLinks.style.padding = '20px';
+                        navLinks.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
+                    }
+                });
+            }
+
+            // Scrolled Navbar Color Inversion
+            const navbar = document.getElementById('navbar');
+            const navLogo = document.getElementById('nav-logo');
+            const navLinksColor = document.getElementById('nav-links-color');
+            const planBtn = document.querySelector('.btn-header-premium');
+            
+            if (navbar) {
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 50) {
+                        navbar.classList.add('scrolled');
+                        if(navLogo) { navLogo.classList.remove('text-white'); navLogo.classList.add('text-onyx'); }
+                        if(navLinksColor) { navLinksColor.classList.remove('text-white'); navLinksColor.classList.add('text-onyx'); }
+                        if(planBtn) { planBtn.style.color = 'var(--color-onyx)'; planBtn.style.borderColor = 'var(--color-onyx)'; }
+                    } else {
+                        navbar.classList.remove('scrolled');
+                        if(navLogo) { navLogo.classList.remove('text-onyx'); navLogo.classList.add('text-white'); }
+                        if(navLinksColor) { navLinksColor.classList.remove('text-onyx'); navLinksColor.classList.add('text-white'); }
+                        if(planBtn) { planBtn.style.color = 'white'; planBtn.style.borderColor = 'white'; }
+                    }
+                });
+            }
+
+            // Scroll Animations
+            const revealElements = document.querySelectorAll('.fade-up-slow');
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) { entry.target.classList.add('active'); observer.unobserve(entry.target); }
+                });
+            }, { threshold: 0.15 });
+            revealElements.forEach(el => revealObserver.observe(el));
+
+            // Swiper Initialization
+            if (typeof Swiper !== 'undefined') {
+                new Swiper('.testimonialSwiper', {
+                    slidesPerView: 1, spaceBetween: 30, loop: true,
+                    autoplay: { delay: 5000, disableOnInteraction: false },
+                    pagination: { el: '.custom-pagination', clickable: true },
+                    effect: 'fade', fadeEffect: { crossFade: true }
+                });
+            }
+
+            // ==========================================
+            //  2. COMMAND CENTER: BACKEND CONNECTIONS
+            // ==========================================
+
+            // Premium Toast Notification Function
+            const showToast = (message) => {
+                let toast = document.getElementById('toastMsg');
+                let toastText = document.getElementById('toastText');
+                
+                if (toast && toastText) {
+                    toastText.innerText = message;
+                } else {
+                    toast = document.createElement('div');
+                    toast.className = 'toast-msg';
+                    toast.innerHTML = `<i class="fa-solid fa-circle-check text-gold"></i> <span>${message}</span>`;
+                    document.body.appendChild(toast);
+                }
+
+                setTimeout(() => toast.classList.add('show'), 100);
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 4000);
+            };
+
+            // REAL SUBMIT 1: Newsletter Subscription -> MongoDB
+            const newsletterForm = document.getElementById('newsletterForm');
+            if (newsletterForm) {
+                newsletterForm.addEventListener('submit', async (e) => {
+                    e.preventDefault(); 
+                    const submitBtn = newsletterForm.querySelector('button[type="submit"]');
+                    const originalHTML = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-gold"></i>';
+                    submitBtn.disabled = true;
+
+                    const emailInput = newsletterForm.querySelector('input[type="email"]').value;
+
+                    try {
+                        const response = await fetch('http://localhost:5000/api/subscribe', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email: emailInput })
+                        });
+
+                        if (response.ok) {
+                            showToast('Welcome to the inner circle! Your gift is on the way.');
+                            newsletterForm.reset();
+                        } else if (response.status === 400) {
+                            showToast('You are already on our exclusive list!');
+                        } else {
+                            showToast('Transmission failed. Please try again.');
+                        }
+                    } catch (error) {
+                        showToast('Server offline. Please ensure backend is running.');
+                    } finally {
+                        submitBtn.innerHTML = originalHTML;
+                        submitBtn.disabled = false;
+                    }
+                });
+            }
+
+            // REAL SUBMIT 2: Vendor Empanelment Application -> MongoDB
+            const applyForm = document.getElementById('vendorApplyForm');
+            if(applyForm) {
+                applyForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const btn = document.getElementById('submitApplyBtn');
+                    const ogText = btn.innerHTML;
+                    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Securing Connection...';
+                    btn.disabled = true;
+                    
+                    const inputs = applyForm.querySelectorAll('input, select, textarea');
+                    const vendorPayload = {
+                        companyName: inputs[0].value,
+                        contactName: inputs[1].value,
+                        email: inputs[2].value.trim().toLowerCase(), // Lowercase fix
+                        phone: inputs[3].value,
+                        location: inputs[4].value,
+                        serviceCategory: inputs[5].value,
+                        portfolioLink: inputs[6].value,
+                        experience: inputs[7].value,
+                        message: inputs[8].value
+                    };
+                    
+                    let isSuccess = false;
+
+                    try {
+                        const response = await fetch('http://localhost:5000/api/vendors', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(vendorPayload)
+                        });
+
+                        if (response.ok) {
+                            isSuccess = true;
+                            showToast('Application Sent Successfully! Our procurement team will review it.');
+                            btn.innerHTML = '<i class="fa-solid fa-check"></i> Dispatched';
+                            btn.style.backgroundColor = 'var(--color-gold)';
+                            btn.style.color = 'var(--color-onyx)';
+                            setTimeout(() => { 
+                                applyModal.classList.remove('active'); 
+                                applyForm.reset(); 
+                                btn.innerHTML = ogText; 
+                                btn.style.backgroundColor = '';
+                                btn.style.color = '';
+                                btn.disabled = false;
+                            }, 3000);
+                        } else {
+                            showToast('Transmission failed. Please check your details.');
+                        }
+                    } catch (error) {
+                        console.error('API Error:', error);
+                        showToast('Server offline. Please ensure backend is running.');
+                    } finally {
+                        if (!isSuccess) {
+                            btn.innerHTML = ogText;
+                            btn.disabled = false;
+                        }
+                    }
+                });
+            }
+
+            // Check if already logged in (Auto-Redirect)
+            if(localStorage.getItem('vendorToken')) {
+                window.location.href = 'vendor-dashboard.html';
+            }
+
+            // REAL SUBMIT 3: Vendor Login -> MongoDB
+            const loginForm = document.getElementById('vendorLoginForm');
+            if(loginForm) {
+                loginForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const btn = document.getElementById('submitLoginBtn');
+                    const ogText = btn.innerHTML;
+                    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...';
+                    btn.disabled = true;
+
+                    // Lowercase fix applied here
+                    const emailInput = document.getElementById('vendorEmail').value.trim().toLowerCase();
+                    const passInput = document.getElementById('vendorPass').value.trim();
+
+                    try {
+                        const response = await fetch('http://localhost:5000/api/vendor/login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email: emailInput, password: passInput })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            localStorage.setItem('vendorToken', data.token);
+                            localStorage.setItem('vendorName', data.companyName);
+                            showToast('Authentication Successful! Redirecting to dashboard...');
+                            setTimeout(() => { 
+                                window.location.href = 'vendor-dashboard.html'; 
+                            }, 1000);
+                        } else {
+                            showToast(data.error || 'Invalid Credentials or Account Pending.');
+                            btn.innerHTML = ogText;
+                            btn.disabled = false;
+                        }
+                    } catch (error) {
+                        showToast('Server offline. Please ensure backend is running.');
+                        btn.innerHTML = ogText;
+                        btn.disabled = false;
+                    }
+                });
+            }
+
+            // REAL SUBMIT 4: Vendor Forgot Password Protocol -> MongoDB (Luxury UI)
+            const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+            const forgotModal = document.getElementById('forgotPasswordModal');
+            
+            document.getElementById('closeForgot').addEventListener('click', () => forgotModal.classList.remove('active'));
+            
+            window.addEventListener('click', (e) => { 
+                if (e.target === forgotModal) forgotModal.classList.remove('active'); 
+            });
+
+            window.triggerForgotPassword = function(e) {
+                e.preventDefault();
+                document.getElementById('loginModal').classList.remove('active'); // Hide Login
+                forgotModal.classList.add('active'); // Show Forgot Password
+            };
+
+            if (forgotPasswordForm) {
+                forgotPasswordForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const btn = document.getElementById('submitForgotBtn');
+                    const ogText = btn.innerHTML;
+                    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Transmitting...';
+                    btn.disabled = true;
+
+                    const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
+
+                    try {
+                        const response = await fetch('http://localhost:5000/api/portal/vendor-forgot', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email: email })
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (response.ok) {
+                            // Uses the correct response message from the new Command Center workflow
+                            showToast(data.message || "Reset request sent to Command Center.");
+                            forgotPasswordForm.reset();
+                            forgotModal.classList.remove('active');
+                        } else {
+                            showToast("Error: " + (data.error || "Failed to initiate recovery."));
+                        }
+                    } catch (error) {
+                        console.error('Reset Error:', error);
+                        showToast("Server offline. Please ensure the backend is running.");
+                    } finally {
+                        btn.innerHTML = ogText;
+                        btn.disabled = false;
+                    }
+                });
+            }
+
+        }); // <-- DOMContentLoaded properly closes here now!
+    </script>
+</body>
+</html>

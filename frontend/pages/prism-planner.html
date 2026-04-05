@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Prism Planner | Corporate Event Engineering by C&O Group</title>
+    <link rel="icon" type="image/png" href="../images/logo.png">
+    <meta name="description" content="Prism Planner engineers global corporate summits and high-impact product launches with precision logistics and technological excellence.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    
+    <link rel="stylesheet" href="../css/style.css">
+
+    <script>
+        if (history.scrollRestoration) { history.scrollRestoration = 'manual'; }
+        window.scrollTo(0, 0);
+    </script>
+
+    <style>
+
+        
+        :root {
+            --color-blue: #0B192C;       /* Midnight Blue */
+            --color-blue-light: #1A365D; /* Strategic Blue */
+            --color-gold: #D4AF37;
+        }
+        
+        .text-blue { color: var(--color-blue); }
+        .bg-blue { background-color: var(--color-blue); }
+        .border-blue { border: 1px solid var(--color-blue); }
+        .shape-blue { background: var(--color-blue); }
+
+        /* Corporate Buttons */
+        .btn-solid-blue { background-color: var(--color-blue); color: var(--color-gold); border: 1px solid var(--color-blue); display: inline-flex; align-items: center; justify-content: center; padding: 16px 35px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.85rem; border-radius: 30px; cursor: pointer; transition: all 0.4s ease; box-shadow: 0 10px 20px rgba(11,25,44,0.2); }
+        .btn-solid-blue:hover { background-color: var(--color-gold); color: var(--color-blue); border-color: var(--color-gold); transform: translateY(-3px); box-shadow: 0 15px 30px rgba(212,175,55,0.3); }
+        
+        .btn-outline-white { background-color: transparent; color: var(--color-white); border: 1px solid var(--color-white); display: inline-flex; align-items: center; justify-content: center; padding: 16px 35px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.85rem; border-radius: 30px; cursor: pointer; transition: all 0.4s ease; }
+        .btn-outline-white:hover { background-color: var(--color-white); color: var(--color-blue); transform: translateY(-3px); }
+
+        /* 1. Hero Section (Deep Corporate Aesthetic) */
+        .prism-hero { height: 100vh; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; background-color: var(--color-blue); }
+        .hero-overlay-corp { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(11,25,44,0.95) 0%, rgba(11,25,44,0.7) 100%); z-index: 1; }
+        
+        /* Subtle Tech Grid overlay instead of the distracting perspective one */
+        .tech-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(212,175,55,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(212,175,55,0.05) 1px, transparent 1px); background-size: 60px 60px; z-index: 2; opacity: 0.5; pointer-events: none; }
+
+        /* 2. Elevated Experience Cards (Categories) */
+        .experience-card { position: relative; height: 420px; overflow: hidden; border-radius: var(--radius-large); display: flex; align-items: flex-end; padding: 40px; cursor: pointer; border: 1px solid transparent; transition: all 0.5s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        .experience-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s ease; z-index: 0; filter: grayscale(20%); }
+        .exp-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(11,25,44,0.95) 0%, rgba(11,25,44,0.2) 60%, transparent 100%); z-index: 1; transition: opacity 0.4s; }
+        .exp-content { position: relative; z-index: 2; color: white; transform: translateY(20px); transition: transform 0.5s ease; }
+        
+        .experience-card:hover { border-color: var(--color-gold); box-shadow: 0 20px 50px rgba(11,25,44,0.2); }
+        .experience-card:hover img { transform: scale(1.08); filter: grayscale(0%); }
+        .experience-card:hover .exp-overlay { background: linear-gradient(to top, rgba(11,25,44,1) 0%, rgba(11,25,44,0.6) 100%); }
+        .experience-card:hover .exp-content { transform: translateY(0); }
+
+        /* 3. Refined Matrix Boxes (Services) */
+        .matrix-box { padding: 40px 30px; border-radius: var(--radius-large); background: var(--color-white); border: 1px solid var(--color-light-grey); transition: all 0.4s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .matrix-box:hover { border-color: var(--color-gold); transform: translateY(-8px); box-shadow: 0 15px 35px rgba(11,25,44,0.1); background: var(--color-ivory); }
+
+        /* 4. Tech Features Grid */
+        .tech-card { background: var(--color-white); padding: 40px; border-radius: var(--radius-large); border-top: 4px solid var(--color-blue); transition: all 0.4s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .tech-card:hover { transform: translateY(-8px); border-top-color: var(--color-gold); box-shadow: 0 20px 40px rgba(11,25,44,0.12); }
+        .tech-icon-wrap { width: 60px; height: 60px; background: rgba(212,175,55,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: var(--color-gold); font-size: 1.5rem; transition: 0.4s; }
+        .tech-card:hover .tech-icon-wrap { background: var(--color-blue); color: var(--color-white); }
+
+        /* 5. Case Studies & Client Logos */
+        .case-card { background: var(--color-white); border-radius: var(--radius-large); overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--color-light-grey); transition: all 0.4s ease; cursor: pointer; }
+        .case-card:hover { border-color: var(--color-gold); transform: translateY(-10px); box-shadow: 0 20px 50px rgba(11,25,44,0.15); }
+        .case-img-wrap { height: 250px; overflow: hidden; position: relative; }
+        .case-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; filter: brightness(0.9); }
+        .case-card:hover .case-img-wrap img { transform: scale(1.08); filter: brightness(1); }
+        .case-meta { display: flex; gap: 15px; margin-bottom: 15px; font-size: 0.75rem; font-weight: 700; color: var(--color-gold); text-transform: uppercase; letter-spacing: 1px; }
+
+        .client-logos-strip { display: flex; justify-content: center; align-items: center; gap: 60px; flex-wrap: wrap; opacity: 0.6; filter: grayscale(100%); transition: 0.3s; }
+        .client-logos-strip:hover { opacity: 1; filter: grayscale(0%); }
+        .client-logo { font-size: 1.8rem; font-weight: 700; font-family: 'Montserrat', sans-serif; letter-spacing: 2px; color: var(--color-blue); display: flex; align-items: center; gap: 10px; }
+
+        /* General Modals, Forms & Toasts */
+        .form-input { width: 100%; padding: 12px 0; font-family: var(--font-body); font-size: 1rem; background: transparent; border: none; border-bottom: 1px solid #ccc; outline: none; transition: border-color 0.3s; }
+        .form-input:focus { border-bottom-color: var(--color-gold); }
+
+        /* --- Updated Prism Toast CSS --- */
+.toast-msg { 
+    position: fixed; 
+    bottom: 30px; 
+    right: 30px; 
+    background: var(--color-blue); /* Corporate Midnight Blue */
+    color: white; 
+    padding: 18px 28px; 
+    border-left: 5px solid var(--color-gold); 
+    border-radius: 8px; 
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4); 
+    z-index: 10001; 
+    font-family: 'Montserrat', sans-serif; 
+    font-size: 0.95rem; 
+    font-weight: 600;
+    display: flex; 
+    align-items: center; 
+    gap: 15px; 
+    transform: translateY(100px); 
+    opacity: 0; 
+    visibility: hidden;
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
+}
+.toast-msg.show { transform: translateY(0); opacity: 1; visibility: visible; }
+
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(11, 25, 44, 0.95); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+        .modal-content { background: var(--color-ivory); padding: 50px; border-radius: var(--radius-large); max-width: 500px; width: 90%; position: relative; border: 1px solid var(--color-gold); box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: var(--color-blue); background: transparent; border: none; transition: 0.3s; }
+        .close-modal:hover { color: var(--color-crimson); transform: rotate(90deg); }
+        
+        .faq-item { border-bottom: 1px solid var(--color-light-grey); padding: 20px 0; }
+        .faq-question { display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 1.1rem; font-weight: 600; color: var(--color-black); transition: color 0.3s; }
+        .faq-question:hover { color: var(--color-blue); }
+        .faq-icon { font-size: 1.2rem; color: var(--color-gold); transition: transform 0.4s ease; }
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; color: var(--color-grey); padding-right: 40px; }
+        .faq-answer p { padding-top: 15px; }
+        .faq-item.active .faq-answer { max-height: 200px; }
+        .faq-item.active .faq-icon { transform: rotate(45deg); color: var(--color-blue); }
+
+        /* =========================================
+           NAVBAR READABILITY & DROPDOWN FIX
+        ========================================= */
+        /* Adds a protective corporate-blue gradient exactly behind the navbar so white text is always readable */
+        .navbar:not(.scrolled) {
+            background: linear-gradient(to bottom, rgba(11,25,44,0.85) 0%, rgba(11,25,44,0) 100%);
+        }
+        .navbar:not(.scrolled) .nav-links > li > a,
+        .navbar:not(.scrolled) .brand-logo {
+            text-shadow: 0 2px 10px rgba(0,0,0,0.9); /* Maximum readability */
+        }
+
+        .has-dropdown { position: relative; }
+        .dropdown-menu { position: absolute; top: 100%; left: 0; background: var(--color-white) !important; box-shadow: 0 10px 40px rgba(0,0,0,0.3); border-radius: 4px; padding: 10px 0; min-width: 260px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; list-style: none; z-index: 1000; }
+        .has-dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        
+        /* Force dropdown text to be dark (overrides the white header text) */
+        #navbar .dropdown-menu li a { 
+            display: block; 
+            padding: 12px 20px; 
+            color: #111111 !important; 
+            font-size: 0.9rem; 
+            font-weight: 600;
+            text-transform: none; 
+            letter-spacing: 0; 
+            text-shadow: none !important; /* Removes shadow from dropdown items */
+            background: transparent !important;
+        }
+        #navbar .dropdown-menu li a:hover { 
+            background: rgba(11,25,44,0.1) !important; 
+            color: var(--color-blue) !important; /* Corporate Blue on hover */
+        }
+
+        .mobile-toggle { display: none; font-size: 24px; cursor: pointer; color: var(--color-white); }
+        .navbar.scrolled .mobile-toggle { color: var(--color-blue); }
+
+        .floating-shape { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.2; z-index: 0; pointer-events: none; animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-30px); } 100% { transform: translateY(0px); } }
+
+        /* Responsive */
+        @media (max-width: 992px) { 
+            .grid-4-cols { grid-template-columns: repeat(2, 1fr); }
+            .matrix-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) { 
+            .prism-hero { height: 80vh; }
+            .mobile-toggle { display: block; } .nav-links, .nav-actions { display: none; } 
+            .grid-4-cols, .matrix-grid { grid-template-columns: 1fr; }
+            .client-logos-strip { gap: 30px; }
+        }
+    </style>
+</head>
+<body class="bg-ivory text-black">
+
+    <nav class="navbar glass-header" id="navbar">
+        <div class="container nav-container flex-space-between relative-z-content">
+            <a href="../index.html" class="brand-logo text-white serif-font" id="nav-logo">C&O<span class="text-gold">.</span> Group</a>
+            
+            <ul class="nav-links text-white" id="nav-links-color">
+                <li><a href="about.html">Our Story</a></li>
+                <li class="has-dropdown">
+                    <a href="#" class="font-weight-600" style="color: var(--color-gold);">Divisions <i class="fa-solid fa-chevron-down text-sm ml-10"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="thread-knot.html">Thread & Knot (Weddings)</a></li>
+                        <li><a href="prism-planner.html" class="text-blue font-weight-700">Prism Planner (Corporate)</a></li>
+                    </ul>
+                </li>
+                <li><a href="process.html">Process</a></li>
+                <li><a href="portfolio.html">Masterpieces</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button id="openBookingBtn" class="btn-header-premium trigger-booking" style="border-color: var(--color-white); color: var(--color-white);" onmouseover="this.style.backgroundColor='var(--color-white)'; this.style.color='var(--color-blue)';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--color-white)';">Plan Corporate Event</button>
+            </div>
+            
+            <div class="mobile-toggle" id="mob-icon"><i class="fa-solid fa-bars"></i></div>
+        </div>
+    </nav>
+
+    <div id="bookingModal" class="modal-overlay">
+        <div class="modal-content shadow-glow">
+            <button class="close-modal" id="closeBooking"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="serif-font text-blue mb-10">Start Your Project</h3>
+            <p class="text-sm mb-30 text-grey">Tell us your business goals, and our strategic architects will design a high-impact corporate experience.</p>
+            <form id="popupContactForm" action="/api/book" method="POST">
+                <input type="text" name="name" placeholder="Full Name / Corporate Entity" class="form-input mb-20 border-bottom-only" required>
+                <input type="email" name="email" placeholder="Corporate Email Address" class="form-input mb-20 border-bottom-only" required>
+                <select name="eventType" class="form-input mb-20 border-bottom-only text-grey" required>
+                    <option value="corporate" selected>Prism Planner (Corporate MICE)</option>
+                </select>
+                <textarea name="message" placeholder="Briefly describe your event goals, scale, and tentative dates..." class="form-input mb-30 border-bottom-only" rows="3"></textarea>
+                <button type="submit" class="btn-solid-blue w-100 justify-center">Schedule Strategy Session</button>
+            </form>
+        </div>
+    </div>
+
+    <header id="hero" class="prism-hero">
+        <div style="position: absolute; inset: 0; z-index: 0;">
+            <img src="../images/prism/1.jpg" alt="Corporate Summit Stage" style="width: 100%; height: 100%; object-fit: cover;">
+            <div class="hero-overlay-corp"></div>
+        </div>
+        
+        <div class="tech-grid"></div>
+        
+        <div class="container hero-content text-center fade-up-slow relative-z-content">
+            <span class="eyebrow text-gold mb-20">The Corporate Division</span>
+            <h1 class="massive-title text-white serif-font mb-20" style="font-size: 5rem;">Prism Planner</h1>
+            <p class="text-white font-weight-300 font-size-lg mb-40 max-w-800 mx-auto opacity-80">From global executive summits to high-impact product launches, Prism Planner engineers corporate events with absolute precision, strategic logistics, and technological excellence.</p>
+            
+            <div class="hero-btn-group flex-center flex-gap mt-40">
+                <button class="btn-solid-blue trigger-booking" style="background: var(--color-gold); border-color: var(--color-gold); color: var(--color-onyx);">Initiate Strategy</button>
+                <a href="#corporate-cases" class="btn-outline-white">View Case Studies</a>
+            </div>
+        </div>
+
+        <div class="hero-bottom-area" style="position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 3;">
+            <a href="#categories" class="text-white block text-center" style="text-decoration: none;">
+                <span class="block text-xs text-uppercase letter-spacing-2 opacity-70 mb-10">Discover Architecture</span>
+                <i class="fa-solid fa-chevron-down scroll-bounce text-gold"></i>
+            </a>
+        </div>
+    </header>
+
+    <section id="categories" class="section-padding bg-ivory text-center relative overflow-hidden border-bottom-gold">
+        <div class="floating-shape shape-blue shape-lg" style="top: 10%; right: -5%;"></div>
+
+        <div class="container relative-z-content">
+            <span class="eyebrow text-blue">Our Domains</span>
+            <h2 class="section-title serif-font mt-10 mb-60">Corporate Event Architecture</h2>
+            
+            <div class="grid-4-cols">
+                <div class="experience-card fade-up-slow">
+                    <img src="../images/prism/2.jpg" alt="Global Conferences">
+                    <div class="exp-overlay"></div>
+                    <div class="exp-content text-left">
+                        <h3 class="serif-font font-size-xl text-white mb-10">Global Conferences</h3>
+                        <p class="text-sm opacity-80">Large-scale delegate management, exact stage engineering, and keynote logistics.</p>
+                    </div>
+                </div>
+                <div class="experience-card fade-up-slow delay-1">
+                    <img src="../images/prism/3.jpg" alt="Product Launches">
+                    <div class="exp-overlay"></div>
+                    <div class="exp-content text-left">
+                        <h3 class="serif-font font-size-xl text-white mb-10">Product Launches</h3>
+                        <p class="text-sm opacity-80">Immersive brand activations designed for maximum media impact and quantifiable ROI.</p>
+                    </div>
+                </div>
+                <div class="experience-card fade-up-slow delay-2">
+                    <img src="../images/prism/4.jpg" alt="Exhibitions">
+                    <div class="exp-overlay"></div>
+                    <div class="exp-content text-left">
+                        <h3 class="serif-font font-size-xl text-white mb-10">Trade Exhibitions</h3>
+                        <p class="text-sm opacity-80">Bespoke pavilion design, exhibitor coordination, and digital visitor engagement planning.</p>
+                    </div>
+                </div>
+                <div class="experience-card fade-up-slow delay-3">
+                    <img src="../images/prism/5.jpg" alt="Executive Retreats">
+                    <div class="exp-overlay"></div>
+                    <div class="exp-content text-left">
+                        <h3 class="serif-font font-size-xl text-white mb-10">Executive Retreats</h3>
+                        <p class="text-sm opacity-80">Ultra-secure, luxury corporate offsites designed for C-suite alignment and strategy.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="service-matrix section-padding bg-white text-center">
+        <div class="container">
+            <span class="eyebrow text-gold">Capabilities</span>
+            <h2 class="section-title serif-font mt-10 mb-60">The Systems Matrix</h2>
+            
+            <div class="matrix-grid">
+                <div class="matrix-box fade-up-slow">
+                    <i class="fa-solid fa-id-badge text-blue massive-icon mb-20"></i>
+                    <h4 class="text-onyx serif-font font-size-lg">Delegate Systems</h4>
+                    <p class="text-grey text-sm mt-10">Encrypted digital registration and automated QR check-in infrastructure.</p>
+                </div>
+                <div class="matrix-box fade-up-slow delay-1">
+                    <i class="fa-solid fa-sliders text-gold massive-icon mb-20"></i>
+                    <h4 class="text-onyx serif-font font-size-lg">Stage & AV Engineering</h4>
+                    <p class="text-grey text-sm mt-10">Precision LED mapping, acoustic baffling, and complex lighting grids.</p>
+                </div>
+                <div class="matrix-box fade-up-slow delay-2">
+                    <i class="fa-solid fa-microphone-lines text-blue massive-icon mb-20"></i>
+                    <h4 class="text-onyx serif-font font-size-lg">Speaker Logistics</h4>
+                    <p class="text-grey text-sm mt-10">Keynote coordination, remote teleprompters, and secure green rooms.</p>
+                </div>
+                <div class="matrix-box fade-up-slow delay-3">
+                    <i class="fa-solid fa-cubes text-gold massive-icon mb-20"></i>
+                    <h4 class="text-onyx serif-font font-size-lg">Brand Experience</h4>
+                    <p class="text-grey text-sm mt-10">Immersive spatial 3D design reflecting exact corporate identity guidelines.</p>
+                </div>
+                <div class="matrix-box fade-up-slow">
+                    <i class="fa-solid fa-newspaper text-gold massive-icon mb-20"></i>
+                    <h4 class="text-onyx serif-font font-size-lg">Media & PR Control</h4>
+                    <p class="text-grey text-sm mt-10">Exclusive press lounges, step-and-repeats, and live broadcast handling.</p>
+                </div>
+                <div class="matrix-box fade-up-slow delay-1">
+                    <i class="fa-solid fa-store text-blue massive-icon mb-20"></i>
+                    <h4 class="text-onyx serif-font font-size-lg">Exhibition Booths</h4>
+                    <p class="text-grey text-sm mt-10">Custom structural fabrication and master floorplan management.</p>
+                </div>
+                <div class="matrix-box fade-up-slow delay-2">
+                    <i class="fa-solid fa-martini-glass-citrus text-gold massive-icon mb-20"></i>
+                    <h4 class="text-onyx serif-font font-size-lg">Corporate Hospitality</h4>
+                    <p class="text-grey text-sm mt-10">Discreet VIP handling, Michelin-tier catering, and executive transport fleets.</p>
+                </div>
+                <div class="matrix-box fade-up-slow delay-3">
+                    <i class="fa-solid fa-satellite-dish text-blue massive-icon mb-20"></i>
+                    <h4 class="text-onyx serif-font font-size-lg">Hybrid Streaming</h4>
+                    <p class="text-grey text-sm mt-10">High-fidelity, zero-latency live broadcasts for global remote attendees.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="technology" class="section-padding bg-ivory relative overflow-hidden border-top-grey">
+        <div class="floating-shape shape-blue shape-lg" style="bottom: -20%; left: -10%;"></div>
+
+        <div class="container split-layout relative-z-content">
+            <div class="fade-up-slow">
+                <span class="eyebrow text-gold">The Digital Edge</span>
+                <h2 class="section-title serif-font mt-10 mb-30">Powered by <br><span class="text-blue italic">Technology.</span></h2>
+                <p class="text-black mb-20 font-weight-500">In the modern corporate landscape, an event is only as strong as its data infrastructure.</p>
+                <p class="text-grey mb-30">Prism Planner integrates proprietary and industry-leading software to ensure seamless attendee flow, secure access control, and measurable ROI analytics post-event.</p>
+                <button class="btn-solid-blue mt-10 trigger-booking">Request Tech Demo</button>
+            </div>
+
+            <div class="grid-2-cols" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="tech-card fade-up-slow delay-1">
+                    <div class="tech-icon-wrap"><i class="fa-solid fa-qrcode"></i></div>
+                    <h4 class="serif-font font-size-lg text-black mb-10">Smart Registration</h4>
+                    <p class="text-sm text-grey">Digital attendee registration, instant QR check-ins, and automated badge printing.</p>
+                </div>
+                <div class="tech-card fade-up-slow delay-2">
+                    <div class="tech-icon-wrap"><i class="fa-solid fa-chart-pie"></i></div>
+                    <h4 class="serif-font font-size-lg text-black mb-10">Live Analytics</h4>
+                    <p class="text-sm text-grey">Audience engagement tracking, session participation heatmaps, and feedback dashboards.</p>
+                </div>
+                <div class="tech-card fade-up-slow delay-1">
+                    <div class="tech-icon-wrap"><i class="fa-solid fa-globe"></i></div>
+                    <h4 class="serif-font font-size-lg text-black mb-10">Hybrid Streaming</h4>
+                    <p class="text-sm text-grey">Global attendees join virtually via secure, interactive live broadcast infrastructure.</p>
+                </div>
+                <div class="tech-card fade-up-slow delay-2">
+                    <div class="tech-icon-wrap"><i class="fa-solid fa-mobile-screen"></i></div>
+                    <h4 class="serif-font font-size-lg text-black mb-10">Mobile Event Apps</h4>
+                    <p class="text-sm text-grey">Customized mobile applications for digital agendas, speaker profiles, and live networking.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="framework" class="process-section section-padding bg-blue border-top-gold relative overflow-hidden">
+        <div class="floating-shape shape-gold shape-lg" style="top: 30%; right: -15%;"></div>
+
+        <div class="container text-center relative-z-content">
+            <span class="eyebrow text-gold">The Roadmap</span>
+            <h2 class="section-title serif-font text-white mt-10 mb-60">Corporate Execution Framework</h2>
+            
+            <div class="vertical-timeline">
+                <div class="timeline-line-gold" id="gsap-line"></div>
+                
+                <div class="timeline-step fade-up-slow">
+                    <div class="step-dot bg-white"></div>
+                    <div class="step-content bg-white shadow-soft border-gold text-left hover-lift">
+                        <h4 class="text-blue serif-font font-size-xl mb-10">01. Strategy Meeting</h4>
+                        <p class="text-black font-weight-600">Goals & KPIs</p>
+                        <p class="text-grey text-sm mt-10">Deep dive into your business objectives, target audience, brand messaging, and desired event ROI.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-step fade-up-slow">
+                    <div class="step-dot bg-gold"></div>
+                    <div class="step-content bg-white shadow-soft border-gold text-right hover-lift">
+                        <h4 class="text-gold serif-font font-size-xl mb-10">02. Event Architecture</h4>
+                        <p class="text-black font-weight-600">Spatial & Tech Planning</p>
+                        <p class="text-grey text-sm mt-10">Designing the stage layout, calculating delegate flow matrices, and mapping complete technology requirements.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-step fade-up-slow">
+                    <div class="step-dot bg-white"></div>
+                    <div class="step-content bg-white shadow-soft border-gold text-left hover-lift">
+                        <h4 class="text-blue serif-font font-size-xl mb-10">03. Vendor Integration</h4>
+                        <p class="text-black font-weight-600">The Supply Chain</p>
+                        <p class="text-grey text-sm mt-10">Strict alignment of AV vendors, production crews, catering partners, and brand fabricators.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-step fade-up-slow">
+                    <div class="step-dot bg-gold"></div>
+                    <div class="step-content bg-white shadow-soft border-gold text-right hover-lift">
+                        <h4 class="text-gold serif-font font-size-xl mb-10">04. Command Center</h4>
+                        <p class="text-black font-weight-600">Live Operations</p>
+                        <p class="text-grey text-sm mt-10">Our on-ground tactical team monitors every operational detail, session transition, and speaker cue in real time.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-step fade-up-slow">
+                    <div class="step-dot bg-white"></div>
+                    <div class="step-content bg-white shadow-soft border-gold text-left hover-lift">
+                        <h4 class="text-blue serif-font font-size-xl mb-10">05. Post-Event Intelligence</h4>
+                        <p class="text-black font-weight-600">Data & ROI</p>
+                        <p class="text-grey text-sm mt-10">Delivery of data insights, attendee feedback analysis, and comprehensive ROI reporting for stakeholders.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="corporate-cases" class="section-padding bg-ivory border-bottom-grey">
+        <div class="container">
+            <div class="text-center mb-60">
+                <span class="eyebrow text-blue">Proven Results</span>
+                <h2 class="section-title serif-font mt-10">Corporate Case Studies</h2>
+            </div>
+
+            <div class="grid-3-cols">
+                <div class="case-card fade-up-slow" onclick="window.location.href='case-studies.html'">
+                    <div class="case-img-wrap">
+                        <img src="../images/prism/6.jpg" alt="Tech Summit">
+                    </div>
+                    <div class="p-40 bg-white" style="flex-grow: 1;">
+                        <div class="case-meta">
+                            <span><i class="fa-solid fa-users mr-5"></i> 500 Pax</span>
+                            <span><i class="fa-solid fa-satellite-dish mr-5"></i> Hybrid</span>
+                        </div>
+                        <h3 class="serif-font font-size-xl text-blue mb-10">Global Tech Summit</h3>
+                        <p class="text-gold text-sm text-uppercase font-weight-600 mb-20">New Delhi</p>
+                        <p class="text-grey text-sm">End-to-end venue logistics, keynote speaker management, and a secure live broadcast to 2,000 virtual attendees.</p>
+                    </div>
+                </div>
+
+                <div class="case-card fade-up-slow delay-1" onclick="window.location.href='case-studies.html'">
+                    <div class="case-img-wrap">
+                        <img src="../images/prism/7.jpg" alt="Product Launch">
+                    </div>
+                    <div class="p-40 bg-white" style="flex-grow: 1;">
+                        <div class="case-meta">
+                            <span><i class="fa-solid fa-building mr-5"></i> Fortune 500</span>
+                            <span><i class="fa-solid fa-video mr-5"></i> Live PR</span>
+                        </div>
+                        <h3 class="serif-font font-size-xl text-blue mb-10">Flagship Product Launch</h3>
+                        <p class="text-gold text-sm text-uppercase font-weight-600 mb-20">Mumbai</p>
+                        <p class="text-grey text-sm">Engineered an immersive luxury stage design with 3D projection mapping and perfectly synchronized lighting cues.</p>
+                    </div>
+                </div>
+
+                <div class="case-card fade-up-slow delay-2" onclick="window.location.href='case-studies.html'">
+                    <div class="case-img-wrap">
+                        <img src="../images/prism/1.jpg" alt="Leadership Retreat">
+                    </div>
+                    <div class="p-40 bg-white" style="flex-grow: 1;">
+                        <div class="case-meta">
+                            <span><i class="fa-solid fa-user-tie mr-5"></i> C-Suite</span>
+                            <span><i class="fa-solid fa-plane mr-5"></i> Destination</span>
+                        </div>
+                        <h3 class="serif-font font-size-xl text-blue mb-10">Executive Retreat</h3>
+                        <p class="text-gold text-sm text-uppercase font-weight-600 mb-20">Goa</p>
+                        <p class="text-grey text-sm">Curated a private, highly secure offsite for top executives combining strategic workshop environments with luxury wellness.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="section-padding bg-blue text-center relative overflow-hidden">
+        <div class="floating-shape shape-gold shape-md" style="top: 10%; right: 10%;"></div>
+
+        <div class="container relative-z-content fade-up-slow">
+            <h2 class="massive-title serif-font text-white mb-20">Let's Build Your Next <span class="text-gold italic">Global Event.</span></h2>
+            <p class="text-white font-size-lg mb-40 max-w-500 mx-auto opacity-70">Schedule a strategy session to align your corporate objectives with our execution framework.</p>
+            <button class="btn-solid-blue trigger-booking" style="background: var(--color-gold); border-color: var(--color-gold); color: var(--color-onyx); padding: 20px 50px; font-size: 1rem;">Schedule Strategy Session</button>
+        </div>
+    </section>
+
+    <footer class="custom-footer relative overflow-hidden bg-ivory">
+        <div class="container relative-z-content">
+            <div class="footer-top-row">
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Subscribe to Corporate Insights</h4>
+                    <form class="newsletter-form" id="newsletterForm">
+                        <input type="email" placeholder="Your business email" class="nl-input" required>
+                        <button type="submit" class="nl-btn bg-onyx"><i class="fa-solid fa-envelope-open-text text-gold"></i></button>
+                    </form>
+                    <ul class="footer-info-list">
+                        <li><i class="fa-solid fa-location-dot text-gold"></i> <a href="https://www.google.com/maps/search/?api=1&query=Sant+Nagar+East+of+Kailash+New+Delhi+110065" target="_blank"><span>Sant Nagar, East of Kailash, New Delhi, Delhi 110065</span></a></li>
+                        <li><i class="fa-solid fa-phone text-gold"></i> <a href="tel:+918882373939"><span>+91 8882373939</span></a></li>
+                        <li><i class="fa-solid fa-at text-gold"></i> <a href="mailto:info.cogroup@gmail.com"><span>info.cogroup@gmail.com</span></a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Our Divisions</h4>
+                    <ul class="footer-links">
+                        <li><a href="thread-knot.html">Thread & Knot</a></li>
+                        <li><a href="prism-planner.html" class="text-gold font-weight-600">Prism Planner</a></li>
+                        <li><a href="portfolio.html">Portfolio Showcase</a></li>
+                        <li><a href="case-studies.html">Featured Case Studies</a></li>
+                        <li><a href="client-login.html">Client Portal Login</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Capabilities</h4>
+                    <ul class="footer-links">
+                        <li><a href="thread-knot.html">Luxury Wedding Planning</a></li>
+                        <li><a href="prism-planner.html">Corporate MICE & Summits</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html">About C&O Group</a></li>
+                        <li><a href="process.html">Our Execution Framework</a></li>
+                        <li><a href="vendor-portal.html">Vendor Network Portal</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                        <li><a href="contact.html">Contact Command Center</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom-row border-top-grey">
+                <div class="footer-socials">
+                    <a href="https://instagram.com/yourhandle" target="_blank" class="text-onyx hover-gold"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://youtube.com/yourchannel" target="_blank" class="text-onyx hover-gold"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+                <div class="footer-copyright text-grey"><p>All Rights Reserved © 2026 C&O Group LLP.</p></div>
+                <div class="payment-icons">
+                    <i class="fa-brands fa-google-pay fa-2x" style="color: #5f6368; vertical-align: middle;"></i>
+                    <i class="fa-brands fa-cc-visa fa-2x ml-10" style="color: #1434CB; vertical-align: middle;"></i>
+                    <i class="fa-brands fa-cc-mastercard fa-2x ml-10" style="color: #EB001B; vertical-align: middle;"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+<script>
+    (function() {
+        // 1. Check the Global Command Switch
+        if (localStorage.getItem('maintenanceMode') === 'true') {
+            
+            // 2. Wait for the browser to barely start parsing the page
+            document.addEventListener('DOMContentLoaded', () => {
+                
+                // 3. Hijack the entire body and inject the Luxury Standby Screen
+                document.body.innerHTML = `
+                    <div style="position: fixed; inset: 0; background: #0A0A0A; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-family: 'Montserrat', sans-serif; padding: 20px;">
+                        
+                        <div style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: white; letter-spacing: 2px; margin-bottom: 50px; font-weight: 700;">
+                            C&O<span style="color: #D4AF37;">.</span>
+                        </div>
+                        
+                        <div style="width: 80px; height: 80px; border-radius: 50%; border: 1px dashed #D4AF37; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; animation: spin 10s linear infinite;">
+                            <i class="fa-solid fa-compass-drafting" style="font-size: 2rem; color: #D4AF37;"></i>
+                        </div>
+
+                        <style>
+                            @keyframes spin { 100% { transform: rotate(360deg); } }
+                        </style>
+                        
+                        <h1 style="font-family: 'Playfair Display', serif; font-size: 3.5rem; color: #D4AF37; margin-bottom: 20px; line-height: 1.1;">Site Under<br>Architecture</h1>
+                        
+                        <p style="color: #888; font-size: 1rem; max-width: 500px; line-height: 1.8; margin-bottom: 50px;">
+                            Our digital environment is currently undergoing an encrypted upgrade. Our principal architects are refining the mainframe to ensure flawless execution for your future events.
+                        </p>
+                        
+                        <div style="font-size: 0.75rem; color: #444; text-transform: uppercase; letter-spacing: 3px; border-top: 1px solid #222; padding-top: 20px; width: 100%; max-width: 300px;">
+                            <i class="fa-solid fa-lock text-gold mr-5"></i> Secure Protocol Active
+                        </div>
+
+                    </div>
+                `;
+                
+                // 4. Lock scrolling
+                document.body.style.overflow = 'hidden';
+            });
+        }
+    })();
+</script>
+
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // ==========================================
+            //  1. UI & ANIMATION LOGIC
+            // ==========================================
+
+            // Global Booking Modal Logic
+            const bookingModal = document.getElementById('bookingModal');
+            const openBookingBtns = document.querySelectorAll('.trigger-booking');
+            openBookingBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    bookingModal.classList.add('active');
+                });
+            });
+            document.getElementById('closeBooking').addEventListener('click', () => bookingModal.classList.remove('active'));
+            window.addEventListener('click', (e) => { if (e.target === bookingModal) bookingModal.classList.remove('active'); });
+
+            // Mobile Nav
+            const mobileToggle = document.querySelector('.mobile-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            if (mobileToggle && navLinks) {
+                mobileToggle.addEventListener('click', () => {
+                    if (navLinks.style.display === 'flex') { navLinks.style.display = 'none'; } 
+                    else {
+                        navLinks.style.display = 'flex'; navLinks.style.flexDirection = 'column';
+                        navLinks.style.position = 'absolute'; navLinks.style.top = '100%'; navLinks.style.left = '0';
+                        navLinks.style.width = '100%'; navLinks.style.background = '#FCFBF9'; navLinks.style.padding = '20px';
+                        navLinks.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
+                    }
+                });
+            }
+
+            // Scrolled Navbar Color Inversion (Prism Planner Specific Colors)
+            const navbar = document.getElementById('navbar');
+            const navLogo = document.getElementById('nav-logo');
+            const navLinksColor = document.getElementById('nav-links-color');
+            const planBtn = document.getElementById('openBookingBtn');
+            const mobIcon = document.querySelector('.mobile-toggle i');
+            
+            if (navbar) {
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 50) {
+                        navbar.classList.add('scrolled');
+                        if(navLogo) { navLogo.classList.remove('text-white'); navLogo.classList.add('text-blue'); }
+                        if(navLinksColor) { navLinksColor.classList.remove('text-white'); navLinksColor.classList.add('text-blue'); }
+                        if(planBtn) { planBtn.style.color = 'var(--color-white)'; planBtn.style.backgroundColor = 'var(--color-blue)'; planBtn.style.borderColor = 'var(--color-blue)'; }
+                        if(mobIcon) { mobIcon.style.color = 'var(--color-blue)'; }
+                    } else {
+                        navbar.classList.remove('scrolled');
+                        if(navLogo) { navLogo.classList.remove('text-blue'); navLogo.classList.add('text-white'); }
+                        if(navLinksColor) { navLinksColor.classList.remove('text-blue'); navLinksColor.classList.add('text-white'); }
+                        if(planBtn) { planBtn.style.color = 'var(--color-white)'; planBtn.style.backgroundColor = 'transparent'; planBtn.style.borderColor = 'var(--color-white)'; }
+                        if(mobIcon) { mobIcon.style.color = 'white'; }
+                    }
+                });
+            }
+
+            // Scroll Animations
+            const revealElements = document.querySelectorAll('.fade-up-slow');
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) { entry.target.classList.add('active'); observer.unobserve(entry.target); }
+                });
+            }, { threshold: 0.15 });
+            revealElements.forEach(el => revealObserver.observe(el));
+
+            // GSAP Timeline
+            if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+                gsap.registerPlugin(ScrollTrigger);
+                const timelineLine = document.getElementById('gsap-line');
+                if (timelineLine) {
+                    gsap.fromTo(timelineLine, { height: "0%" }, {
+                        height: "100%", ease: "none",
+                        scrollTrigger: { trigger: ".vertical-timeline", start: "top center", end: "bottom center", scrub: 1 }
+                    });
+                }
+            }
+
+            // ==========================================
+            //  2. COMMAND CENTER: BACKEND CONNECTIONS
+            // ==========================================
+
+            // Premium Gold Toast Notification Function
+const showToast = (message) => {
+    let toast = document.getElementById('toastMsg');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toastMsg';
+        toast.className = 'toast-msg';
+        document.body.appendChild(toast);
+    }
+    toast.innerHTML = `<i class="fa-solid fa-circle-check text-gold" style="font-size: 1.2rem;"></i> <span>${message}</span>`;
+    
+    toast.classList.add('show');
+    setTimeout(() => { toast.classList.remove('show'); }, 4000);
+};
+            // Smart Translator for Divisions
+            const translateDivision = (val) => {
+                if (val === 'wedding') return 'Thread & Knot';
+                if (val === 'corporate') return 'Prism Planner';
+                return 'General';
+            };
+
+            // REAL SUBMIT 1: Newsletter Subscription -> MongoDB
+            const newsletterForm = document.getElementById('newsletterForm');
+            if (newsletterForm) {
+                newsletterForm.addEventListener('submit', async (e) => {
+                    e.preventDefault(); 
+                    
+                    const submitBtn = newsletterForm.querySelector('button[type="submit"]');
+                    const originalHTML = submitBtn.innerHTML;
+                    
+                    submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-gold"></i>';
+                    submitBtn.disabled = true;
+
+                    const emailInput = newsletterForm.querySelector('input[type="email"]').value;
+
+                    try {
+                        const response = await fetch('http://localhost:5000/api/subscribe', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email: emailInput })
+                        });
+
+                        if (response.ok) {
+                            showToast('Welcome to the inner circle! Corporate insights are on the way.');
+                            newsletterForm.reset();
+                        } else if (response.status === 400) {
+                            showToast('You are already on our exclusive list!');
+                        } else {
+                            showToast('Transmission failed. Please try again.');
+                        }
+                    } catch (error) {
+                        showToast('Server offline. Please ensure backend is running.');
+                    } finally {
+                        submitBtn.innerHTML = originalHTML;
+                        submitBtn.disabled = false;
+                    }
+                });
+            }
+
+            // REAL SUBMIT 2: Modal Strategy Booking Form -> MongoDB
+            const popupForm = document.getElementById('popupContactForm');
+            if (popupForm) {
+                popupForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    const submitBtn = popupForm.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerText;
+                    
+                    submitBtn.innerText = "Securing Connection...";
+                    submitBtn.disabled = true;
+
+                    const formData = new FormData(popupForm);
+                    const inquiryPayload = {
+                        clientName: formData.get('name'),
+                        email: formData.get('email'),
+                        division: translateDivision(formData.get('eventType')),
+                        eventDetails: formData.get('message') || "Corporate strategy session request."
+                    };
+
+                    try {
+                        const response = await fetch('http://localhost:5000/api/enquiries', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(inquiryPayload)
+                        });
+
+                        if (response.ok) {
+                            showToast('Strategy session requested! Our executive team will contact you shortly.');
+                            popupForm.reset();
+                            document.getElementById('bookingModal').classList.remove('active');
+                        } else {
+                            showToast('Transmission failed. Please check your details.');
+                        }
+                    } catch (error) {
+                        console.error('API Error:', error);
+                        showToast('Server offline. Please ensure backend is running.');
+                    } finally {
+                        submitBtn.innerText = originalText;
+                        submitBtn.disabled = false;
+                    }
+                });
+            }
+
+        });
+    </script>
+</body>
+</html>

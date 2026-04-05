@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>About C&O Group | Architects of Milestones</title>
+<link rel="icon" type="image/png" href="../images/logo.png">
+
+<meta name="description" content="Discover the story, vision, and execution...">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="../css/style.css">
+
+    <script>
+        if (history.scrollRestoration) { history.scrollRestoration = 'manual'; }
+        window.scrollTo(0, 0);
+    </script>
+
+    <style>
+        /* =========================================
+           ABOUT PAGE SPECIFIC CSS (Onyx & Gold Theme)
+        ========================================= */
+        
+        :root {
+            --color-onyx: #111111;
+            --color-onyx-light: #2A2A2A;
+            --color-crimson: #8A1538;
+            --color-blue: #0B192C;
+        }
+        
+        .text-onyx { color: var(--color-onyx); }
+        .bg-onyx { background-color: var(--color-onyx); color: var(--color-white); }
+        
+        /* Elevated Onyx Buttons */
+        .btn-solid-onyx { background-color: var(--color-onyx); color: var(--color-gold); border: 1px solid var(--color-onyx); display: inline-flex; align-items: center; padding: 14px 30px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem; border-radius: var(--radius-small); cursor: pointer; transition: all 0.4s ease; }
+        .btn-solid-onyx:hover { background-color: var(--color-gold); color: var(--color-onyx); border-color: var(--color-gold); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2); }
+        
+        .btn-outline-gold { background-color: transparent; color: var(--color-gold); border: 1px solid var(--color-gold); display: inline-flex; align-items: center; padding: 14px 30px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem; border-radius: var(--radius-small); cursor: pointer; transition: all 0.4s ease; }
+        .btn-outline-gold:hover { background-color: var(--color-gold); color: var(--color-onyx); transform: translateY(-3px); }
+
+        /* =========================================
+           NAVBAR READABILITY & DROPDOWN FIX
+        ========================================= */
+        .navbar:not(.scrolled) { background: linear-gradient(to bottom, rgba(10,10,10,0.85) 0%, rgba(10,10,10,0) 100%); }
+        .navbar:not(.scrolled) .nav-links > li > a,
+        .navbar:not(.scrolled) .brand-logo { text-shadow: 0 2px 10px rgba(0,0,0,0.9); }
+        
+        .has-dropdown { position: relative; }
+        .dropdown-menu { position: absolute; top: 100%; left: 0; background: var(--color-white) !important; box-shadow: 0 10px 40px rgba(0,0,0,0.3); border-radius: 4px; padding: 10px 0; min-width: 260px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; list-style: none; z-index: 1000; }
+        .has-dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        
+        #navbar .dropdown-menu li a { display: block; padding: 12px 20px; color: #111111 !important; font-size: 0.9rem; font-weight: 600; text-transform: none; letter-spacing: 0; text-shadow: none !important; background: transparent !important; }
+        #navbar .dropdown-menu li a:hover { background: rgba(212,175,55,0.1) !important; color: var(--color-gold) !important; }
+
+        /* 1. Cinematic Hero (Fullscreen 100vh) */
+        .about-hero { min-height: 100vh; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
+        .hero-overlay-onyx { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(10,10,10,0.8) 0%, rgba(10,10,10,0.3) 50%, rgba(10,10,10,0.8) 100%); z-index: 1; }
+        .massive-title { text-shadow: 0 10px 40px rgba(0,0,0,0.7); }
+        
+        /* 2. Origin Story Drop Cap */
+        .drop-cap { float: left; font-size: 4.5rem; line-height: 0.8; margin-right: 15px; font-family: var(--font-heading); color: var(--color-gold); }
+        
+        /* 3. Vision & Mission Cards */
+        .vm-card { background: var(--color-white); padding: 50px; border-radius: var(--radius-large); border-top: 3px solid var(--color-gold); transition: transform 0.4s ease; }
+        .vm-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+        .vm-icon { width: 80px; height: 80px; background: var(--color-ivory); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--color-gold); margin-bottom: 30px; border: 1px solid rgba(212, 175, 55, 0.3); }
+
+        /* 4. Dual-Division Expanding Showcase (The Showstopper) */
+        .dual-division-wrapper { display: flex; height: 600px; width: 100%; border-radius: var(--radius-large); overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
+        .div-panel { flex: 1; position: relative; overflow: hidden; transition: flex 0.6s cubic-bezier(0.25, 1, 0.5, 1); cursor: pointer; }
+        .div-panel img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
+        .div-overlay { position: absolute; inset: 0; background: rgba(17,17,17,0.6); transition: background 0.6s ease; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 40px; }
+        
+        /* Hover Dynamics */
+        .div-panel:hover { flex: 1.5; }
+        .div-panel:hover img { transform: scale(1.1); }
+        .div-panel.tk:hover .div-overlay { background: rgba(138,21,56,0.85); /* Crimson */ }
+        .div-panel.pp:hover .div-overlay { background: rgba(11,25,44,0.85); /* Blue */ }
+        
+        .panel-content h3 { color: white; font-size: 2.5rem; margin-bottom: 15px; transition: transform 0.4s; }
+        .panel-content p { color: rgba(255,255,255,0); font-size: 1rem; max-height: 0; transition: all 0.5s ease; overflow: hidden; max-width: 400px; margin: 0 auto; }
+        .div-panel:hover .panel-content p { color: rgba(255,255,255,0.9); max-height: 150px; margin-top: 15px; }
+
+        /* 5. Team Section (B&W to Color) */
+        .team-card { position: relative; overflow: hidden; border-radius: var(--radius-large); aspect-ratio: 3/4; cursor: default; }
+        .team-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: all 0.6s ease; }
+        .team-info { position: absolute; bottom: 0; left: 0; width: 100%; padding: 30px 20px; background: linear-gradient(to top, rgba(17,17,17,0.95), transparent); color: white; transform: translateY(20px); transition: transform 0.4s ease; }
+        .team-card:hover .team-img { filter: grayscale(0%); transform: scale(1.05); }
+        .team-card:hover .team-info { transform: translateY(0); }
+
+        /* 6. Core Values (Elegant Numbered List) */
+        .value-row { display: flex; align-items: flex-start; padding: 40px 0; border-bottom: 1px solid var(--color-light-grey); transition: background 0.4s ease; }
+        .value-row:hover { background: white; padding-left: 20px; border-bottom-color: var(--color-gold); }
+        .value-num { font-family: var(--font-heading); font-size: 4rem; color: var(--color-ivory); -webkit-text-stroke: 1px var(--color-gold); line-height: 1; width: 120px; transition: all 0.4s; }
+        .value-row:hover .value-num { color: var(--color-gold); -webkit-text-stroke: 0; }
+        
+        /* Floating Shapes for Parent Brand */
+        .shape-onyx { background: var(--color-onyx); }
+
+        /* Custom Success Message (Toast) */
+.toast-msg {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--color-onyx);
+    color: var(--color-white);
+    padding: 16px 24px;
+    border-left: 4px solid var(--color-gold);
+    border-radius: 4px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    z-index: 10001;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.toast-msg.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .dual-division-wrapper { flex-direction: column; height: 800px; }
+            .div-panel:hover { flex: 1.2; }
+            .value-row { flex-direction: column; }
+            .value-num { margin-bottom: 15px; }
+        }
+    </style>
+</head>
+<body class="bg-ivory text-black">
+
+    <div id="bookingModal" class="modal-overlay">
+        <div class="modal-content shadow-glow">
+            <button class="close-modal" id="closeBooking"><i class="fa-solid fa-xmark" style="color: var(--color-onyx);"></i></button>
+            <h3 class="serif-font text-onyx mb-10">Start Your Journey</h3>
+            <p class="text-sm mb-30 text-grey">Fill in your details and our lead architect will reach out within 24 hours.</p>
+            <form id="popupContactForm" action="/api/book" method="POST">
+                <input type="text" name="name" placeholder="Full Name / Company" class="form-input mb-20 border-bottom-only" required>
+                <input type="email" name="email" placeholder="Email Address" class="form-input mb-20 border-bottom-only" required>
+<select name="eventType" class="form-input mb-20 border-bottom-only text-grey" required>
+    <option value="" disabled selected>Select Event Type</option>
+    <option value="Thread & Knot">Thread & Knot (Wedding/Social)</option>
+    <option value="Prism Planner">Prism Planner (Corporate MICE)</option>
+</select>
+                <textarea name="message" placeholder="Briefly describe your vision..." class="form-input mb-30 border-bottom-only" rows="2"></textarea>
+                <button type="submit" class="btn-solid-onyx w-100 justify-center">Request Consultation</button>
+            </form>
+        </div>
+    </div>
+
+<nav class="navbar glass-header" id="navbar">
+        <div class="container nav-container flex-space-between relative-z-content">
+            <a href="../index.html" class="brand-logo text-white serif-font" id="nav-logo">C&O<span class="text-gold">.</span> Group</a>
+            
+            <ul class="nav-links text-white" id="nav-links-color">
+                <li><a href="about.html" class="font-weight-700 text-gold">Our Story</a></li>
+                <li class="has-dropdown">
+                    <a href="#">Divisions <i class="fa-solid fa-chevron-down text-sm ml-10"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="thread-knot.html" class="text-onyx">Thread & Knot (Weddings)</a></li>
+                        <li><a href="prism-planner.html" class="text-onyx">Prism Planner (Corporate)</a></li>
+                    </ul>
+                </li>
+                <li><a href="process.html">Process</a></li>
+                <li><a href="portfolio.html">Masterpieces</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button id="openBookingBtn" class="btn-header-premium text-white" style="border-color: white;" onmouseover="this.style.color='var(--color-onyx)'; this.style.backgroundColor='white';" onmouseout="this.style.color='white'; this.style.backgroundColor='transparent';">Plan Your Event</button>
+            </div>
+            
+            <div class="mobile-toggle"><i class="fa-solid fa-bars text-white" id="mob-icon"></i></div>
+        </div>
+    </nav>
+
+    <header class="about-hero">
+        <div class="video-wrapper">
+            <img src="../images/about/1.jpg" alt="Luxury Event Architecture" style="width: 100%; height: 100%; object-fit: cover;">
+            <div class="hero-overlay-onyx"></div>
+        </div>
+        
+        <div class="container text-center fade-up-slow relative-z-content pt-40">
+            <span class="eyebrow text-gold mb-20">The Parent Brand</span>
+            <h1 class="massive-title text-white serif-font mb-20" style="font-size: 4.5rem;">Architects of <br><span class="text-gold italic">Milestones.</span></h1>
+            <p class="text-white font-weight-300 font-size-lg mb-40 max-w-800 mx-auto opacity-70">C&O Group was founded on a singular philosophy: events should be breathtakingly beautiful, profoundly meaningful, and flawlessly engineered.</p>
+            
+            <div class="flex-center flex-gap">
+                <a href="#dual-division" class="btn-solid-onyx">Explore Divisions</a>
+                <a href="#origin" class="btn-outline-gold">Our Story</a>
+            </div>
+        </div>
+    </header>
+
+    <section id="origin" class="section-padding bg-ivory relative overflow-hidden">
+        <div class="floating-shape shape-gold shape-md" style="top: 10%; right: -5%;"></div>
+
+        <div class="container split-layout relative-z-content">
+            <div class="fade-up-slow">
+                <span class="eyebrow text-onyx">The Genesis</span>
+                <h2 class="section-title serif-font mt-10 mb-30">Bridging Art <br>& <span class="text-gold italic">Logistics.</span></h2>
+                <div class="gold-line-short mb-30"></div>
+                
+                <p class="text-onyx mb-20 line-height-large">
+                    <span class="drop-cap">C</span>&O Group was created to solve a persistent flaw in the events industry: the disconnect between creative vision and operational reality. While traditional planners focused purely on aesthetics, we realized that true luxury requires an invisible, rigorous framework of logistics, technology, and engineering.
+                </p>
+                <p class="text-grey mb-20">
+                    We built our platform not just to design events, but to command them. By unifying elite spatial design with military-grade project management, we ensure that every milestone—whether a royal wedding or a global corporate summit—is executed without a single compromise.
+                </p>
+                <img src="../images/about/2.jpg" alt="Founder Signature" style="height: 60px; opacity: 0.6; margin-top: 20px;">
+            </div>
+            
+            <div class="relative fade-up-slow delay-1">
+                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070" alt="Team Collaboration" class="rounded-corners shadow-gold w-100" style="height: 500px; object-fit: cover;">
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding bg-white border-top-gold border-bottom-grey">
+        <div class="container">
+            <div class="grid-2-cols" style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+                <div class="vm-card shadow-soft fade-up-slow">
+                    <div class="vm-icon"><i class="fa-solid fa-eye"></i></div>
+                    <h3 class="serif-font font-size-xl text-onyx mb-20">Our Vision</h3>
+                    <p class="text-grey">To be India's definitive event architecture platform, setting the global benchmark for how culturally rich weddings and high-stakes corporate summits are designed and executed.</p>
+                </div>
+                <div class="vm-card shadow-soft fade-up-slow delay-1">
+                    <div class="vm-icon"><i class="fa-solid fa-bullseye"></i></div>
+                    <h3 class="serif-font font-size-xl text-onyx mb-20">Our Mission</h3>
+                    <p class="text-grey">To seamlessly fuse artistic creativity, data-driven technology, and rigorous logistics to engineer flawless, unforgettable experiences for our clients and their guests.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="dual-division" class="section-padding bg-onyx text-center relative overflow-hidden">
+        <div class="container relative-z-content">
+            <span class="eyebrow text-gold">Our Architecture</span>
+            <h2 class="section-title serif-font text-white mt-10 mb-20">A Platform Built on <span class="italic">Specialization.</span></h2>
+            <p class="text-grey max-w-800 mx-auto mb-60">To maintain absolute excellence across vastly different domains, C&O Group operates a highly specialized dual-division model. Hover to explore.</p>
+            
+            <div class="dual-division-wrapper fade-up-slow">
+                <div class="div-panel tk" onclick="window.location.href='thread-knot.html'">
+                    <img src="../images/about/3.jpg" alt="Thread & Knot Wedding">
+                    <div class="div-overlay">
+                        <div class="panel-content">
+                            <h3 class="serif-font">Thread & Knot</h3>
+                            <span class="eyebrow text-gold">Luxury Weddings</span>
+                            <p>Curating deeply emotional, culturally rich destination weddings and social milestones with bespoke design and supreme hospitality.</p>
+                            <button class="btn-outline-white mt-30" style="border-radius: 30px;">Enter Division</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="div-panel pp" onclick="window.location.href='prism-planner.html'">
+                    <img src="../images/about/4.jpg" alt="Prism Planner Corporate">
+                    <div class="div-overlay">
+                        <div class="panel-content">
+                            <h3 class="serif-font">Prism Planner</h3>
+                            <span class="eyebrow text-gold">Corporate MICE</span>
+                            <p>Engineering global conferences, high-impact product launches, and executive retreats driven by technology and precise ROI logistics.</p>
+                            <button class="btn-outline-white mt-30" style="border-radius: 30px;">Enter Division</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding bg-ivory text-center">
+        <div class="container">
+            <span class="eyebrow text-onyx">Capabilities</span>
+            <h2 class="section-title serif-font mt-10 mb-60">The Pillars of C&O Group</h2>
+            
+            <div class="grid-3-cols">
+                <div class="p-40 bg-white shadow-soft rounded-corners border-top-gold hover-lift fade-up-slow">
+                    <i class="fa-solid fa-pen-nib text-gold massive-icon mb-20"></i>
+                    <h4 class="text-onyx serif-font font-size-xl">Spatial Design</h4>
+                    <p class="text-grey text-sm mt-10">In-house architects crafting 3D stage renders, immersive floor plans, and bespoke thematic mood boards.</p>
+                </div>
+                <div class="p-40 bg-white shadow-soft rounded-corners border-top-onyx hover-lift fade-up-slow delay-1">
+                    <i class="fa-solid fa-network-wired text-onyx massive-icon mb-20"></i>
+                    <h4 class="text-onyx serif-font font-size-xl">Logistical Mapping</h4>
+                    <p class="text-grey text-sm mt-10">Military-grade project management, vendor synchronization, and timeline execution down to the minute.</p>
+                </div>
+                <div class="p-40 bg-white shadow-soft rounded-corners border-top-gold hover-lift fade-up-slow delay-2">
+                    <i class="fa-solid fa-server text-gold massive-icon mb-20"></i>
+                    <h4 class="text-onyx serif-font font-size-xl">Event Technology</h4>
+                    <p class="text-grey text-sm mt-10">Integration of smart registration systems, hybrid streaming platforms, and live analytics dashboards.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="authority-strip bg-onyx pt-60 pb-60 border-top-gold border-bottom-gold">
+        <div class="container strip-grid text-center">
+            <div class="strip-item reveal-item"><h3 class="text-white serif-font"><span class="counter" data-target="35">0</span>+</h3><p class="text-gold">Events Executed</p></div>
+            <div class="strip-item reveal-item"><h3 class="text-white serif-font">₹<span class="counter" data-target="86">0</span>k+</h3><p class="text-gold">Managed Budgets</p></div>
+            <div class="strip-item reveal-item"><h3 class="text-white serif-font"><span class="counter" data-target="5">0</span>+</h3><p class="text-gold">Cities Covered</p></div>
+            <div class="strip-item reveal-item"><h3 class="text-white serif-font"><span class="counter" data-target="98">0</span>%</h3><p class="text-gold">Client Satisfaction</p></div>
+        </div>
+    </section>
+
+    <section class="section-padding bg-ivory text-center relative overflow-hidden">
+        <div class="floating-shape shape-gold shape-lg" style="top: 10%; right: -10%;"></div>
+
+        <div class="container relative-z-content">
+            <span class="eyebrow text-onyx">Leadership</span>
+            <h2 class="section-title serif-font mt-10 mb-60">The Minds Behind C&O</h2>
+            
+            <div class="grid-3-cols">
+                <div class="team-card shadow-soft fade-up-slow">
+                    <img src="../images/about/5.jpg" alt="Ojashwani Rao" class="team-img">
+                    <div class="team-info text-left">
+                        <h4 class="serif-font font-size-lg text-gold">Ojashwani Rao</h4>
+                        <p class="text-sm opacity-70">Founder & CMO</p>
+                    </div>
+                </div>
+                <div class="team-card shadow-soft fade-up-slow delay-1">
+                    <img src="../images/about/Chirag.jpeg" alt="Chirag Chopra" class="team-img">
+                    <div class="team-info text-left">
+                        <h4 class="serif-font font-size-lg text-gold">Chirag Chopra</h4>
+                        <p class="text-sm opacity-70">Co-founder & CEO</p>
+                    </div>
+                </div>
+                <div class="team-card shadow-soft fade-up-slow delay-2">
+                    <img src="../images/about/Vidhit.jpeg" alt="Vidhit Madaan" class="team-img">
+                    <div class="team-info text-left">
+                        <h4 class="serif-font font-size-lg text-gold">Vidhit Madaan</h4>
+                        <p class="text-sm opacity-70">Managerial Head</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding bg-white border-top-grey">
+        <div class="container small-container">
+            <div class="text-center mb-50">
+                <span class="eyebrow text-gold">Our DNA</span>
+                <h2 class="section-title serif-font text-onyx mt-10">Core Values</h2>
+            </div>
+            
+            <div class="values-list fade-up-slow">
+                <div class="value-row">
+                    <div class="value-num">01</div>
+                    <div>
+                        <h4 class="serif-font font-size-xl text-onyx mb-10">Relentless Excellence</h4>
+                        <p class="text-grey">We reject the status quo. Every detail, from the structural integrity of a stage to the temperature of the hors d'oeuvres, is monitored and perfected.</p>
+                    </div>
+                </div>
+                <div class="value-row">
+                    <div class="value-num">02</div>
+                    <div>
+                        <h4 class="serif-font font-size-xl text-onyx mb-10">Absolute Transparency</h4>
+                        <p class="text-grey">Trust is our currency. We operate on a strict open-book budgeting policy with our clients, ensuring zero hidden margins across our vendor network.</p>
+                    </div>
+                </div>
+                <div class="value-row">
+                    <div class="value-num">03</div>
+                    <div>
+                        <h4 class="serif-font font-size-xl text-onyx mb-10">Technological Innovation</h4>
+                        <p class="text-grey">We embrace software. From 3D rendering the event space to deploying custom QR-registration apps, we use technology to eliminate human error.</p>
+                    </div>
+                </div>
+                <div class="value-row">
+                    <div class="value-num">04</div>
+                    <div>
+                        <h4 class="serif-font font-size-xl text-onyx mb-10">Cultural Reverence</h4>
+                        <p class="text-grey">Whether it's honoring ancient Vedic wedding rituals or adhering to rigid corporate brand guidelines, we respect the core identity of the event.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding bg-onyx text-center relative overflow-hidden border-bottom-gold">
+        <div class="floating-shape shape-gold shape-md" style="top: 10%; right: 10%;"></div>
+
+        <div class="container relative-z-content fade-up-slow">
+            <h2 class="massive-title serif-font text-white mb-20">Let’s Create Something <span class="text-gold italic">Extraordinary.</span></h2>
+            <p class="text-grey font-size-lg mb-40 max-w-500 mx-auto">Whether you are planning a once-in-a-lifetime royal wedding or a global corporate summit, C&O Group is ready to architect your experience.</p>
+            <div class="flex-center flex-gap">
+                <button class="btn-solid-onyx" style="background: var(--color-gold); color: var(--color-onyx);" onclick="document.getElementById('bookingModal').classList.add('active')">Consult With Us</button>
+                <a href="portfolio.html" class="btn-outline-gold">View Portfolio</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="custom-footer relative overflow-hidden bg-ivory">
+        <div class="container relative-z-content">
+            <div class="footer-top-row">
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Subscribe to receive exciting gifts!</h4>
+<form class="newsletter-form" id="newsletterForm">
+    <input type="email" placeholder="Your email address" class="nl-input" required>
+    <button type="submit" class="nl-btn bg-onyx"><i class="fa-solid fa-envelope-open-text text-gold"></i></button>
+</form>
+<ul class="footer-info-list">
+    <li><i class="fa-solid fa-location-dot text-gold"></i> <a href="https://www.google.com/maps/search/?api=1&query=Sant+Nagar+East+of+Kailash+New+Delhi+110065" target="_blank"><span>Sant Nagar, East of Kailash, New Delhi, Delhi 110065</span></a></li>
+    <li><i class="fa-solid fa-phone text-gold"></i> <a href="tel:+918882373939"><span>+91 8882373939</span></a></li>
+    <li><i class="fa-solid fa-at text-gold"></i> <a href="mailto:info.cogroup@gmail.com"><span>info.cogroup@gmail.com</span></a></li>
+</ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Our Divisions</h4>
+                    <ul class="footer-links">
+                        <li><a href="thread-knot.html">Thread & Knot</a></li>
+                        <li><a href="prism-planner.html">Prism Planner</a></li>
+                        <li><a href="portfolio.html">Portfolio Showcase</a></li>
+                        <li><a href="case-studies.html">Featured Case Studies</a></li>
+                        <li><a href="client-login.html">Client Portal Login</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Capabilities</h4>
+                    <ul class="footer-links">
+                        <li><a href="thread-knot.html">Luxury Wedding Planning</a></li>
+                        <li><a href="prism-planner.html">Corporate MICE & Summits</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading text-onyx">Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html">About C&O Group</a></li>
+                        <li><a href="process.html">Our Execution Framework</a></li>
+                        <li><a href="vendor-portal.html">Vendor Network Portal</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                        <li><a href="contact.html">Contact Command Center</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom-row border-top-grey">
+                <div class="footer-socials">
+                    <a href="https://instagram.com/yourhandle" target="_blank" class="text-onyx hover-gold"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://youtube.com/yourchannel" target="_blank" class="text-onyx hover-gold"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+                <div class="footer-copyright text-grey"><p>All Rights Reserved © 2026 C&O Group LLP.</p></div>
+                <div class="payment-icons">
+                    <i class="fa-brands fa-google-pay fa-2x" style="color: #5f6368; vertical-align: middle;"></i>
+                    <i class="fa-brands fa-cc-visa fa-2x ml-10" style="color: #1434CB; vertical-align: middle;"></i>
+                    <i class="fa-brands fa-cc-mastercard fa-2x ml-10" style="color: #EB001B; vertical-align: middle;"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+<script>
+    (function() {
+        // 1. Check the Global Command Switch
+        if (localStorage.getItem('maintenanceMode') === 'true') {
+            
+            // 2. Wait for the browser to barely start parsing the page
+            document.addEventListener('DOMContentLoaded', () => {
+                
+                // 3. Hijack the entire body and inject the Luxury Standby Screen
+                document.body.innerHTML = `
+                    <div style="position: fixed; inset: 0; background: #0A0A0A; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-family: 'Montserrat', sans-serif; padding: 20px;">
+                        
+                        <div style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: white; letter-spacing: 2px; margin-bottom: 50px; font-weight: 700;">
+                            C&O<span style="color: #D4AF37;">.</span>
+                        </div>
+                        
+                        <div style="width: 80px; height: 80px; border-radius: 50%; border: 1px dashed #D4AF37; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; animation: spin 10s linear infinite;">
+                            <i class="fa-solid fa-compass-drafting" style="font-size: 2rem; color: #D4AF37;"></i>
+                        </div>
+
+                        <style>
+                            @keyframes spin { 100% { transform: rotate(360deg); } }
+                        </style>
+                        
+                        <h1 style="font-family: 'Playfair Display', serif; font-size: 3.5rem; color: #D4AF37; margin-bottom: 20px; line-height: 1.1;">Site Under<br>Architecture</h1>
+                        
+                        <p style="color: #888; font-size: 1rem; max-width: 500px; line-height: 1.8; margin-bottom: 50px;">
+                            Our digital environment is currently undergoing an encrypted upgrade. Our principal architects are refining the mainframe to ensure flawless execution for your future events.
+                        </p>
+                        
+                        <div style="font-size: 0.75rem; color: #444; text-transform: uppercase; letter-spacing: 3px; border-top: 1px solid #222; padding-top: 20px; width: 100%; max-width: 300px;">
+                            <i class="fa-solid fa-lock text-gold mr-5"></i> Secure Protocol Active
+                        </div>
+
+                    </div>
+                `;
+                
+                // 4. Lock scrolling
+                document.body.style.overflow = 'hidden';
+            });
+        }
+    })();
+</script>
+
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // 1. Modals Logic
+            const bookingModal = document.getElementById('bookingModal');
+            const openBookingBtn = document.getElementById('openBookingBtn');
+            if(openBookingBtn) openBookingBtn.addEventListener('click', () => bookingModal.classList.add('active'));
+            document.getElementById('closeBooking').addEventListener('click', () => bookingModal.classList.remove('active'));
+            window.addEventListener('click', (e) => { if (e.target === bookingModal) bookingModal.classList.remove('active'); });
+
+            // 2. Mobile Nav
+            const mobileToggle = document.querySelector('.mobile-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            if (mobileToggle && navLinks) {
+                mobileToggle.addEventListener('click', () => {
+                    if (navLinks.style.display === 'flex') { navLinks.style.display = 'none'; } 
+                    else {
+                        navLinks.style.display = 'flex'; navLinks.style.flexDirection = 'column';
+                        navLinks.style.position = 'absolute'; navLinks.style.top = '100%'; navLinks.style.left = '0';
+                        navLinks.style.width = '100%'; navLinks.style.background = '#FCFBF9'; navLinks.style.padding = '20px';
+                    }
+                });
+            }
+
+            // 3. Scrolled Navbar (Full Color Swapping Logic)
+            const navbar = document.getElementById('navbar');
+            const navLogo = document.getElementById('nav-logo');
+            const navLinksColor = document.getElementById('nav-links-color');
+            const planBtn = document.getElementById('openBookingBtn');
+            const mobIcon = document.getElementById('mob-icon');
+            
+            if (navbar) {
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 50) {
+                        navbar.classList.add('scrolled');
+                        if(navLogo) { navLogo.classList.remove('text-white'); navLogo.classList.add('text-onyx'); }
+                        if(navLinksColor) { navLinksColor.classList.remove('text-white'); navLinksColor.classList.add('text-onyx'); }
+                        if(planBtn) { planBtn.style.color = 'var(--color-onyx)'; planBtn.style.borderColor = 'var(--color-onyx)'; }
+                        if(mobIcon) { mobIcon.classList.remove('text-white'); mobIcon.classList.add('text-onyx'); }
+                    } else {
+                        navbar.classList.remove('scrolled');
+                        if(navLogo) { navLogo.classList.remove('text-onyx'); navLogo.classList.add('text-white'); }
+                        if(navLinksColor) { navLinksColor.classList.remove('text-onyx'); navLinksColor.classList.add('text-white'); }
+                        if(planBtn) { planBtn.style.color = 'white'; planBtn.style.borderColor = 'white'; }
+                        if(mobIcon) { mobIcon.classList.remove('text-onyx'); mobIcon.classList.add('text-white'); }
+                    }
+                });
+            }
+
+            // 4. Preloader
+            window.addEventListener('load', () => {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    setTimeout(() => {
+                        preloader.style.opacity = '0';
+                        preloader.style.transition = 'opacity 0.8s ease';
+                        setTimeout(() => preloader.style.display = 'none', 800);
+                    }, 1200);
+                }
+            });
+
+            // 5. Scroll Animations
+            const revealElements = document.querySelectorAll('.fade-up-slow');
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) { entry.target.classList.add('active'); observer.unobserve(entry.target); }
+                });
+            }, { threshold: 0.15 });
+            revealElements.forEach(el => revealObserver.observe(el));
+
+            // 6. Counters
+            const counters = document.querySelectorAll('.counter');
+            const counterObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counter = entry.target;
+                        const target = +counter.getAttribute('data-target');
+                        const increment = target / (2000 / 16);
+                        let current = 0;
+                        const updateCounter = () => {
+                            current += increment;
+                            if (current < target) {
+                                counter.innerText = Math.ceil(current);
+                                requestAnimationFrame(updateCounter);
+                            } else {
+                                counter.innerText = target;
+                            }
+                        };
+                        updateCounter();
+                        observer.unobserve(counter);
+                    }
+                });
+            }, { threshold: 0.5 });
+            counters.forEach(counter => counterObserver.observe(counter));
+
+        });
+
+        // ==========================================
+        //  C&O COMMAND CENTER: BACKEND CONNECTIONS
+        // ==========================================
+
+        // Premium Gold Toast Notification Function
+        const showToast = (message) => {
+            const toast = document.createElement('div');
+            toast.className = 'toast-msg';
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-gold"></i> ${message}`;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 100);
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 500);
+            }, 4000);
+        };
+
+// REAL SUBMIT: Newsletter Subscription -> MongoDB
+const newsletterForm = document.querySelector('.newsletter-form') || document.getElementById('newsletterForm');
+if (newsletterForm) {
+    newsletterForm.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Stop page refresh
+        
+        const submitBtn = newsletterForm.querySelector('button[type="submit"]');
+        const originalHTML = submitBtn.innerHTML;
+        
+        // Show loading state
+        submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-gold"></i>';
+        submitBtn.disabled = true;
+
+        const emailInput = newsletterForm.querySelector('input[type="email"]').value;
+
+        try {
+            const response = await fetch('http://localhost:5000/api/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: emailInput })
+            });
+
+            if (response.ok) {
+                showToast('Welcome to the inner circle! Your gift is on the way.');
+                newsletterForm.reset();
+            } else if (response.status === 400) {
+                showToast('You are already on our exclusive list!');
+            } else {
+                showToast('Transmission failed. Please try again.');
+            }
+        } catch (error) {
+            console.error('API Error:', error);
+            showToast('Server offline. Please ensure backend is running.');
+        } finally {
+            submitBtn.innerHTML = originalHTML;
+            submitBtn.disabled = false;
+        }
+    });
+}
+
+        // REAL SUBMIT: The Main Booking Form
+        const popupForm = document.getElementById('popupContactForm');
+        if (popupForm) {
+            popupForm.addEventListener('submit', async (e) => {
+                e.preventDefault(); // Stop page refresh
+
+                const submitBtn = popupForm.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerText;
+                
+                // Show loading state
+                submitBtn.innerText = "Securing Connection...";
+                submitBtn.disabled = true;
+
+                // Package the data for MongoDB
+                const formData = new FormData(popupForm);
+                const inquiryPayload = {
+                    clientName: formData.get('name'),
+                    email: formData.get('email'),
+                    division: formData.get('eventType'),
+                    eventDetails: formData.get('message') || "No details provided."
+                };
+
+                try {
+                    // Fire the data to your Node.js Server
+                    const response = await fetch('http://localhost:5000/api/enquiries', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(inquiryPayload)
+                    });
+
+                    if (response.ok) {
+                        // Success!
+                        showToast('Consultation request locked securely. We will contact you shortly.');
+                        popupForm.reset();
+                        document.getElementById('bookingModal').classList.remove('active');
+                    } else {
+                        showToast('Transmission failed. Please check your details.');
+                    }
+                } catch (error) {
+                    console.error('API Error:', error);
+                    showToast('Server offline. Please ensure backend is running.');
+                } finally {
+                    // Restore button state
+                    submitBtn.innerText = originalText;
+                    submitBtn.disabled = false;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
